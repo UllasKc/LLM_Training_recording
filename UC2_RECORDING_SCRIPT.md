@@ -191,19 +191,17 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 `AssertionError: cohort months outside Jan-Jun: [7, 8, 9, 10, 11, 12]`
 
 🎙 **SAY**
-> "The extract only covers January to June, but the parsed dates include July to December. The code uses format 'mixed', which guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three silently becomes the third of May. That's inside the range, so nothing would ever flag it, and the account lands in the wrong month of my out-of-time split. I'll parse each format explicitly."
+> "The extract only covers January to June, but the parsed dates include July to December. The code uses format 'mixed', which guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three silently becomes the third of May. That's inside the range, so nothing would ever flag it, and the account lands in the wrong month of my out-of-time split. The shared config already has a `parse_dates` helper that reads ISO and day-first dates explicitly, so I'll use it instead of guessing."
 
-🔧 **FIX P1** In section 3, replace:
+▶ **DO** Click the **pipeline_config.py** tab → hover over the `parse_dates` function → back to the notebook.
+
+🔧 **FIX P1** In section 3, change the **right-hand side** of this one line:
 ```python
 df["delinquency_date"] = pd.to_datetime(df["delinquency_date"], format="mixed")
 ```
-with:
+to:
 ```python
-iso = pd.to_datetime(df["delinquency_date"], format="%Y-%m-%d", errors="coerce")
-day_first = pd.to_datetime(df["delinquency_date"], format="%d/%m/%Y", errors="coerce")
-log("day-first dates", (iso.isna() & day_first.notna()).sum(), "parsed as DD/MM/YYYY")
-df["delinquency_date"] = iso.fillna(day_first)
-assert df["delinquency_date"].notna().all()
+df["delinquency_date"] = cfg.parse_dates(df["delinquency_date"])
 ```
 
 ▶ **DO** **Restart → Run All**.
@@ -211,7 +209,7 @@ assert df["delinquency_date"].notna().all()
 ✔ **CHECK** Months now 1–6 only. It stops in **section 6**: `AssertionError: infinite payment_burden for 100 accounts`
 
 🎙 **SAY**
-> "Dates fixed: four hundred day-first dates, and every account is now January to June. Next: the payment burden, amount due divided by income, is infinite for a hundred accounts. The profile showed a minimum income of zero. A zero here means 'not provided', not a real income of nothing. So zeros must be treated as missing before dividing."
+> "Dates fixed: the helper reports nineteen thousand six hundred ISO and four hundred day-first dates, and the chart now shows every account in January to June, with intake rising each month. Next: the payment burden, amount due divided by income, is infinite for a hundred accounts. The profile showed a minimum income of zero. A zero here means 'not provided', not a real income of nothing. So zeros must be treated as missing before dividing."
 
 🔧 **FIX P2** In section 6, add this as the **first line** of the cell:
 ```python
@@ -224,11 +222,12 @@ df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 
 🎙 **SAY** (scroll up, hovering over each output)
 > "It runs end to end. The load shows twenty thousand two hundred and forty rows, forty-three percent paid.
-> Missing values: utilisation is blank for thirty percent. That's personal loans, which have no credit limit, so it's structural, not an error. Income ten percent.
+> The missing-values chart: utilisation is blank for thirty percent. That's personal loans, which have no credit limit, so it's structural, not an error. Income ten percent, employment four.
 > The profile shows days past due of minus five and nine hundred and ninety-nine, and a utilisation of 9.99: impossible values.
 > Two hundred and forty exact duplicates removed. Seven hundred product labels mapped to three products. Twelve hundred employment placeholders merged into 'Unknown'.
 > Business rules from the dictionary: eighty accounts with days past due outside one to ninety and a hundred with an amount due larger than the balance are removed, and forty-two sentinel utilisations set to missing. That leaves nineteen thousand eight hundred and twenty accounts.
-> The payment burden now has a median of about six percent of monthly income. Everything is logged in artifact three."
+> The payment burden now has a median of about six percent of monthly income. And the affordability chart is striking: up to twenty percent of income, around forty-five percent of accounts pay; above thirty-five percent of income, in orange, almost nobody does. That's a cliff, not a slope, which a tree model handles and a straight line doesn't.
+> The last chart sums up every cleaning step and how many rows it touched. Everything is logged in artifact three."
 
 ---
 
@@ -260,7 +259,7 @@ train_df = df[df["cohort_month"].isin(cfg.TRAIN_MONTHS)]
 ✔ **CHECK** train `[1, 2, 3, 4]` 12,491 (46.0%) · calibrate `[5]` 3,677 (40.5%) · test `[6]` 3,652 (36.9%). May ROC-AUC **≈ 0.91**. In section 4 the top feature is **total_contact_attempts_30d ≈ 0.177**, three times the next one.
 
 🎙 **SAY**
-> "The windows are clean now. But May ROC-AUC is 0.91, which is very high for collections, and the importance table explains it: shuffling `total_contact_attempts_30d` costs 0.18 of AUC, three times anything else. That's the third suspect from the dictionary. It counts contacts over the whole thirty days, and customers who pay stop being called. So low contacts *means* they paid. At day seven we can't know it."
+> "The windows are clean now. But May ROC-AUC is 0.91, which is very high for collections, and the importance chart explains it: the orange bar, `total_contact_attempts_30d`, costs 0.18 of AUC when shuffled, three times anything else. That's the third suspect from the dictionary. It counts contacts over the whole thirty days, and customers who pay stop being called. So low contacts *means* they paid. At day seven we can't know it."
 
 🔧 **FIX T2** Open **pipeline_config.py** and change:
 ```python
@@ -276,7 +275,7 @@ LEAKY_COLUMNS = ["account_status_at_extract", "amount_recovered_30d", "total_con
 ✔ **CHECK** 25 features · May: baseline **0.821 / 0.752**, boosting **0.844 / 0.784** · top importance: on_time_payment_ratio_12m, promise_to_pay_7d, days_past_due, payment_burden, right_party_contact_7d
 
 🎙 **SAY**
-> "Now realistic. On May, gradient boosting reaches 0.84 against 0.82 for logistic regression, and a better PR-AUC. The drivers make business sense: on-time payment history, a promise to pay in the first week, days past due, payment burden, and whether an agent actually reached the customer. Both models are saved as artifact five."
+> "Now realistic. On May, gradient boosting reaches 0.84 against 0.82 for logistic regression, and a better PR-AUC. The importance chart is now spread across sensible drivers: on-time payment history, a promise to pay in the first week, days past due, payment burden, and whether an agent actually reached the customer. Both models are saved as artifact five."
 
 ---
 
@@ -311,7 +310,8 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 > "June is a month no model has seen. Gradient boosting reaches a ROC-AUC of 0.825, above the 0.78 target, and beats the baseline on PR-AUC.
 > Calibration is the big one. The raw model predicts a 45.7 percent pay rate, but only 36.9 percent actually paid. It learned from better months and would over-promise collections by nearly a quarter. Recalibrating on May brings the prediction to forty percent and improves the Brier score. The remaining gap is because June is worse than May again, which is why the README says to re-calibrate monthly. The calibration chart shows the calibrated curve much closer to the diagonal.
 > Prioritisation: the agents can work thirteen hundred and fifty-one of the three thousand six hundred and fifty-two June accounts. Today's rule, most overdue first, would cover forty-seven percent of the unpaid money. The model's list covers eighty-one percent: same agents, same capacity.
-> The SHAP chart: on-time payment history at the top, then days past due, with cure rates collapsing after thirty days, then whether an agent reached the customer and whether they promised to pay in the first week. A promise is worth much less from someone with broken promises. And payment burden, where affordability falls off a cliff above about a third of income.
+> The SHAP chart: on-time payment history at the top, then days past due, with cure rates collapsing after thirty days, then whether an agent reached the customer and whether they promised to pay in the first week. A promise is worth much less from someone with broken promises. And payment burden.
+> The dependence charts below show the shape of each effect; above the grey line means more likely to pay. Days past due: flat for the first month, then falling steeply after about thirty-five days. Every day counts once an account passes a month. Payment burden: fine up to about a third of income, then a cliff. On-time payment ratio: below about fifty percent, customers rarely pay; above it, the chance rises steadily.
 > All four acceptance checks pass. Artifacts six and seven are saved."
 
 ---
@@ -326,6 +326,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 > "Notebook four builds the actual June list. Every account is scored with the calibrated model, and the three hundred and eighty-eight accounts with a dispute or hardship flag go to the specialist team.
 > The rest are ranked by expected unpaid amount, one minus the probability, times the amount due, and cut at thirteen hundred and fifty-one: artifact eight.
 > Because we know June's outcomes, I can check it: the list covers eighty-one percent of the unpaid money, against forty-seven percent for the old rule.
+> The histogram shows *why*: the old rule, in grey, only ever calls accounts beyond twenty days past due. The model, in blue, also calls high-risk accounts in their first three weeks, while there's still time to cure them, and skips overdue accounts that are likely to pay anyway."
 > Finally the model and calibrator are packaged with metrics and a README as final output three."
 
 ▶ **DO** Scroll through the printed README.
@@ -375,7 +376,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 **Slide 2:** `[ ]` accounts removed → **420**
 🎙 "Four hundred and twenty accounts removed: duplicates and business-rule violations."
 
-**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate → **45.7%** → **40.0%** vs **36.9%** · click the dashed box → **Delete** → **Insert → Pictures → This Device…** → `3_Intermediate\artifact 7 - evaluation charts\calibration.png` → fit it on the right.
+**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate → **45.7%** → **40.0%** vs **36.9%** · click the dashed box → **Delete** → **Insert → Pictures → This Device…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → fit it on the right.
 🎙 "Out of time, 0.825 ROC-AUC. And the calibration chart shows why recalibration matters: raw predictions overstate payment."
 
 **Slide 4:** Unpaid covered → **81%** vs **47%** · Accounts → **1,351** of **3,652** · Specialist → **388**

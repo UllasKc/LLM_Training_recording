@@ -11,6 +11,7 @@ definitions are defined in exactly one place:
 """
 from pathlib import Path
 
+import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.impute import SimpleImputer
@@ -33,7 +34,7 @@ DQ_LOG_FILE = INTERMEDIATE / "artifact 3 - data quality log.csv"
 SPLIT_FILE = INTERMEDIATE / "artifact 4 - time split.csv"
 MODEL_DIR = INTERMEDIATE / "artifact 5 - trained models"
 COMPARISON_FILE = INTERMEDIATE / "artifact 6 - model comparison.csv"
-CHART_DIR = INTERMEDIATE / "artifact 7 - evaluation charts"
+CHART_DIR = INTERMEDIATE / "artifact 7 - charts"
 WORKLIST_FILE = INTERMEDIATE / "artifact 8 - june agent work list.csv"
 PACKAGE_DIR = OUTPUT / "final output 3 - model package"
 
@@ -64,6 +65,18 @@ def feature_columns(df):
 
 def numeric_columns(df):
     return [c for c in feature_columns(df) if c not in CATEGORICAL]
+
+
+# ---------------------------------------------------------------- helpers
+def parse_dates(values):
+    """Parse a column that mixes ISO (YYYY-MM-DD) and day-first (DD/MM/YYYY) dates. Never guesses."""
+    iso = pd.to_datetime(values, format="%Y-%m-%d", errors="coerce")
+    day_first = pd.to_datetime(values, format="%d/%m/%Y", errors="coerce")
+    parsed = iso.fillna(day_first)
+    if parsed.isna().any():
+        raise ValueError(f"{parsed.isna().sum()} dates match neither format")
+    print(f"{values.name}: {iso.notna().sum():,} ISO dates + {(iso.isna() & day_first.notna()).sum():,} day-first dates")
+    return parsed
 
 
 # ---------------------------------------------------------------- models

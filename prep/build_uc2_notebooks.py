@@ -20,12 +20,14 @@ NB01 = [
        "Cleans the January–June 2026 collections extract (`input 1`) and writes the cleaned accounts "
        "(**artifact 2**) and a data-quality log (**artifact 3**).\n\n"
        "**Run order:** 01 → 02 → 03 → 04"),
-    code('import numpy as np\n'
+    code('import matplotlib.pyplot as plt\n'
+         'import numpy as np\n'
          'import pandas as pd\n'
          '\n'
          'import pipeline_config as cfg\n'
          '\n'
          'pd.set_option("display.max_columns", 40)\n'
+         'cfg.CHART_DIR.mkdir(exist_ok=True)\n'
          'dq_log = []\n'
          '\n'
          '\n'
@@ -38,7 +40,16 @@ NB01 = [
          'print(f"Paid within 30 days: {raw[cfg.TARGET].mean():.1%}")\n'
          'raw.head()'),
     code('missing = raw.isna().mean().mul(100).round(1)\n'
-         'missing[missing > 0].sort_values(ascending=False).to_frame("% missing")'),
+         'missing = missing[missing > 0].sort_values()\n'
+         '\n'
+         'fig, ax = plt.subplots(figsize=(7, 2.6))\n'
+         'ax.barh(missing.index, missing.values, color="#2f6db5")\n'
+         'for i, v in enumerate(missing.values):\n'
+         '    ax.text(v, i, f" {v:.1f}%", va="center")\n'
+         'ax.set(xlabel="% of rows missing", title="Missing values in the raw extract")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "01_missing_values.png", dpi=150)\n'
+         'plt.show()'),
     code('raw[["days_past_due", "amount_due", "outstanding_balance", "utilization_ratio", "monthly_income"]].describe().T[["min", "50%", "max"]]'),
     md("## 2. Duplicates"),
     code('df = raw.copy()\n'
@@ -54,6 +65,15 @@ NB01 = [
          'print(df["cohort_month"].value_counts().sort_index().to_dict())\n'
          'outside = sorted(int(m) for m in df.loc[~df["cohort_month"].between(1, 6), "cohort_month"].unique())\n'
          'assert not outside, f"cohort months outside Jan-Jun: {outside}"'),
+    code('by_month = df["cohort_month"].value_counts().sort_index()\n'
+         'fig, ax = plt.subplots(figsize=(6, 3))\n'
+         'ax.bar(["Jan", "Feb", "Mar", "Apr", "May", "Jun"], by_month.values, color="#2f6db5")\n'
+         'for i, v in enumerate(by_month.values):\n'
+         '    ax.text(i, v, f"{v:,}", ha="center", va="bottom")\n'
+         'ax.set(ylabel="Accounts", title="Accounts entering collections by month", ylim=(0, by_month.max() * 1.15))\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "02_accounts_by_month.png", dpi=150)\n'
+         'plt.show()'),
     md("## 4. Category labels"),
     code('PRODUCT_FIXES = {"cc": "credit card", "credit_card": "credit card", "pl": "personal loan",\n'
          '                 "personal-loan": "personal loan", "buy now pay later": "bnpl"}\n'
@@ -89,11 +109,31 @@ NB01 = [
          'assert not infinite.any(), f"infinite payment_burden for {infinite.sum()} accounts"\n'
          'log("monthly_income missing", df["income_missing"].sum(), "flag; burden left missing")\n'
          'df["payment_burden"].describe().round(3)'),
+    code('bands = pd.cut(df["payment_burden"], [0, 0.05, 0.1, 0.2, 0.35, 0.5, float("inf")],\n'
+         '               labels=["<5%", "5-10%", "10-20%", "20-35%", "35-50%", ">50%"])\n'
+         'by_band = df.groupby(bands, observed=True)[cfg.TARGET].mean()\n'
+         'fig, ax = plt.subplots(figsize=(6.5, 3))\n'
+         'ax.bar(by_band.index.astype(str), by_band.values, color=["#c25b12" if b in ("35-50%", ">50%") else "#2f6db5" for b in by_band.index])\n'
+         'ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")\n'
+         'ax.set(xlabel="Amount due as % of monthly income", ylabel="Paid within 30 days",\n'
+         '       title="Affordability: pay rate by payment burden")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "03_pay_rate_by_burden.png", dpi=150)\n'
+         'plt.show()'),
     md("## 7. Save"),
     code('df.to_csv(cfg.CLEAN_FILE, index=False)\n'
          'pd.DataFrame(dq_log).to_csv(cfg.DQ_LOG_FILE, index=False)\n'
          'print(f"Saved {len(df):,} rows -> {cfg.CLEAN_FILE.name}")\n'
          'print(f"Saved {len(dq_log)} log entries -> {cfg.DQ_LOG_FILE.name}")'),
+    code('steps = pd.DataFrame(dq_log).iloc[::-1]\n'
+         'fig, ax = plt.subplots(figsize=(8, 3.6))\n'
+         'ax.barh(steps["step"], steps["rows_affected"], color="#2f6db5")\n'
+         'for i, v in enumerate(steps["rows_affected"]):\n'
+         '    ax.text(v, i, f" {v:,}", va="center")\n'
+         'ax.set(xlabel="Rows affected", title="Data-quality fixes applied (artifact 3)")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "04_data_quality_fixes.png", dpi=150)\n'
+         'plt.show()'),
 ]
 
 NB02 = [
@@ -121,7 +161,7 @@ NB02 = [
          'ax.set(ylabel="Paid within 30 days", title="Pay rate by cohort month")\n'
          'ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")\n'
          'fig.tight_layout()\n'
-         'fig.savefig(cfg.CHART_DIR / "pay_rate_by_month.png", dpi=150)\n'
+         'fig.savefig(cfg.CHART_DIR / "05_pay_rate_by_month.png", dpi=150)\n'
          'plt.show()\n'
          'by_month.round(3)'),
     md("## 2. Out-of-time split"),
@@ -157,6 +197,13 @@ NB02 = [
          '                             n_repeats=5, random_state=cfg.RANDOM_STATE)\n'
          'importance = pd.Series(imp.importances_mean, index=features).sort_values(ascending=False)\n'
          'importance.head(10).round(3).to_frame("drop in ROC-AUC when shuffled")'),
+    code('top = importance.head(10).iloc[::-1]\n'
+         'fig, ax = plt.subplots(figsize=(7, 3.8))\n'
+         'ax.barh(top.index, top.values, color=["#c25b12" if v == top.max() else "#2f6db5" for v in top.values])\n'
+         'ax.set(xlabel="Drop in May ROC-AUC when the feature is shuffled", title="Permutation importance (gradient boosting)")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "06_permutation_importance.png", dpi=150)\n'
+         'plt.show()'),
     md("## 5. Save the trained models"),
     code('cfg.MODEL_DIR.mkdir(exist_ok=True)\n'
          'for name, model in models.items():\n'
@@ -216,7 +263,7 @@ NB03 = [
          'ax.set(xlabel="Predicted probability of paying", ylabel="Actual pay rate", title="Calibration - June cohort")\n'
          'ax.legend()\n'
          'fig.tight_layout()\n'
-         'fig.savefig(cfg.CHART_DIR / "calibration.png", dpi=150)\n'
+         'fig.savefig(cfg.CHART_DIR / "07_calibration.png", dpi=150)\n'
          'plt.show()\n'
          'calibration.round(4)'),
     md("## 3. Agent prioritisation vs today's rule\n"
@@ -245,7 +292,7 @@ NB03 = [
          'ax.xaxis.set_major_formatter(lambda v, _: f"{v:.0%}")\n'
          'ax.set(xlabel="Share of June unpaid amount covered by the agent list", title="Agent prioritisation - June")\n'
          'fig.tight_layout()\n'
-         'fig.savefig(cfg.CHART_DIR / "prioritisation.png", dpi=150)\n'
+         'fig.savefig(cfg.CHART_DIR / "08_prioritisation.png", dpi=150)\n'
          'plt.show()\n'
          'prioritisation.map("{:.1%}".format)'),
     md("## 4. Drivers (SHAP)"),
@@ -258,7 +305,16 @@ NB03 = [
          'shap.summary_plot(shap_values, X_sample, max_display=12, show=False)\n'
          'plt.title("Top drivers of paying within 30 days")\n'
          'plt.tight_layout()\n'
-         'plt.savefig(cfg.CHART_DIR / "shap_summary.png", dpi=150, bbox_inches="tight")\n'
+         'plt.savefig(cfg.CHART_DIR / "09_shap_summary.png", dpi=150, bbox_inches="tight")\n'
+         'plt.show()'),
+    code('fig, axes = plt.subplots(1, 3, figsize=(13, 3.8))\n'
+         'for ax, feature in zip(axes, ["days_past_due", "payment_burden", "on_time_payment_ratio_12m"]):\n'
+         '    shap.dependence_plot(feature, shap_values, X_sample, interaction_index=None, ax=ax, show=False)\n'
+         '    ax.axhline(0, color="grey", linewidth=0.8)\n'
+         'axes[1].set_xlim(0, 1)\n'
+         'fig.suptitle("How each driver moves the chance of paying (SHAP dependence: above 0 = more likely to pay)")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "10_shap_dependence.png", dpi=150)\n'
          'plt.show()'),
     md("## 5. Acceptance check and save"),
     code('checks = pd.DataFrame([\n'
@@ -290,6 +346,7 @@ NB04 = [
     code('import json\n'
          '\n'
          'import joblib\n'
+         'import matplotlib.pyplot as plt\n'
          'import pandas as pd\n'
          '\n'
          'import pipeline_config as cfg\n'
@@ -331,6 +388,15 @@ NB04 = [
          '    "coverage_dpd_rule": round(float(((1 - dpd_list[cfg.TARGET]) * dpd_list["amount_due"]).sum() / actual_unpaid.sum()), 3),\n'
          '}\n'
          'pd.Series(result)'),
+    code('fig, ax = plt.subplots(figsize=(7, 3.4))\n'
+         'bins = range(0, 95, 5)\n'
+         'ax.hist(dpd_list["days_past_due"], bins=bins, alpha=0.6, color="#9aa5b1", label="today: highest DPD first")\n'
+         'ax.hist(work_list["days_past_due"], bins=bins, alpha=0.6, color="#2f6db5", label="model: highest expected unpaid")\n'
+         'ax.set(xlabel="Days past due", ylabel="Accounts on the agent list", title="Who gets an agent call: model list vs current rule")\n'
+         'ax.legend()\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "11_work_list_vs_dpd_rule.png", dpi=150)\n'
+         'plt.show()'),
     md("## 3. Package the model"),
     code('cfg.PACKAGE_DIR.mkdir(exist_ok=True)\n'
          'joblib.dump(model, cfg.PACKAGE_DIR / "model.joblib")\n'

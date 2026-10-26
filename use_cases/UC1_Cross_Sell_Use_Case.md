@@ -43,7 +43,7 @@ Before Marketing commits its Q4 cross-sell budget, prove that model-based target
 Microsoft Word, Microsoft Excel (PivotTables, formulas), Visual Studio Code (Jupyter, Python: pandas, scikit-learn, SHAP), Microsoft PowerPoint, File Explorer / Finder
 
 **Deliverable**
-Exploratory pivot workbook; corrected pipeline with outputs; cleaned data and data-quality log; trained models, model comparison and evaluation charts; out-of-fold back-test list with ROI workbook; packaged model (model, metrics, README); completed summary deck.
+Exploratory pivot workbook; corrected pipeline with outputs; cleaned data and data-quality log; trained models, model comparison and charts; out-of-fold back-test list with ROI workbook; packaged model (model, metrics, README); completed summary deck.
 
 **How the result is checked**
 Hold-out ROC-AUC ≥ 0.78; beats the logistic baseline on PR-AUC; top-20% lift ≥ 2.5×; no leaky or protected fields; back-test list of exactly 4,000 compliant customers, scored out of fold, converting at ≥ 2× the eligible average; profit compared with random selection.
@@ -101,7 +101,7 @@ Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 | `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | Excel |
 | `3_Intermediate/artifact 2 - cleaned customers.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `3_Intermediate/artifact 4 - train test split.csv` · `artifact 5 - trained models/` | notebook 02 |
-| `3_Intermediate/artifact 6 - model comparison.csv` · `artifact 7 - evaluation charts/` (lift, calibration, SHAP) | notebook 03 |
+| `3_Intermediate/artifact 6 - model comparison.csv` · `artifact 7 - charts/` (missing values, income gap, data-quality fixes, CV comparison, lift, calibration, SHAP summary and dependence, back-test) | notebook 03 |
 | `3_Intermediate/artifact 8 - backtest scored customers.csv` | notebook 04 |
 | `4_Output/final output 1 - backtest target list.xlsx` | Excel |
 | `4_Output/final output 2 - cross-sell summary.pptx` | PowerPoint |

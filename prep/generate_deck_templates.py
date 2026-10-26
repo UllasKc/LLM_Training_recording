@@ -134,7 +134,7 @@ def build_uc1():
     kpi(s, Inches(0.6), Inches(3.15), "PR-AUC", [F(), T("  vs "), F(), T(" baseline")], "random = 0.116")
     kpi(s, Inches(0.6), Inches(4.9), "Top-20% lift", [F("[   ]×")], "target ≥ 2.5×")
     image_placeholder(s, Inches(4.8), Inches(1.4), Inches(7.9), Inches(5.05),
-                      "Insert chart: 3_Intermediate / artifact 7 - evaluation charts / lift_by_decile.png")
+                      "Insert chart: 3_Intermediate / artifact 7 - charts / 05_lift_by_decile.png")
 
     s = prs.slides.add_slide(blank)
     header(s, "Back-test and Q4 recommendation", 4, footer)
@@ -178,7 +178,7 @@ def build_uc2():
     kpi(s, Inches(0.6), Inches(4.9), "Predicted vs actual pay rate", [F("[   ]%"), T(" → "), F("[   ]%"), T(" vs "), F("[   ]%")],
         "raw → calibrated vs actual", size=20)
     image_placeholder(s, Inches(4.8), Inches(1.4), Inches(7.9), Inches(5.05),
-                      "Insert chart: 3_Intermediate / artifact 7 - evaluation charts / calibration.png")
+                      "Insert chart: 3_Intermediate / artifact 7 - charts / 07_calibration.png")
 
     s = prs.slides.add_slide(blank)
     header(s, "June agent work list and recommendation", 4, footer)

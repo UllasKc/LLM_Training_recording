@@ -23,11 +23,7 @@ SRC = ROOT / "recording_workspace" / "UC2_Propensity_To_Pay"
 FIXES = {
     "P1": ("01_data_preprocessing.ipynb",
            'df["delinquency_date"] = pd.to_datetime(df["delinquency_date"], format="mixed")',
-           'iso = pd.to_datetime(df["delinquency_date"], format="%Y-%m-%d", errors="coerce")\n'
-           'day_first = pd.to_datetime(df["delinquency_date"], format="%d/%m/%Y", errors="coerce")\n'
-           'log("day-first dates", (iso.isna() & day_first.notna()).sum(), "parsed as DD/MM/YYYY")\n'
-           'df["delinquency_date"] = iso.fillna(day_first)\n'
-           'assert df["delinquency_date"].notna().all()'),
+           'df["delinquency_date"] = cfg.parse_dates(df["delinquency_date"])'),
     "P2": ("01_data_preprocessing.ipynb",
            'df["income_missing"] = df["monthly_income"].isna().astype(int)\n',
            'df["monthly_income"] = df["monthly_income"].replace(0, np.nan)\n'
@@ -135,7 +131,10 @@ def main():
                 "3_Intermediate/artifact 5 - trained models/gradient_boosting.joblib",
                 "3_Intermediate/artifact 5 - trained models/calibrator.joblib",
                 "3_Intermediate/artifact 6 - model comparison.csv",
-                "3_Intermediate/artifact 7 - evaluation charts/prioritisation.png",
+                *[f"3_Intermediate/artifact 7 - charts/{c}.png" for c in [
+                    "01_missing_values", "02_accounts_by_month", "03_pay_rate_by_burden", "04_data_quality_fixes",
+                    "05_pay_rate_by_month", "06_permutation_importance", "07_calibration", "08_prioritisation",
+                    "09_shap_summary", "10_shap_dependence", "11_work_list_vs_dpd_rule"]],
                 "3_Intermediate/artifact 8 - june agent work list.csv",
                 "4_Output/final output 3 - model package/model.joblib",
                 "4_Output/final output 3 - model package/README.md"]

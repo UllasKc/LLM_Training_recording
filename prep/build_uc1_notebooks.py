@@ -30,12 +30,14 @@ NB01 = [
        "Cleans the raw 30-Jun-2026 customer snapshot (`input 1`) and writes the cleaned dataset "
        "(**artifact 2**) and a data-quality log (**artifact 3**).\n\n"
        "**Run order:** 01 → 02 → 03 → 04"),
-    code('import numpy as np\n'
+    code('import matplotlib.pyplot as plt\n'
+         'import numpy as np\n'
          'import pandas as pd\n'
          '\n'
          'import pipeline_config as cfg\n'
          '\n'
          'pd.set_option("display.max_columns", 40)\n'
+         'cfg.CHART_DIR.mkdir(exist_ok=True)\n'
          'dq_log = []\n'
          '\n'
          '\n'
@@ -48,7 +50,16 @@ NB01 = [
          'print(f"Target rate: {raw[cfg.TARGET].mean():.1%}")\n'
          'raw.head()'),
     code('missing = raw.isna().mean().mul(100).round(1)\n'
-         'missing[missing > 0].sort_values(ascending=False).to_frame("% missing")'),
+         'missing = missing[missing > 0].sort_values()\n'
+         '\n'
+         'fig, ax = plt.subplots(figsize=(7, 3.2))\n'
+         'ax.barh(missing.index, missing.values, color="#2f6db5")\n'
+         'for i, v in enumerate(missing.values):\n'
+         '    ax.text(v, i, f" {v:.1f}%", va="center")\n'
+         'ax.set(xlabel="% of rows missing", title="Missing values in the raw extract")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "01_missing_values.png", dpi=150)\n'
+         'plt.show()'),
     code('raw.describe().T[["min", "50%", "max"]]'),
     md("## 2. Duplicates (CRM merge)"),
     code('df = raw.copy()\n'
@@ -91,7 +102,17 @@ NB01 = [
          'df.loc[bad_balance, "avg_monthly_balance"] = np.nan\n'
          'log("balance = -99999", bad_balance.sum(), "set to missing (sentinel)")'),
     md("## 6. Missing values"),
-    code('df.groupby("customer_segment")["monthly_income"].apply(lambda s: s.isna().mean()).map("{:.1%}".format)'),
+    code('income_gap = df.groupby("customer_segment")["monthly_income"].apply(lambda s: s.isna().mean())\n'
+         '\n'
+         'fig, ax = plt.subplots(figsize=(5, 3))\n'
+         'ax.bar(income_gap.index, income_gap.values, color=["#c25b12" if s == "Mass" else "#2f6db5" for s in income_gap.index])\n'
+         'for i, v in enumerate(income_gap.values):\n'
+         '    ax.text(i, v, f"{v:.1%}", ha="center", va="bottom")\n'
+         'ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")\n'
+         'ax.set(ylabel="Income missing", title="Missing income by segment: not at random", ylim=(0, income_gap.max() * 1.2))\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "02_income_missing_by_segment.png", dpi=150)\n'
+         'plt.show()'),
     code('# not missing at random (Mass segment) -> keep the signal as a flag, impute within segment\n'
          'df["income_missing"] = df["monthly_income"].isna().astype(int)\n'
          'df["monthly_income"] = df["monthly_income"].fillna(\n'
@@ -113,6 +134,16 @@ NB01 = [
          'print(f"Saved {len(df):,} rows -> {cfg.CLEAN_FILE.name}")\n'
          'print(f"Saved {len(dq_log)} log entries -> {cfg.DQ_LOG_FILE.name}")\n'
          'print("Still missing (handled in the model pipelines):", df.isna().sum()[lambda s: s > 0].to_dict())'),
+    code('steps = pd.DataFrame(dq_log).iloc[::-1]\n'
+         '\n'
+         'fig, ax = plt.subplots(figsize=(8, 4))\n'
+         'ax.barh(steps["step"], steps["rows_affected"], color="#2f6db5")\n'
+         'for i, v in enumerate(steps["rows_affected"]):\n'
+         '    ax.text(v, i, f" {v:,}", va="center")\n'
+         'ax.set(xlabel="Rows affected", title="Data-quality fixes applied (artifact 3)")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "03_data_quality_fixes.png", dpi=150)\n'
+         'plt.show()'),
 ]
 
 NB02 = [
@@ -121,6 +152,7 @@ NB02 = [
        "baseline and gradient boosting **on the training set only**, then fits both and saves them "
        "(**artifact 5**). The test set stays untouched until notebook 03."),
     code('import joblib\n'
+         'import matplotlib.pyplot as plt\n'
          'import pandas as pd\n'
          'from sklearn.model_selection import StratifiedKFold, cross_validate, train_test_split\n'
          '\n'
@@ -150,7 +182,18 @@ NB02 = [
          '                       error_score="raise")\n'
          '    cv_rows.append({"model": name, "cv_roc_auc": s["test_roc_auc"].mean(),\n'
          '                    "cv_pr_auc": s["test_average_precision"].mean()})\n'
-         'pd.DataFrame(cv_rows).set_index("model").round(3)'),
+         'cv_table = pd.DataFrame(cv_rows).set_index("model").round(3)\n'
+         'cv_table'),
+    code('ax = cv_table.rename(columns={"cv_roc_auc": "ROC-AUC", "cv_pr_auc": "PR-AUC"}).plot.bar(\n'
+         '    figsize=(6, 3.8), rot=0, color=["#2f6db5", "#c25b12"], ylim=(0, 1.15))\n'
+         'ax.axhline(train_df[cfg.TARGET].mean(), color="grey", linestyle="--", linewidth=1, label="random PR-AUC")\n'
+         'for bar in ax.patches:\n'
+         '    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height(), f"{bar.get_height():.2f}", ha="center", va="bottom")\n'
+         'ax.set(title="5-fold cross-validation on the training set", xlabel="")\n'
+         'ax.legend(loc="upper center", ncol=3, frameon=False)\n'
+         'plt.tight_layout()\n'
+         'plt.savefig(cfg.CHART_DIR / "04_cv_comparison.png", dpi=150)\n'
+         'plt.show()'),
     md("## 3. Fit on the full training set and save"),
     code('cfg.MODEL_DIR.mkdir(exist_ok=True)\n'
          'for name, model in candidates.items():\n'
@@ -207,7 +250,7 @@ NB03 = [
          'ax.set(xlabel="Score decile (1 = highest propensity)", ylabel="Lift vs average",\n'
          '       title="Conversion lift by decile - hold-out set")\n'
          'fig.tight_layout()\n'
-         'fig.savefig(cfg.CHART_DIR / "lift_by_decile.png", dpi=150)\n'
+         'fig.savefig(cfg.CHART_DIR / "05_lift_by_decile.png", dpi=150)\n'
          'plt.show()'),
     md("## 3. Calibration"),
     code('fig, ax = plt.subplots(figsize=(5, 5))\n'
@@ -215,7 +258,7 @@ NB03 = [
          '                                    name="gradient boosting")\n'
          'ax.set_title("Calibration - hold-out set")\n'
          'fig.tight_layout()\n'
-         'fig.savefig(cfg.CHART_DIR / "calibration.png", dpi=150)\n'
+         'fig.savefig(cfg.CHART_DIR / "06_calibration.png", dpi=150)\n'
          'plt.show()\n'
          'print(f"mean predicted {scores[best].mean():.3f} vs actual {y_test.mean():.3f}")'),
     md("## 4. Drivers (SHAP)"),
@@ -228,7 +271,15 @@ NB03 = [
          'shap.summary_plot(shap_values, X_sample, max_display=12, show=False)\n'
          'plt.title("Top drivers of cross-sell propensity")\n'
          'plt.tight_layout()\n'
-         'plt.savefig(cfg.CHART_DIR / "shap_summary.png", dpi=150, bbox_inches="tight")\n'
+         'plt.savefig(cfg.CHART_DIR / "07_shap_summary.png", dpi=150, bbox_inches="tight")\n'
+         'plt.show()'),
+    code('fig, axes = plt.subplots(1, 3, figsize=(13, 3.8))\n'
+         'for ax, feature in zip(axes, ["tenure_months", "num_products", "email_open_rate"]):\n'
+         '    shap.dependence_plot(feature, shap_values, X_sample, interaction_index=None, ax=ax, show=False)\n'
+         '    ax.axhline(0, color="grey", linewidth=0.8)\n'
+         'fig.suptitle("How each driver moves propensity (SHAP dependence: above 0 = more likely to buy)")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "08_shap_dependence.png", dpi=150)\n'
          'plt.show()'),
     md("## 5. Acceptance check and save"),
     code('base_pr = comparison.loc["baseline_logreg", "pr_auc"]\n'
@@ -254,6 +305,7 @@ NB04 = [
     code('import json\n'
          '\n'
          'import joblib\n'
+         'import matplotlib.pyplot as plt\n'
          'import pandas as pd\n'
          'from sklearn.model_selection import StratifiedKFold, cross_val_predict\n'
          '\n'
@@ -299,6 +351,20 @@ NB04 = [
          '}\n'
          'backtest["passes_backtest_lift"] = bool(backtest["lift_vs_eligible"] >= cfg.ACCEPTANCE["backtest_lift"])\n'
          'pd.Series(backtest)'),
+    code('fig, axes = plt.subplots(1, 2, figsize=(9, 3.6))\n'
+         'labels = ["Random 4,000", "Model 4,000"]\n'
+         'panels = [("Conversions (actual Jul-Sep)", [backtest["random_conversions"], backtest["actual_conversions"]], "{:,.0f}"),\n'
+         '          ("Profit ($k)", [backtest["profit_random_usd"] / 1000, backtest["profit_model_usd"] / 1000], "${:,.1f}k")]\n'
+         'for ax, (title, values, fmt) in zip(axes, panels):\n'
+         '    ax.bar(labels, values, color=["#9aa5b1", "#2f6db5"])\n'
+         '    for i, v in enumerate(values):\n'
+         '        ax.text(i, v, fmt.format(v), ha="center", va="bottom")\n'
+         '    ax.set_title(title)\n'
+         '    ax.set_ylim(0, max(values) * 1.15)\n'
+         'fig.suptitle("Back-test: same budget, model-selected vs random customers")\n'
+         'fig.tight_layout()\n'
+         'fig.savefig(cfg.CHART_DIR / "09_backtest.png", dpi=150)\n'
+         'plt.show()'),
     md("## 4. Package the final model (trained on all 20,000 customers)"),
     code('cfg.PACKAGE_DIR.mkdir(exist_ok=True)\n'
          'final_model = cfg.build_gradient_boosting(df).fit(X, y)\n'

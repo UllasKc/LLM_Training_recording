@@ -14,7 +14,7 @@ Proven by `prep/selftest_uc1.py`: every bug fails as described here and every fi
 
 | # | Where | Symptom you'll see | Root cause | Fix |
 |---|---|---|---|---|
-| **P1** | `01_data_preprocessing.ipynb`, section 3 "Dates and tenure" | **ValueError**: `time data "30/08/2023" doesn't match format "%Y-%m-%d"` | The new extract has some `customer_since` dates in DD/MM/YYYY | Parse both formats explicitly |
+| **P1** | `01_data_preprocessing.ipynb`, section 3 "Dates and tenure" | **ValueError**: `time data "30/08/2023" doesn't match format "%Y-%m-%d"` | The new extract has some `customer_since` dates in DD/MM/YYYY | Use the config's `cfg.parse_dates(...)` helper (one line) |
 | **P2** | `01_data_preprocessing.ipynb`, section 4 "Category labels" | **AssertionError**: `unexpected regions: [' South', 'Central', 'East', 'East ', 'North', 'North ', 'South', 'West']` | Region cleaning doesn't strip spaces (the product line below it does) | Add `.str.strip()` |
 | **T1** | `pipeline_config.py`, `build_baseline()` (surfaces in `02_model_training.ipynb`, section 2) | **ValueError**: `Input X contains NaN. LogisticRegression does not accept missing values…` | The baseline pipeline has no imputer; `age`, `avg_monthly_balance` and `credit_score` legitimately contain NaN | Wrap the scaler with a median `SimpleImputer` |
 | **T2** | `pipeline_config.py`, `LEAKY_COLUMNS` (surfaces in `02`, section 2) | No error, but **CV ROC-AUC ≈ 0.98** for both models: too good to be true | `welcome_pack_sent` (a new column) is populated after the purchase and isn't excluded | Add it to `LEAKY_COLUMNS` |
@@ -28,16 +28,12 @@ Proven by `prep/selftest_uc1.py`: every bug fails as described here and every fi
 ```python
 df["customer_since"] = pd.to_datetime(df["customer_since"], format="%Y-%m-%d")
 ```
-**Say:** "The parser fails at position 13 on '30/08/2023'. That's day-first, not ISO. The new extract mixes two formats. I won't let pandas guess, because 05/03 is ambiguous. I'll parse each format explicitly and assert nothing is left unparsed."
-**Fixed** (replace the line with these 5):
+**Say:** "The parser fails at position 13 on '30/08/2023'. That's day-first, not ISO. The new extract mixes two formats. I won't let pandas guess, because 05/03 is ambiguous. The config already has a `parse_dates` helper that reads both formats explicitly; this notebook isn't using it."
+**Fixed** (one line):
 ```python
-iso = pd.to_datetime(df["customer_since"], format="%Y-%m-%d", errors="coerce")
-day_first = pd.to_datetime(df["customer_since"], format="%d/%m/%Y", errors="coerce")
-log("day-first dates", (iso.isna() & day_first.notna()).sum(), "parsed as DD/MM/YYYY")
-df["customer_since"] = iso.fillna(day_first)
-assert df["customer_since"].notna().all()
+df["customer_since"] = cfg.parse_dates(df["customer_since"])
 ```
-**Confirm:** after Restart → Run All, the log shows `day-first dates  ~400 rows`; the run then stops at P2.
+**Confirm:** after Restart → Run All, the output shows `customer_since: 19,600 ISO dates + 400 day-first dates`; the run then stops at P2.
 
 ## P2: region labels with spaces
 

@@ -27,11 +27,7 @@ SRC = ROOT / "recording_workspace" / "UC1_Cross_Sell"
 FIXES = {
     "P1": ("01_data_preprocessing.ipynb",
            'df["customer_since"] = pd.to_datetime(df["customer_since"], format="%Y-%m-%d")',
-           'iso = pd.to_datetime(df["customer_since"], format="%Y-%m-%d", errors="coerce")\n'
-           'day_first = pd.to_datetime(df["customer_since"], format="%d/%m/%Y", errors="coerce")\n'
-           'log("day-first dates", (iso.isna() & day_first.notna()).sum(), "parsed as DD/MM/YYYY")\n'
-           'df["customer_since"] = iso.fillna(day_first)\n'
-           'assert df["customer_since"].notna().all()'),
+           'df["customer_since"] = cfg.parse_dates(df["customer_since"])'),
     "P2": ("01_data_preprocessing.ipynb",
            'df["region"] = df["region"].str.lower()',
            'df["region"] = df["region"].str.strip().str.lower()'),
@@ -172,7 +168,9 @@ def main():
                 "3_Intermediate/artifact 4 - train test split.csv",
                 "3_Intermediate/artifact 5 - trained models/gradient_boosting.joblib",
                 "3_Intermediate/artifact 6 - model comparison.csv",
-                "3_Intermediate/artifact 7 - evaluation charts/shap_summary.png",
+                *[f"3_Intermediate/artifact 7 - charts/{c}.png" for c in [
+                    "01_missing_values", "02_income_missing_by_segment", "03_data_quality_fixes", "04_cv_comparison",
+                    "05_lift_by_decile", "06_calibration", "07_shap_summary", "08_shap_dependence", "09_backtest"]],
                 "3_Intermediate/artifact 8 - backtest scored customers.csv",
                 "4_Output/final output 3 - model package/model.joblib",
                 "4_Output/final output 3 - model package/README.md"]

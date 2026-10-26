@@ -262,21 +262,19 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 `ValueError: time data "30/08/2023" doesn't match format "%Y-%m-%d", at position 13`
 
 🎙 **SAY**
-> "It stopped in the dates section. The error says the value thirty, slash, zero eight, slash, twenty twenty-three doesn't match the year-month-day format. That's a day-first date. The new extract mixes two date formats. I won't let pandas guess the format, because a date like five, slash, three is ambiguous. I'll parse each format explicitly and then check nothing is left unparsed."
+> "It stopped in the dates section. The error says the value thirty, slash, zero eight, slash, twenty twenty-three doesn't match the year-month-day format. That's a day-first date, so the new extract mixes two date formats. I won't let pandas guess, because a date like five, slash, three is ambiguous. The shared config already has a `parse_dates` helper that reads both formats explicitly and fails if anything is left over. This notebook just isn't using it."
 
-🔧 **FIX P1** In the first cell of section 3, **replace** this line:
+▶ **DO** Click the **pipeline_config.py** tab (or open it from the Explorer panel) → hover over the `parse_dates` function → go back to the notebook.
+
+🔧 **FIX P1** In section 3, change the **right-hand side** of this one line:
 ```python
 df["customer_since"] = pd.to_datetime(df["customer_since"], format="%Y-%m-%d")
 ```
-with these five lines:
+to:
 ```python
-iso = pd.to_datetime(df["customer_since"], format="%Y-%m-%d", errors="coerce")
-day_first = pd.to_datetime(df["customer_since"], format="%d/%m/%Y", errors="coerce")
-log("day-first dates", (iso.isna() & day_first.notna()).sum(), "parsed as DD/MM/YYYY")
-df["customer_since"] = iso.fillna(day_first)
-assert df["customer_since"].notna().all()
+df["customer_since"] = cfg.parse_dates(df["customer_since"])
 ```
-*(Click into the cell, triple-click the line to select it, then type.)*
+*(Select from `pd.to_datetime` to the end of the line with the mouse, then type the replacement.)*
 
 ▶ **DO** Click **Restart** in the notebook toolbar → confirm **Restart** if asked → click **Run All**.
 
@@ -287,7 +285,7 @@ assert df["customer_since"].notna().all()
 `AssertionError: unexpected regions: [' South', 'Central', 'East', 'East ', 'North', 'North ', 'South', 'West']`
 
 🎙 **SAY**
-> "The dates are fixed. The log says four hundred day-first dates were parsed. Now the label check fails: it expected five regions and found eight. There's 'North' and 'North' with a space at the end, and 'South' with a space at the front. That's exactly what I saw in the pivot. Looking at the code, the product line strips spaces, but the region line doesn't."
+> "The dates are fixed: the helper reports nineteen thousand six hundred ISO dates and four hundred day-first dates. Now the label check fails: it expected five regions and found eight. There's 'North' and 'North' with a space at the end, and 'South' with a space at the front. That's exactly what I saw in the pivot. Looking at the code, the product line strips spaces, but the region line doesn't."
 
 🔧 **FIX P2** In section 4, change this line:
 ```python
@@ -305,14 +303,15 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 🎙 **SAY** (scroll back up and hover over each output as you speak)
 > "Now it runs end to end. Let me walk through what it did.
 > The load shows twenty thousand two hundred and sixty rows but only twenty thousand unique customers, with 11.6 percent buying.
-> The missing-value table: `cross_sell_product_type` is blank for eighty-eight percent. It's only filled for buyers, which is why it's already on the leaky list. Email open rate is missing for twenty-four percent.
+> The missing-values chart: `cross_sell_product_type` is blank for eighty-eight percent. It's only filled for buyers, which is why it's already on the leaky list. Email open rate is missing for twenty-four percent, days since last contact for sixteen, income for eight.
 > The summary statistics show ages of zero and nine hundred and ninety-nine, a balance of minus ninety-nine thousand nine hundred and ninety-nine, and a tenure of minus one. Those are system defaults, not real values.
 > Duplicates: two hundred exact copies from the CRM merge, plus sixty customers with two different rows. There's no update timestamp, so the pipeline keeps the first record. Importantly, this happens *before* any train-test split, otherwise the same customer could end up in both.
 > Four hundred day-first dates, forty negative tenures recalculated from the start date, eight hundred region and six hundred product labels normalised.
 > Sixty impossible ages and sixty sentinel balances set to missing.
-> Income: missing for ten percent of the Mass segment against about four percent elsewhere, the same pattern as the pivot. So the pipeline adds an income-missing flag and fills the value with the segment median.
+> The income chart: missing for ten percent of the Mass segment, highlighted in orange, against about four percent elsewhere. That's the same pattern as the pivot, so it's not random. The pipeline adds an income-missing flag and fills the value with the segment median.
 > And this cross-table confirms the email open rate is blank for exactly the four thousand eight hundred and eight customers who opted out, and for nobody else. Blank means *not emailed*, so zero is the right value.
-> The remaining missing values, in age, balance and credit score, are left for the model pipelines to handle."
+> The remaining missing values, in age, balance and credit score, are left for the model pipelines to handle.
+> And the last chart summarises every cleaning step and how many rows it touched: duplicates, labels, sentinels and missing values, all in one view."
 
 ▶ **DO** In the Explorer panel, click **3_Intermediate → artifact 3 - data quality log.csv**.
 
@@ -383,7 +382,7 @@ LEAKY_COLUMNS = ["cross_sell_product_type", "welcome_pack_sent"]   # populated o
 🎙 **SAY** (hover over each output)
 > "Now the numbers are realistic. The 'Excluded' line shows both leaky columns and gender are out.
 > The split is stratified: sixteen thousand training and four thousand test customers, both at 11.6 percent positive.
-> In cross-validation the baseline reaches a ROC-AUC of 0.77, and gradient boosting 0.80. With only 11.6 percent positives, PR-AUC is the more honest metric, because a random model would score 0.116. Boosting gets 0.37 against 0.32 for the baseline, so it earns its place.
+> In cross-validation the baseline reaches a ROC-AUC of 0.77, and gradient boosting 0.80. With only 11.6 percent positives, PR-AUC is the more honest metric, because a random model would score 0.116. That's the dashed line on the chart. Boosting gets 0.37 against 0.32 for the baseline, so it earns its place.
 > Early stopping chose a hundred and sixty-four boosting rounds, and both models are saved as artifact five."
 
 ---
@@ -435,8 +434,16 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 > App logins: digitally active customers buy more.
 > Number of products: two or three is best, as the pivot showed.
 > Months since the last product was opened: someone who just bought is less likely to buy again straight away.
-> And complaints strongly reduce propensity, which supports the customer-care exclusion.
-> Finally, all three acceptance checks are True. The comparison table and the charts are saved as artifacts six and seven."
+> And complaints strongly reduce propensity, which supports the customer-care exclusion."
+
+▶ **DO** Scroll to the three **SHAP dependence** charts below and hover over each panel.
+
+🎙 **SAY**
+> "The dependence charts show the *shape* of each effect: above the grey line means more likely to buy.
+> Tenure: a sharp jump after the first year, positive up to about five years, then negative. That's the sweet spot.
+> Number of products: one product is negative, two and three are clearly positive, and four drops back, exactly the saturation I saw in the pivot.
+> Email open rate: flat until about twenty-five percent, then rising steeply. So the message to Marketing is that engaged email readers are worth targeting, not just anyone on the list.
+> Finally, all three acceptance checks are True. The comparison table and all charts are saved as artifacts six and seven."
 
 ---
 
@@ -452,7 +459,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 > Then the compliance rules: opted-in and fewer than two complaints leaves fourteen thousand eight hundred and fifty-five eligible customers, who buy at 13.6 percent.
 > The top four thousand by score are saved as artifact eight.
 > The result: the model expected about thirteen hundred conversions, and thirteen hundred and twelve actually happened. That's very close, so the probabilities can be trusted. Random selection would have given about five hundred and forty-six.
-> In money: a hundred and eighty thousand dollars of profit against sixty-six thousand at random, on the same sixteen-thousand-dollar budget.
+> In money: a hundred and eighty thousand dollars of profit against sixty-six thousand at random, on the same sixteen-thousand-dollar budget. The back-test chart shows both side by side.
 > Finally the model is retrained on all twenty thousand customers and packaged with its metrics and a README, which is printed here, as final output three, ready to score the thirtieth-of-September snapshot for Q4."
 
 ▶ **DO** Scroll slowly through the printed README.
@@ -512,7 +519,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 - ROC-AUC → **0.81**
 - PR-AUC → **0.42** vs **0.37** baseline
 - Top-20% lift → **2.83**×
-- Click the **dashed box** → press **Delete** → **Insert → Pictures → This Device…** → `Deliverables\3_Intermediate\artifact 7 - evaluation charts\lift_by_decile.png` → **Insert** → drag it to fill the right-hand side
+- Click the **dashed box** → press **Delete** → **Insert → Pictures → This Device…** → `Deliverables\3_Intermediate\artifact 7 - charts\05_lift_by_decile.png` → **Insert** → drag it to fill the right-hand side
 
 🎙 **SAY** "ROC-AUC 0.81 against a target of 0.78, PR-AUC 0.42 against 0.37 for the baseline, and 2.83 times lift in the top twenty percent. The chart shows how sharply conversion falls from the top decile down."
 

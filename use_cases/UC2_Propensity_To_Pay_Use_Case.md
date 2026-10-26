@@ -92,7 +92,7 @@ A senior data scientist profiles the extract in Excel, then runs the team's pipe
 | `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | Excel |
 | `artifact 2 - cleaned accounts.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `artifact 4 - time split.csv` · `artifact 5 - trained models/` (+ calibrator) | notebooks 02–03 |
-| `artifact 6 - model comparison.csv` · `artifact 7 - evaluation charts/` (pay rate by month, calibration, prioritisation, SHAP) | notebooks 02–03 |
+| `artifact 6 - model comparison.csv` · `artifact 7 - charts/` (missing values, accounts by month, pay rate by burden, data-quality fixes, pay rate by month, permutation importance, calibration, prioritisation, SHAP summary and dependence, work list vs current rule) | notebooks 02–03 |
 | `artifact 8 - june agent work list.csv` | notebook 04 |
 | `4_Output/final output 1 - june agent work list.xlsx` | Excel |
 | `4_Output/final output 2 - collections summary.pptx` | PowerPoint |
