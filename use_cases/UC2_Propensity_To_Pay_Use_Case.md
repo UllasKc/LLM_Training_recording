@@ -1,6 +1,6 @@
 # UC2 – Build and Explain a Propensity-to-Pay Model
 
-> **Prep document, never open on camera.** It contains the answer key for the planted data issues.
+> **Prep document, never open on camera.** Companion files: [UC2_RECORDING_SCRIPT.md](../UC2_RECORDING_SCRIPT.md) (the complete take: clicks, narration, fixes) and [UC2_Planted_Bugs_Answer_Key.md](UC2_Planted_Bugs_Answer_Key.md).
 
 | | |
 |---|---|
@@ -8,150 +8,123 @@
 | Role | Senior Data Scientist |
 | End users | Data Science, Collections |
 | Complexity | Advanced |
-| Target length | ~35 min (allowed 15:00–45:59, one take) |
+| Target length | ~38 min (allowed 15:00–45:59, one take) |
 | Submitted by | Ullas KC (approved by manager) |
 
 ---
 
 ## 1. What changed from the approved version, and why
 
-The approved use case (predict which delinquent customers will make the next payment, then build, validate, explain and package the model) is **unchanged**. Adjustments:
+The approved use case (predict which customers will make the next payment; build, validate, explain, package) is **unchanged**. Adjustments:
 
-| # | Approved version | Recorded version | Why (guideline) |
+| # | Approved version | Recorded version | Why |
 |---|---|---|---|
-| 1 | VS Code **or Internal AutoML Tool** | VS Code (Jupyter) only | Reviewers can't check a proprietary tool; expert judgment must be visible |
-| 2 | Terminal, GitHub Desktop, "commit with README" | No Git on camera. Model package + README in Deliverables; reproducibility shown with **Restart Kernel → Run All** | Your decision (no Git in the demo) |
-| 3 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **Word → Excel → VS Code → Excel → VS Code → PowerPoint** | 3+ apps in a connected workflow |
-| 4 | "CSV: 20,000 customers with payment label" | 20,000 accounts that entered collections **Jan–Jun 2026** + data dictionary + **collections strategy brief** | Business context, constraints and acceptance criteria are mandatory |
-| 5 | "Split appropriately into train and test" | **Out-of-time split** (train Jan–Apr, calibrate May, test June), a **day-7 scoring point** that decides which features are legal, **recalibration** for drift, comparison with the **current business rule** | Makes this clearly different from UC1 (reviewers may reject near-duplicate tasks) and passes the intern test |
-| 6 | Output: notebook; repo; 3-slide summary | Notebook; **June agent work list (Excel)**; model package + README; 3-slide summary | Deliverable labelling convention |
+| 1 | VS Code **or Internal AutoML Tool** | VS Code (Jupyter) only | Reviewers can't check a proprietary tool |
+| 2 | Terminal, GitHub Desktop, "commit with README" | No Git on camera; README and model package generated into `4_Output` | Your decision |
+| 3 | Code written during the video | The **team's existing pipeline** (config + 4 notebooks, built for last year's extract) is a **pre-existing asset**, run, debugged (5 issues) and interpreted on camera | Matches the internal benchmark and Mercor's "diagnosing an existing data pipeline" pattern |
+| 4 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **Word → Excel (pivot EDA) → VS Code → Excel (validation) → PowerPoint** | Multiple connected apps |
+| 5 | "Split appropriately into train and test" | **Out-of-time** (train Jan–Apr, calibrate May, test June), **day-7 scoring point**, **calibration**, business-rule baseline, capacity-constrained work list | Different from UC1 (avoids duplicate-task rejection) and passes the intern test |
+| 6 | Output: notebook; repo; 3-slide summary | Pivot workbook; corrected pipeline + model package; validated June work list; summary deck | Labelled `input N` / `artifact N` / `final output N` |
 
-**How UC2 differs from UC1 on camera:** temporal validation and drift, calibration as a business requirement (expected loss), a business-rule baseline, capacity-constrained prioritisation weighted by amount, and a *timing-based* leakage argument (day 7). UC1 is about random stratified validation, campaign lift and ROI, and compliance filters.
+**How UC2 differs from UC1 on camera:** different bug types (a silent date misparse caught by a range check, a divide-by-zero, an off-by-one time window, a leak found through permutation importance, an inverted business formula), temporal drift and calibration, and capacity-weighted prioritisation instead of campaign ROI.
 
 ---
 
 ## 2. Mercor Studio idea submission (copy into the fields)
 
 **Goal**
-Build, validate and explain a propensity-to-pay model for early-stage collections, validated out of time and calibrated, then use it to produce an agent work list for the latest cohort that fits agent capacity and beats the current "highest days-past-due first" rule.
+Give the collections team a June agent work list that puts 25 agents where the unpaid money is. Explore the January–June 2026 collections extract, run the team's existing propensity-to-pay pipeline on it, fix what the new extract and earlier code changes break, validate out of time on June, calibrate the probabilities, and show that the list covers more unpaid amount than today's "most overdue first" rule.
 
 **Starting material**
-- `input 1 - collections accounts.csv`: 20,240 rows / 20,000 accounts that entered collections Jan–Jun 2026 (duplicates included) with 29 attributes and the label `paid_within_30d` (~37% positive, falling over time)
-- `input 2 - data dictionary.xlsx`: column definitions and source systems
-- `input 3 - collections strategy brief.docx`: Head of Collections request with capacity, scoring point, validation and calibration requirements, exclusions, acceptance criteria
+- `input 1 - collections accounts.csv`: 20,240 rows / 20,000 accounts entering collections Jan–Jun 2026, 29 attributes, label `paid_within_30d` (43%, falling from 50% to 37%)
+- `input 2 - data dictionary.xlsx`; `input 3 - collections strategy brief.docx` (capacity, day-7 rule, out-of-time and calibration requirements, exclusions, acceptance criteria); `input 4 - summary deck template.pptx`
+- **Pre-existing code:** `2_Code/` holds the team's pipeline (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 work list & packaging), not yet run on this extract
 
 **Apps**
-Microsoft Word, Microsoft Excel, Visual Studio Code (Jupyter, Python: pandas, scikit-learn, SHAP), Microsoft PowerPoint, Finder
+Microsoft Word, Microsoft Excel (PivotTables, formulas), Visual Studio Code (Jupyter, Python: pandas, scikit-learn, SHAP), Microsoft PowerPoint, File Explorer / Finder
 
 **Deliverable**
-Jupyter notebook (EDA → cleaning → leakage audit → out-of-time split → baselines → model → calibration → explanation → work list); June agent work list workbook; model package (model, calibrator, metrics, README); 3-slide summary deck.
+Exploratory pivot workbook; corrected pipeline with outputs; cleaned data and quality log; time split; trained models and calibrator; June comparison and charts; validated June agent work list; packaged model (model, calibrator, metrics, README); completed summary deck.
 
 **How the result is checked**
-Out-of-time (June) ROC-AUC ≥ 0.78. Beats logistic regression on PR-AUC. Within agent capacity it covers more of the actual unpaid amount than the "highest DPD first" rule. Calibration checked with Brier score and a reliability curve and fixed where predictions drift. No field captured after day 7 is used. The work list fits capacity and excludes dispute/hardship accounts. Results reproduce after Restart Kernel → Run All.
+June (out-of-time) ROC-AUC ≥ 0.78; beats the logistic baseline on PR-AUC; calibration gap reduced; no field captured after day 7; work list equals agent capacity, excludes dispute/hardship accounts and covers more of June's unpaid amount than highest-days-past-due-first.
 
 **Pitch: problem statement**
-Cure rates are falling through 2026 (especially BNPL) and the collections target is being missed. Agents call the most-overdue accounts first, so they spend time on customers who would have paid anyway and miss high-value accounts that need help.
+Cure rates fall every month and the collections target is being missed. Agents call the most overdue accounts first, spending time on customers who would pay anyway and missing high-value accounts that need help.
 
 **Pitch: solution**
-A senior data scientist fixes date-format and business-rule errors, uses the day-7 decision point to separate legal early-contact features from three post-outcome leaks, validates out of time to expose drift, recalibrates because the probabilities drive an expected-loss ranking, and shows the work list covers far more unpaid balance than the current rule within the same agent capacity.
+A senior data scientist profiles the extract in Excel, then runs the team's pipeline and fixes five issues: day-first dates silently parsed into the wrong months, zero incomes breaking the affordability ratio, a training window overlapping the calibration month, a contact count that leaks the outcome (exposed by permutation importance), and a ranking that prioritised customers likely to pay. Validated on June, the model reaches ROC-AUC 0.825; calibration corrects a 9-point over-prediction; and the agent list covers 81% of June's unpaid amount vs 47% for the current rule, with the same capacity.
 
 ---
 
-## 3. Detailed task scenario (required depth)
+## 3. Detailed task scenario
 
-**Pre-existing assets**
-`~/Desktop/UC2_Propensity_To_Pay/Deliverables/` holding inputs 1–3. The Python 3.12 venv and Jupyter kernel `Python 3.12 (ds-venv)` already exist.
+**Pre-existing assets**: `Desktop/UC2_Propensity_To_Pay/Deliverables/` with `1_Input` (inputs 1–4), `2_Code` (pipeline), and empty `3_Intermediate` and `4_Output`; Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 
-**Business context and constraints** (from input 3)
-- About 3,500 accounts enter collections per month; 25 agents can work ~37% of a cohort in depth; the rest get an SMS/app nudge
-- Accounts are re-prioritised on **day 7**, so 7-day contact fields are legal and anything later is not
-- Out-of-time validation is required (the model will run on future months)
-- Probabilities feed expected unpaid = (1 − p) × amount_due, so calibration matters
-- Dispute or hardship accounts go to a specialist team: scored, but excluded from the agent list
+**Business context and constraints**: ~3,500 accounts per month; 25 agents ≈ 37% capacity; re-prioritised on day 7 (7-day contact fields legal, later ones not); out-of-time validation; probabilities feed expected loss, so calibration is required; dispute/hardship accounts go to a specialist team.
 
 **Multi-phase workflow**
-1. **Understand the request**: brief in Word; dictionary in Excel; note the "Refreshed at extract" fields and the day-7 rule.
-2. **Data quality**: mixed date formats (the DD/MM trap), duplicates, product labels, employment placeholders, income zeros, invalid DPD, amount_due > balance, utilisation sentinel.
-3. **Leakage audit**: drop `account_status_at_extract`, `amount_recovered_30d` and `total_contact_attempts_30d`; keep the 7-day fields and say why.
-4. **Out-of-time design**: pay rate by month (it falls from 42% to 31%); train Jan–Apr, calibrate May, test June.
-5. **Baselines → model**: the business rule (DPD), logistic regression, HistGradientBoosting.
-6. **Calibration**: reliability curve on June; mean predicted vs actual; isotonic recalibration fitted on May; Brier before and after.
-7. **Explanation**: SHAP drivers turned into treatment-path recommendations.
-8. **Work list**: rank the June cohort by (1 − p) × amount_due; exclude dispute/hardship; cut at capacity; compare covered unpaid amount with the DPD rule; validate in Excel.
-9. **Package and reproduce**, then **present** 3 slides.
+1. Brief (Word) and dictionary (Excel): day-7 rule, capacity, three "refreshed at extract" suspects, business rules.
+2. Excel PivotTables: product label drift and BNPL, employment placeholders, status-at-extract leak, prior-delinquency gradient → **artifact 1**.
+3. Review the pipeline config in VS Code.
+4. 01 preprocessing → fix **P1** (dates) and **P2** (zero income) → artifacts 2–3.
+5. 02 training → fix **T1** (window overlap) and **T2** (contact-count leak) → artifacts 4–5.
+6. 03 testing on June → fix **E1** (inverted expected-unpaid formula) → calibration, coverage, SHAP → artifacts 6–7.
+7. 04 work list and packaging → artifact 8, **final output 3**.
+8. Excel validation → **final output 1**. 9. Deck → **final output 2**.
 
-**Why an intern could not do this:** they would random-split (hiding drift), parse DD/MM dates silently wrong, keep the "total contacts" leak, report uncalibrated probabilities that overstate collections by ~25%, and rank by probability alone, ignoring amount and capacity.
+**Why an intern could not do this:** they'd let pandas guess dates, divide by zero incomes, random-split drifting data, keep a post-decision feature, trust uncalibrated probabilities that overstate collections by a quarter, and rank by the wrong side of the probability.
 
 ---
 
 ## 4. App topology (for Metadata.rtf)
 
-`TextEdit (Lookup) -> Finder (Lookup) -> Microsoft Word (Lookup) -> Microsoft Excel (Lookup) -> Visual Studio Code (Create) -> Microsoft Excel (Create) -> Visual Studio Code (Modify) -> Microsoft PowerPoint (Create) -> Finder (Lookup)`
+`TextEdit (Lookup) -> Finder (Lookup) -> Microsoft Word (Lookup) -> Microsoft Excel (Lookup) -> Microsoft Excel (Create) -> Visual Studio Code (Modify) -> Microsoft Excel (Create) -> Microsoft PowerPoint (Modify) -> Finder (Lookup)`
 
 ---
 
-## 5. Deliverables map (everything ends up in `Deliverables/`)
+## 5. Deliverables map (as packaged in `Deliverables.zip` by `prep/package_deliverables`)
 
 | File | Made by |
 |---|---|
-| `input 1 - collections accounts.csv`, `input 2 - data dictionary.xlsx`, `input 3 - collections strategy brief.docx` | pre-loaded |
-| `artifact 1 - cleaned accounts.csv` | notebook |
-| `artifact 2 - model comparison.csv` (DPD rule, logistic, HGB raw, HGB calibrated; out-of-time) | notebook |
-| `artifact 3 - scored June cohort.csv` | notebook |
-| `final output 1 - propensity_to_pay_model.ipynb` | VS Code |
-| `final output 2 - June agent work list.xlsx` (work list + "Capacity Check" sheet) | Excel |
-| `final output 3 - model package/` (`model.joblib`, `calibrator.joblib`, `metrics.json`, `README.md`) | notebook + VS Code |
-| `final output 4 - collections prioritisation summary.pptx` | PowerPoint |
+| `1_Input/input 1–4` | pre-loaded |
+| `1_Input/input 5 - pipeline code as received/` | added by the packager (original code) |
+| `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | Excel |
+| `artifact 2 - cleaned accounts.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
+| `artifact 4 - time split.csv` · `artifact 5 - trained models/` (+ calibrator) | notebooks 02–03 |
+| `artifact 6 - model comparison.csv` · `artifact 7 - evaluation charts/` (pay rate by month, calibration, prioritisation, SHAP) | notebooks 02–03 |
+| `artifact 8 - june agent work list.csv` | notebook 04 |
+| `4_Output/final output 1 - june agent work list.xlsx` | Excel |
+| `4_Output/final output 2 - collections summary.pptx` | PowerPoint |
+| `4_Output/final output 3 - model package/` (`model.joblib`, `calibrator.joblib`, `metrics.json`, `README.md`) | notebook 04 |
+| `4_Output/final output 4 - corrected pipeline code/` | added by the packager (your fixed `2_Code`) |
 
 ---
 
-## 6. Planted data issues: answer key
+## 6. Planted data issues (in input 1) and handling
 
-| Issue | Where | Approx. size | Expected expert handling |
-|---|---|---|---|
-| **Mixed date formats** (`DD/MM/YYYY` among ISO) | `delinquency_date` | ~2% (~400) | Parse each format explicitly. A naive parse turns 05/03 into May 3rd and **creates fake months 7–12**, which is the trap to show |
-| Exact duplicate rows | all columns | ~240 | Drop |
-| Inconsistent product labels (`CC`, `credit_card`, `PL`, `bnpl`, `Buy Now Pay Later`) | `product_type` | ~3.5% | Map to 3 canonical values |
-| Placeholders `""`, `Unknown`, `N/A` | `employment_status` | ~6% | Merge into one "Unknown" category |
-| Missing income and income = 0 | `monthly_income` | ~10% + ~100 zeros | Treat 0 as missing; add a missing indicator |
-| Invalid DPD −5 and 999 | `days_past_due` | ~80 | Outside the 1–90 range in the dictionary → remove and log |
-| amount_due > outstanding_balance | `amount_due` | ~100 | Breaks the dictionary rule → remove and log |
-| Utilisation sentinel 9.99 | `utilization_ratio` | ~40 | Set to missing |
-| Structural missing: no utilisation for personal loans | `utilization_ratio` | ~30% | Not an error; leave NaN (HGB handles it) |
-| **LEAK, obvious:** status at extract | `account_status_at_extract` | — | Mirrors the outcome → drop |
-| **LEAK, obvious:** amount recovered | `amount_recovered_30d` | — | Post-outcome → drop |
-| **LEAK, subtle:** total contacts over the whole episode | `total_contact_attempts_30d` | — | Covers days 8–30, and payers stop being called → after the day-7 point → drop. `contact_attempts_7d` stays |
-| **Drift** | target by month | 42% → 31% | Out-of-time split; recalibrate |
-| Concept drift | BNPL, high affordability burden | — | Shows in SHAP and per-segment calibration |
+| Issue | Size | Handled in |
+|---|---|---|
+| Exact duplicates | 240 | 01 §2 |
+| Day-first dates in `delinquency_date` | 400 | 01 §3 (**P1**) |
+| Product label variants | 700 | 01 §4 |
+| Employment placeholders (blank / N/A / Unknown) | 1,200 | 01 §4 |
+| Days past due −5 / 999 | 80 | 01 §5 (removed) |
+| Amount due > balance | 100 | 01 §5 (removed) |
+| Utilisation sentinel 9.99 | 42 | 01 §5 |
+| Income missing / income = 0 | ~2,000 / 100 | 01 §6 (**P2**) |
+| Structural: no utilisation for personal loans | ~30% | left missing |
+| Leaks: `account_status_at_extract`, `amount_recovered_30d` | — | config (already excluded) |
+| Leak: `total_contact_attempts_30d` (days 1–30) | — | config (**T2**) |
+| Drift: pay rate 49.5% → 36.9% Jan→Jun; BNPL worsening fastest | — | out-of-time split + calibration |
 
-## 7. Reference results (for rehearsal only)
+## 7. Reference results (tested by `prep/selftest_uc2.py`)
 
 | | Value |
 |---|---|
-| Out-of-time (June) ROC-AUC, HGB | ~0.82 |
-| June actual pay rate vs mean raw prediction | 31.0% vs **38.6%** (over-predicts) |
-| After isotonic calibration fitted on May | mean prediction ~33.0%; Brier 0.163 → 0.157 |
-| Unpaid amount covered by top 37% (June, excl. dispute/hardship) | **DPD rule 47%** · amount_due only 77% · **model (1 − p) × amount_due 81%** |
-
-True drivers: days past due (cure rate drops sharply past 30), on-time payment ratio, prior delinquencies, affordability burden (amount_due / income; a cliff above ~35%), right-party contact and promise to pay in the first 7 days (a promise is worth less with past broken promises), employment (unemployed strongly negative), hardship, dispute, high utilisation on revolving products, BNPL worsening month by month.
-
----
-
-## 8. Run sheet (~35 min) with narration cues
-
-| Time | App | Do | Say (cue) |
-|---|---|---|---|
-| 0:00–0:45 | TextEdit | Task notes visible | Request, deliverables, definition of done |
-| 0:45–2:30 | Finder → Word | Open `input 3`; hover over capacity, day-7 rule, calibration, exclusions | "Day 7 is the key constraint. It decides which columns I'm allowed to use." |
-| 2:30–4:30 | Excel | `input 2`; trace "Refreshed at extract" rows | Name the three leak candidates and why |
-| 4:30–5:30 | VS Code | Open Folder; New Jupyter Notebook; kernel picker → `Python 3.12 (ds-venv)` | |
-| 5:30–10:30 | VS Code | Load; **dates (show the fake-month trap)**; duplicates; labels; invalid rows; save `artifact 1` | "If I'd let pandas guess, 5 March would become 3 May and I'd have data from months that haven't happened" |
-| 10:30–13:00 | VS Code | Drop leaks; pay rate by month chart; train/calibrate/test by month | "A random split would hide this drift" |
-| 13:00–17:30 | VS Code | DPD-rule baseline, logistic regression, HGB; out-of-time metrics | |
-| 17:30–21:00 | VS Code | Reliability curve; mean predicted vs actual; isotonic on May; Brier before/after; save `artifact 2` | "The raw model would promise the business ~25% more cures than will happen" |
-| 21:00–24:00 | VS Code | SHAP; drivers → treatment paths | e.g. "High burden and unemployed → hardship conversation, not a payment demand" |
-| 24:00–26:00 | VS Code | Score June; exclude dispute/hardship; rank by expected unpaid; cut at capacity; coverage vs DPD rule; save `artifact 3` | |
-| 26:00–28:30 | Excel | Open `artifact 3`; check row count = capacity, no excluded flags, total expected unpaid; save `final output 2` | |
-| 28:30–30:00 | VS Code | Model package + README; Restart Kernel → Run All; metrics match | |
-| 30:00–34:00 | PowerPoint | 3 slides: problem and approach · out-of-time results and calibration · work list impact vs current rule and drivers | |
-| 34:00–35:00 | Finder | Deliverables folder; acceptance criteria one by one | |
+| May ROC-AUC with leak (T2 symptom) | ~0.91 |
+| May ROC-AUC baseline / boosting | 0.821 / **0.844** |
+| June ROC-AUC / PR-AUC (boosting; baseline) | **0.825 / 0.732** (0.818 / 0.724) |
+| Predicted pay rate raw → calibrated vs actual | 45.7% → 40.0% vs 36.9% |
+| Coverage of unpaid: bugged ranking / today's rule / model | 45.4% / 47.1% / **81.4%** |
+| Capacity · specialist-routed | 1,351 of 3,652 · 388 |

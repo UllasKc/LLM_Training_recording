@@ -538,7 +538,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 ▶ **DO** In File Explorer, open `Deliverables` and hover over each folder and its files.
 
 🎙 **SAY**
-> "To wrap up. Input holds the four files I received. Code holds the team's pipeline, now corrected. Intermediate holds my pivot analysis, the cleaned data and quality log, the train-test split, the trained models, the model comparison, the charts, and the back-test list. Output holds the validated target list with ROI, the summary deck, and the packaged model with its README.
+> "To wrap up. Input holds the four files I received, plus the original pipeline code, which is delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds my pivot analysis, the cleaned data and quality log, the train-test split, the trained models, the model comparison, the charts, and the back-test list. Output holds the validated target list with ROI, the summary deck, and the packaged model with its README.
 > I fixed five issues along the way: two caused by changes in the new extract, the date format and the region labels; a missing imputer in the baseline; a new column that leaked the outcome and inflated accuracy to 0.98; and an evaluation that scored labels instead of probabilities.
 > Every acceptance criterion is met, and the model is ready to score the September snapshot for the Q4 campaign. Thank you."
 
@@ -551,12 +551,17 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 ▶ **DO**
 1. Sharing toolbar → **More (…)** → **Stop recording** → **Stop sharing** → **Leave**
 2. A few minutes later: Teams → **Chat** → `UC1 practice` → recording tile → **⋯ → Download** → rename it `UC1_practice_v1.mp4`
-3. File Explorer → right-click **Deliverables** → **Send to → Compressed (zipped) folder** → `Deliverables.zip`
+3. **Validate and zip the deliverables:**
+   ```powershell
+   cd $env:USERPROFILE\LLM_Training_recording
+   prep\package_deliverables.cmd UC1
+   ```
+   ✔ ends with **READY TO UPLOAD** and creates `Desktop\UC1_Cross_Sell\Deliverables.zip`. It checks every file is labelled input / artifact / final output, all deliverables exist, every fix is in place and no notebook shows an error. It also adds the original code as **input 5** and your corrected code as **final output 4**, and leaves out junk such as `__pycache__`. If it says **NOT READY**, fix what it lists and run it again.
 4. Watch the video at 1.5× and check:
    - [ ] Task notes visible at the start · total length between 15:00 and 45:59
    - [ ] No pop-ups, notifications or AI tools visible · no overlapping windows
    - [ ] Every click was named · every fix: error read → cause explained → fix → re-run → confirmed
-5. Send your manager `UC1_practice_v1.mp4` + `Deliverables.zip`
+5. Send your manager `UC1_practice_v1.mp4` + `Deliverables.zip`. *(For the final Mac take, upload video.mp4, the unmodified recording zip, Deliverables.zip and Metadata.rtf to Mercor Studio.)*
 6. Reset for the next attempt: `prep\stage_recording.cmd UC1`
 
 ---

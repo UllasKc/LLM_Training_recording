@@ -97,7 +97,7 @@ Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 | File | Made by |
 |---|---|
 | `1_Input/input 1 - customers.csv`, `input 2 - data dictionary.xlsx`, `input 3 - campaign brief.docx`, `input 4 - summary deck template.pptx` | pre-loaded |
-| `2_Code/*` | pre-loaded pipeline, **corrected on camera** |
+| `2_Code/*` | pre-loaded pipeline, **corrected on camera**. In `Deliverables.zip` the packager (`prep/package_deliverables`) delivers the original as `1_Input/input 5 - pipeline code as received/` and your corrected version as `4_Output/final output 4 - corrected pipeline code/` |
 | `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | Excel |
 | `3_Intermediate/artifact 2 - cleaned customers.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `3_Intermediate/artifact 4 - train test split.csv` · `artifact 5 - trained models/` | notebook 02 |

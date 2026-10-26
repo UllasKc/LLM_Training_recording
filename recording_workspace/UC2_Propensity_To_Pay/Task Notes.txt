@@ -1,18 +1,16 @@
-TASK: Collections propensity-to-pay model (Lending - Collections Strategy request)
+TASK: Collections propensity-to-pay model + June agent work list (Lending - Collections Strategy request)
 
-Request: Cure rates are falling and agents call the most overdue accounts first. Build a model that predicts payment within 30 days and produce a June agent work list that fits capacity (~37% of the cohort) and targets the largest expected unpaid amounts.
+Request: Cure rates are falling every month and agents call the most overdue accounts first. Build a model that predicts payment within 30 days and give the 25 agents a June work list (~37% of the cohort) that targets the largest expected unpaid amounts.
 
-Inputs (Deliverables folder):
-  input 1 - collections accounts.csv (20,000 accounts entering collections Jan-Jun 2026)
-  input 2 - data dictionary.xlsx
-  input 3 - collections strategy brief.docx (capacity, day-7 rule, calibration, exclusions)
+Starting point:
+  1_Input  - collections accounts (20,000 accounts entering collections Jan-Jun 2026), data dictionary, strategy brief, deck template
+  2_Code   - the team's existing collections pipeline (config + 4 notebooks), built for last year's extract, not yet run on this one
 
 Plan:
-  1. Read brief + dictionary, note day-7 decision point and leakage suspects
-  2. Clean data (dates, labels, business-rule violations), remove post-day-7 fields
-  3. Out-of-time split: train Jan-Apr, calibrate May, test June
-  4. DPD-rule baseline vs logistic vs gradient boosting; calibrate; SHAP drivers
-  5. Rank June by (1 - p) x amount_due, exclude dispute/hardship, cut at capacity -> validate in Excel
-  6. Package model + README, reproduce, 3-slide summary
+  1. Brief + dictionary: day-7 decision point, capacity, leakage suspects
+  2. Excel pivots on the raw extract: products, employment, leakage, payment history
+  3. Run the pipeline and fix what breaks: preprocessing -> out-of-time training -> June testing -> work list
+  4. Validate the work list in Excel
+  5. Complete the summary deck
 
-Done when: out-of-time ROC-AUC >= 0.78, beats baselines, calibration checked, no post-day-7 fields, list fits capacity, reproducible.
+Done when: June ROC-AUC >= 0.78, beats logistic baseline on PR-AUC, calibration checked and corrected, no post-day-7 fields, list fits capacity, excludes dispute/hardship, covers more unpaid amount than highest-DPD-first.

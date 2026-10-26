@@ -24,9 +24,10 @@ INPUTS = {
     "UC1_Cross_Sell/Deliverables/1_Input": {"input 1 - customers.csv": 20_260, "input 2 - data dictionary.xlsx": None,
                                             "input 3 - campaign brief.docx": None,
                                             "input 4 - summary deck template.pptx": None},
-    "UC2_Propensity_To_Pay/Deliverables": {"input 1 - collections accounts.csv": 20_240,
-                              "input 2 - data dictionary.xlsx": None,
-                              "input 3 - collections strategy brief.docx": None},
+    "UC2_Propensity_To_Pay/Deliverables/1_Input": {"input 1 - collections accounts.csv": 20_240,
+                                                   "input 2 - data dictionary.xlsx": None,
+                                                   "input 3 - collections strategy brief.docx": None,
+                                                   "input 4 - summary deck template.pptx": None},
 }
 
 problems, warnings = [], []
@@ -69,11 +70,12 @@ for uc, files in INPUTS.items():
         else:
             check(f"{uc.split('/')[0]}/{name}", True)
 
-print("UC1 pipeline code")
-for name in ["pipeline_config.py", "01_data_preprocessing.ipynb", "02_model_training.ipynb",
-             "03_model_testing.ipynb", "04_backtest_and_package.ipynb"]:
-    check(f"UC1_Cross_Sell/2_Code/{name}", (WS / "UC1_Cross_Sell/Deliverables/2_Code" / name).exists(),
-          "missing - run prep/build_uc1_notebooks.py")
+print("Pipeline code")
+for uc, last in [("UC1_Cross_Sell", "04_backtest_and_package.ipynb"), ("UC2_Propensity_To_Pay", "04_worklist_and_package.ipynb")]:
+    for name in ["pipeline_config.py", "01_data_preprocessing.ipynb", "02_model_training.ipynb",
+                 "03_model_testing.ipynb", last]:
+        check(f"{uc}/2_Code/{name}", (WS / uc / "Deliverables/2_Code" / name).exists(),
+              "missing - run prep/build_uc1_notebooks.py / build_uc2_notebooks.py")
 
 print("Model training speed")
 try:

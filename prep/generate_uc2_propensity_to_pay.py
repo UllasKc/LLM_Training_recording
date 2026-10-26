@@ -1,7 +1,7 @@
 """
 Generate the input data for UC2 - Propensity-to-Pay (collections) model.
 
-Outputs (written to recording_workspace/UC2_Propensity_To_Pay/Deliverables/):
+Outputs (written to recording_workspace/UC2_Propensity_To_Pay/Deliverables/1_Input/):
     input 1 - collections accounts.csv   20,000 delinquent accounts, Jan-Jun 2026 (+ duplicates)
     input 2 - data dictionary.xlsx       column definitions and source systems
 
@@ -22,7 +22,7 @@ START, END = pd.Timestamp("2026-01-01"), pd.Timestamp("2026-06-30")
 EXTRACT_DATE = pd.Timestamp("2026-08-15")
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "recording_workspace" / "UC2_Propensity_To_Pay" / "Deliverables"
+OUT_DIR = ROOT / "recording_workspace" / "UC2_Propensity_To_Pay" / "Deliverables" / "1_Input"
 
 
 def build_clean(rng: np.random.Generator) -> pd.DataFrame:
@@ -93,15 +93,16 @@ def build_clean(rng: np.random.Generator) -> pd.DataFrame:
     prod_eff = pd.Series(prod).map({"Credit Card": 0.0, "Personal Loan": 0.2, "BNPL": -0.25}).to_numpy()
     ptp = df["promise_to_pay_7d"].to_numpy()
     otr = df["on_time_payment_ratio_12m"].to_numpy()
+    phone = (df["preferred_channel"] == "Phone").to_numpy()
     z = (
-        0.90
-        - 0.025 * dpd - 0.045 * np.maximum(dpd - 30, 0)              # cure rate collapses after 30 DPD
-        + 4.0 * (otr - 0.7) * (otr > 0.5) - 1.2 * (otr <= 0.5)
+        1.05
+        - 0.012 * dpd - 0.075 * np.maximum(dpd - 30, 0)              # cure rate collapses after 30 DPD
+        + 4.0 * (otr - 0.7) * (otr > 0.5) - 1.6 * (otr <= 0.5)
         - 0.45 * np.minimum(df["num_prior_delinquencies_12m"], 3)
-        + 0.50 * df["autopay_enrolled"] * (burden < 0.15)             # autopay helps only if affordable
-        + 1.00 * rpc
-        + ptp * (1.5 - 0.9 * np.minimum(df["broken_promises_12m"], 2))
-        - 2.0 * burden - 2.5 * (burden > 0.35)                        # affordability cliff
+        + 0.90 * df["autopay_enrolled"] * (burden < 0.15)             # autopay helps only if affordable
+        + rpc * np.where(phone, 1.6, 0.3)                             # live contact works for phone-preferring customers
+        + ptp * (2.2 - 1.8 * np.minimum(df["broken_promises_12m"], 2))  # a promise is worth little after broken ones
+        - 0.6 * burden - 3.2 * (burden > 0.35)                        # affordability cliff
         + 1.6 * emp_eff
         + prod_eff
         - 0.015 * np.minimum(df["days_since_last_payment"] - dpd, 30)

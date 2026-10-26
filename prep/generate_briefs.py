@@ -3,7 +3,7 @@ Generate the stakeholder brief (input 3) for each use case as a Word document.
 
 Outputs:
     recording_workspace/UC1_Cross_Sell/Deliverables/1_Input/input 3 - campaign brief.docx
-    recording_workspace/UC2_Propensity_To_Pay/Deliverables/input 3 - collections strategy brief.docx
+    recording_workspace/UC2_Propensity_To_Pay/Deliverables/1_Input/input 3 - collections strategy brief.docx
 
 The brief carries the business context, constraints and acceptance criteria that the
 expert must honour on camera. All names and numbers are fictional.
@@ -66,7 +66,7 @@ UC1 = {
 }
 
 UC2 = {
-    "path": WS / "UC2_Propensity_To_Pay" / "Deliverables" / "input 3 - collections strategy brief.docx",
+    "path": WS / "UC2_Propensity_To_Pay" / "Deliverables" / "1_Input" / "input 3 - collections strategy brief.docx",
     "title": "Collections Prioritisation - Propensity-to-Pay Brief",
     "meta": [("From", "Head of Collections Strategy"), ("To", "Data Science team"),
              ("Date", "18 August 2026"), ("Decision needed by", "September collections planning")],
@@ -87,7 +87,8 @@ UC2 = {
             "2. A prioritised agent work list for the most recent cohort (June 2026) that fits agent "
             "capacity (37% of the cohort), ranked by expected unpaid amount = (1 - probability) x amount_due.",
             "3. The main drivers of payment, so the strategy team can adjust treatment paths.",
-            "4. A short (3-slide) summary for September planning.",
+            "4. A short (3-slide) summary for September planning, using the team template "
+            "(input 4 - summary deck template.pptx).",
         ]),
         ("Business constraints", [
             "Accounts are re-prioritised on day 7 after entering collections. Information captured in the "

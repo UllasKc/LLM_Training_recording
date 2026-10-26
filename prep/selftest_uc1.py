@@ -47,8 +47,8 @@ FIXES = {
 }
 
 
-def apply_fix(code_dir, key):
-    name, old, new = FIXES[key]
+def apply_fix(code_dir, key, fixes=None):
+    name, old, new = (fixes or FIXES)[key]
     path = code_dir / name
     if name.endswith(".ipynb"):
         nb = json.loads(path.read_text(encoding="utf-8"))
