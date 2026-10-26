@@ -172,6 +172,6 @@ Everything carries over: the same data, briefs, package versions, notebook flow 
 
 ```powershell
 Remove-Item -Recurse -Force "$env:USERPROFILE\LLM_Training_recording\.venv"
-jupyter kernelspec remove ds-venv     # or delete %APPDATA%\jupyter\kernels\ds-venv
+Remove-Item -Recurse -Force "$env:APPDATA\jupyter\kernels\ds-venv"
 [Environment]::SetEnvironmentVariable("LOKY_MAX_CPU_COUNT", $null, "User")
 ```
