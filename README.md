@@ -26,6 +26,7 @@ LLM_Training_recording/
 │   ├── UC1_Cross_Sell_Use_Case.md        Studio pitch, scenario, answer key, run sheet
 │   ├── UC2_Propensity_To_Pay_Use_Case.md
 │   ├── Use_Cases_v2.xlsx                 refined use cases, same format as the approved sheet
+│   ├── UC1_Recording_Guide_Windows_Teams.md   end-to-end UC1 take (Windows practice, Teams recording)
 │   ├── Recording_Checklist.md
 │   └── Open_Questions.md                 undecided items; update as answers come in
 ├── prep/                         NOT shown on camera

@@ -1,18 +1,18 @@
-TASK: Q3 cross-sell targeting model (Retail Bank - Marketing request)
+TASK: Cross-sell targeting model + back-test (Retail Bank - Marketing request)
 
-Request: Marketing can contact only 4,000 customers in Q3. Find who is most likely to take up another product in the next 90 days, explain why, and deliver a compliant target list with expected ROI.
+Request: Marketing contacts 4,000 customers per campaign and converts ~1 in 9 at random. Build a model of who will take up another product within 90 days, explain why, and prove the value: back-test which 4,000 customers it would have picked on 30 June and how many actually converted vs random. Package it to score the 30 Sep snapshot for Q4.
 
 Inputs (Deliverables folder):
-  input 1 - customers.csv (20,000-customer snapshot, 30 Jun 2026)
+  input 1 - customers.csv (20,000 customers, 30 Jun 2026 snapshot, outcome Jul-Sep)
   input 2 - data dictionary.xlsx
-  input 3 - campaign brief.docx (budget, $4/contact, $150 margin, compliance rules)
+  input 3 - campaign brief.docx (4,000 contacts, $4/contact, $150 margin, compliance rules)
 
 Plan:
   1. Read brief + dictionary, note constraints and leakage suspects
   2. Clean data, audit leakage, stratified train/test split
   3. Logistic baseline -> gradient boosting -> PR-AUC, lift, calibration
   4. SHAP drivers -> messaging guidance
-  5. Score, filter (opt-in, <2 complaints), top 4,000 -> validate ROI in Excel
+  5. Out-of-fold scores, filter (opt-in, <2 complaints), top 4,000 -> back-test ROI in Excel
   6. Package model + README, reproduce, 3-slide summary
 
-Done when: hold-out ROC-AUC >= 0.78, beats baseline PR-AUC, top-20% lift >= 2.5x, no leaky/gender fields, 4,000 compliant rows, reproducible.
+Done when: hold-out ROC-AUC >= 0.78, beats baseline PR-AUC, top-20% lift >= 2.5x, no leaky/gender fields, 4,000 compliant rows converting >= 2x the eligible average, reproducible.

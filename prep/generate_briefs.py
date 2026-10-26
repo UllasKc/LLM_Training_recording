@@ -20,26 +20,31 @@ WS = ROOT / "recording_workspace"
 
 UC1 = {
     "path": WS / "UC1_Cross_Sell" / "Deliverables" / "input 3 - campaign brief.docx",
-    "title": "Q3 Cross-Sell Campaign - Targeting Brief",
+    "title": "Cross-Sell Targeting Model - Brief for Q4 Campaign",
     "meta": [("From", "Head of CRM & Cross-Sell (Marketing)"), ("To", "Data Science team"),
-             ("Date", "1 July 2026"), ("Decision needed by", "15 July 2026 campaign planning meeting")],
+             ("Date", "1 October 2026"), ("Decision needed by", "15 October 2026 Q4 campaign planning meeting")],
     "sections": [
         ("Background", [
-            "Our Q3 campaign will offer an additional product (credit card, savings, personal loan or "
-            "insurance) to existing customers. Last year we contacted customers at random and converted "
-            "roughly 1 in 9. We want to stop spending budget on customers who are very unlikely to buy.",
+            "Our campaigns offer an additional product (credit card, savings, personal loan or insurance) "
+            "to existing customers. So far we have contacted customers at random and converted roughly "
+            "1 in 9. We want to stop spending budget on customers who are very unlikely to buy.",
             "The Data Warehouse team has shared a snapshot of 20,000 customers as of 30 June 2026, together "
-            "with whether each customer opened an additional product in the following 90 days "
-            "(file: input 1 - customers.csv, definitions in input 2 - data dictionary.xlsx).",
+            "with whether each customer opened an additional product in the following 90 days (July - "
+            "September). File: input 1 - customers.csv, definitions in input 2 - data dictionary.xlsx.",
+            "Before we commit the Q4 budget we want evidence: if we had used a model on 30 June, how many "
+            "more customers would we have converted than with random selection?",
         ]),
         ("What we need", [
-            "1. A model that ranks customers by their likelihood to buy another product in the next 90 days.",
-            "2. A target list of exactly 4,000 customers for the Q3 campaign, with expected conversions.",
+            "1. A model that ranks customers by their likelihood to buy another product in the next 90 days, "
+            "packaged so we can score the 30 September snapshot for Q4.",
+            "2. A back-test target list: the 4,000 customers the model would have selected on 30 June, scored "
+            "only with models that did not train on those customers, with expected and actual conversions "
+            "and ROI compared to random selection.",
             "3. The main drivers of purchase in plain business language, so the creative team can tailor messaging.",
             "4. A short (3-slide) summary for the campaign planning meeting.",
         ]),
         ("Business constraints", [
-            "Budget: 4,000 contacts in total. Cost per contact (incl. incentive): $4.",
+            "Budget: 4,000 contacts per campaign. Cost per contact (incl. incentive): $4.",
             "Value: average 12-month margin per additional product sold: $150.",
             "Compliance: only customers with marketing_opt_in = 1 may be contacted.",
             "Compliance: gender must NOT be used as a model input (fair-treatment policy).",
@@ -52,7 +57,8 @@ UC1 = {
             "Beats a simple logistic-regression baseline on PR-AUC (or the reason is explained).",
             "Top 20% of scored customers convert at least 2.5x the average rate (lift >= 2.5).",
             "No leakage: no field that is only populated after the purchase is used.",
-            "Target list honours every compliance and customer-care rule above and has exactly 4,000 rows.",
+            "Back-test list honours every compliance and customer-care rule above, has exactly 4,000 rows, "
+            "and its actual conversion rate is at least 2x the eligible-customer average.",
             "Results can be reproduced by re-running one script end to end.",
         ]),
     ],

@@ -24,34 +24,34 @@ The approved use case (predict which existing customers will buy another product
 | 3 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **Word → Excel → VS Code → Excel → VS Code → PowerPoint** | Keeps 3+ apps in a *connected* workflow where each app has a real job (read brief, read dictionary, model, validate list, present) |
 | 4 | "Starting material: CSV" | CSV + **data dictionary** + **stakeholder campaign brief** | Frost requires documented *business context, constraints and acceptance criteria* |
 | 5 | Generic "train baseline and improve" | Planted **leakage**, **compliance** rules (opt-in, no gender), **budget-constrained targeting** (4,000 contacts), lift and ROI check | The intern litmus test: expert judgment has to be visible, not just `model.fit()` |
-| 6 | Output: notebook; repo; 3-slide summary | Output: notebook; **Q3 target list (Excel)**; model package + README; 3-slide summary | Deliverables labelled `input N` / `artifact N` / `final output N` as required |
+| 6 | Output: notebook; repo; 3-slide summary | Output: notebook; **back-test target list (Excel)**; model package + README; 3-slide summary | Deliverables labelled `input N` / `artifact N` / `final output N` as required |
 
 ---
 
 ## 2. Mercor Studio idea submission (copy into the fields)
 
 **Goal**
-Build, validate and explain a cross-sell propensity model for a retail bank, then use it to select exactly 4,000 customers for the Q3 cross-sell campaign within budget and compliance rules, and present the results to Marketing.
+Build, validate and explain a cross-sell propensity model for a retail bank, then prove its value with an out-of-sample back-test: the 4,000 compliant customers it would have selected on 30 June, their actual conversions and ROI versus random selection. Package the model to score the Q4 snapshot and present to Marketing.
 
 **Starting material (all synthetic)**
-- `input 1 - customers.csv`: 20,260 rows / 20,000 customers (CRM-merge duplicates included) with 25 attributes as of a 30-Jun-2026 snapshot and the label `next_product_purchased_90d` (~11.6% positive)
+- `input 1 - customers.csv`: 20,260 rows / 20,000 customers (CRM-merge duplicates included) with 25 attributes as of a 30-Jun-2026 snapshot and the label `next_product_purchased_90d` (bought in Jul–Sep; ~11.6% positive)
 - `input 2 - data dictionary.xlsx`: column definitions and source systems
-- `input 3 - campaign brief.docx`: Head of CRM request with budget, unit economics, compliance rules and acceptance criteria
+- `input 3 - campaign brief.docx`: Head of CRM request (dated 1 Oct 2026) with budget, unit economics, compliance rules, back-test request and acceptance criteria
 
 **Apps**
 Microsoft Word, Microsoft Excel, Visual Studio Code (Jupyter, Python: pandas, scikit-learn, SHAP), Microsoft PowerPoint, Finder
 
 **Deliverable**
-Jupyter notebook (EDA → cleaning → leakage audit → baseline → improved model → evaluation → explanation → scoring); a Q3 target list workbook with ROI summary; a model package (model file, metrics, README); a 3-slide summary deck.
+Jupyter notebook (EDA → cleaning → leakage audit → baseline → improved model → evaluation → explanation → out-of-fold back-test); a back-test target list workbook with ROI summary; a model package (model file, metrics, README); a 3-slide summary deck.
 
 **How the result is checked**
-On a stratified 20% hold-out the model never saw: ROC-AUC ≥ 0.78; beats a logistic-regression baseline on PR-AUC; top-20% lift ≥ 2.5×. No post-outcome (leaky) fields and no gender used. Target list has exactly 4,000 rows, all opted-in and with < 2 complaints. Metrics reproduce exactly after Restart Kernel → Run All.
+On a stratified 20% hold-out the model never saw: ROC-AUC ≥ 0.78; beats a logistic-regression baseline on PR-AUC; top-20% lift ≥ 2.5×. No post-outcome (leaky) fields and no gender used. Back-test list has exactly 4,000 rows, all opted-in and with < 2 complaints, scored out of fold, and converts at ≥ 2× the eligible average. Metrics reproduce exactly after Restart Kernel → Run All.
 
 **Pitch: problem statement**
 Cross-selling to existing customers is the cheapest way to grow revenue, but random campaigns waste most of the budget: only ~1 in 9 customers convert. Marketing needs to know *who* to contact and *why* they buy.
 
 **Pitch: solution**
-A senior data scientist audits a messy CRM extract, catches two leaky fields that would have faked a near-perfect model, builds a leak-free baseline and an improved gradient-boosted model, judges it on imbalance-appropriate metrics (PR-AUC, decile lift) and checks calibration so expected conversions can be trusted. SHAP turns the drivers into messaging guidance, and the model produces a compliant, budget-sized target list with an ROI estimate.
+A senior data scientist audits a messy CRM extract, catches two leaky fields that would have faked a near-perfect model, builds a leak-free baseline and an improved gradient-boosted model, judges it on imbalance-appropriate metrics (PR-AUC, decile lift) and checks calibration so expected conversions can be trusted. SHAP turns the drivers into messaging guidance, and an out-of-fold back-test proves the value on real outcomes: the 4,000 compliant customers the model would have picked converted at ~2.4× the eligible average.
 
 ---
 
@@ -73,7 +73,7 @@ A senior data scientist audits a messy CRM extract, catches two leaky fields tha
 4. **Baseline → improvement**: a logistic-regression pipeline, then HistGradientBoosting with early stopping and a small, reasoned tuning step.
 5. **Evaluation**: ROC-AUC, PR-AUC against the 11.6% base rate, decile lift and gains, calibration curve.
 6. **Explanation**: SHAP summary, with the top drivers turned into business statements.
-7. **Scoring and target list**: score the full base, apply compliance and care filters, take the top 4,000, export; validate in Excel and add an ROI summary.
+7. **Back-test target list**: score every customer with 5-fold **out-of-fold** predictions (no customer is scored by a model that trained on them), apply compliance and care filters, take the top 4,000, export; in Excel compare expected vs actual conversions and ROI with random selection.
 8. **Package and reproduce**: save model, metrics and README; Restart Kernel → Run All and confirm identical metrics.
 9. **Present**: 3 slides in PowerPoint.
 
@@ -98,11 +98,11 @@ A senior data scientist audits a messy CRM extract, catches two leaky fields tha
 | `input 3 - campaign brief.docx` | pre-loaded | — |
 | `artifact 1 - cleaned customers.csv` | notebook | after cleaning |
 | `artifact 2 - model comparison.csv` | notebook | after evaluation (baseline vs improved, all metrics) |
-| `artifact 3 - scored eligible customers.csv` | notebook | after scoring |
+| `artifact 3 - backtest scored customers.csv` | notebook | top 4,000 eligible, out-of-fold probability + actual outcome |
 | `final output 1 - cross_sell_model.ipynb` | VS Code | throughout |
-| `final output 2 - Q3 target list.xlsx` | Excel | top 4,000 + "ROI Summary" sheet |
+| `final output 2 - backtest target list.xlsx` | Excel | the 4,000 rows + "ROI Summary" sheet |
 | `final output 3 - model package/` | notebook + VS Code | `model.joblib`, `metrics.json`, `README.md` |
-| `final output 4 - Q3 cross-sell summary.pptx` | PowerPoint | 3 slides |
+| `final output 4 - cross-sell summary.pptx` | PowerPoint | 3 slides |
 
 After recording (off camera), zip the `Deliverables` folder as `Deliverables.zip`.
 
@@ -136,6 +136,8 @@ After recording (off camera), zip the `Deliverables` folder as `Deliverables.zip
 | Logistic regression (clean) | ~0.78 | ~0.35 | ~2.7 |
 | HistGradientBoosting (clean) | ~0.81 | ~0.40 | ~2.9 |
 
+**Back-test (5-fold out-of-fold, eligible = opted-in and < 2 complaints):** 14,855 eligible customers (base rate 13.6%). Top 4,000: **expected ~1,250 vs actual ~1,300 conversions (32.6%, 2.4× eligible average)**; random 4,000 ≈ 546. Profit ≈ **$180k vs $66k** for random (conversions × $150 − 4,000 × $4).
+
 True drivers built into the data: number of products (2–3 is best), tenure 1–5 years, recent product opened in the last 6 months (negative), 6–24 months (positive), app logins (only with the app), email open rate above ~20% for opted-in customers, affluent and established customers, complaints (strongly negative), age (inverted U, peak in the late 30s), credit card holders with high balance, mortgage holders with ≤ 2 products.
 
 ---
@@ -153,10 +155,10 @@ True drivers built into the data: number of products (2–3 is best), tenure 1�
 | 13:00–17:30 | VS Code | Logistic baseline → HGB with early stopping; one small tuning step | State the metric choice: "With 11.6% positives, accuracy is meaningless; I'll use PR-AUC" |
 | 17:30–21:00 | VS Code | ROC/PR, decile lift table, calibration curve; save `artifact 2` | Compare with the acceptance thresholds aloud |
 | 21:00–24:00 | VS Code | SHAP summary plot; hover over each top feature | Turn each driver into a marketing action |
-| 24:00–26:00 | VS Code | Score all; filter opt-in and complaints; top 4,000; export `artifact 3` | "Expected conversions are the sum of probabilities, which is why calibration mattered" |
-| 26:00–28:30 | Excel | Open `artifact 3`; check row count and filters; ROI sheet; save `final output 2` | Expected conversions × $150 − 4,000 × $4; compare with random targeting |
+| 24:00–26:00 | VS Code | Out-of-fold scores (5-fold); filter opt-in and complaints; top 4,000; export `artifact 3` | "I score each customer with a model that never saw them, otherwise the back-test would flatter us" |
+| 26:00–28:30 | Excel | Open `artifact 3`; check row count and filters; ROI sheet (expected vs actual vs random); save `final output 2` | "Expected and actual conversions are close, so the probabilities can be trusted for Q4 budgeting" |
 | 28:30–30:00 | VS Code | Save model, metrics.json, README into `final output 3`; Restart Kernel → Run All | "The metrics match exactly, so the result is reproducible" |
-| 30:00–34:00 | PowerPoint | 3 slides: problem and approach · results vs baseline and lift · drivers, target list and ROI | Read the key numbers off the slides |
+| 30:00–34:00 | PowerPoint | 3 slides: problem and approach · results vs baseline and lift · drivers, back-test ROI and Q4 recommendation | Read the key numbers off the slides |
 | 34:00–35:00 | Finder | Show the Deliverables folder | Go through each acceptance criterion as met |
 
 **Mouse and keyboard:** use the ▶ cell Run button and menus, not Shift+Enter or shortcuts (copy/paste are fine). Pause about 1 s after each click. Keep windows maximised or side by side, and minimise anything more than 25% covered.
