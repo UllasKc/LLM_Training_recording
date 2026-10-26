@@ -48,7 +48,7 @@ def header(slide, title, number):
     bar.fill.solid(); bar.fill.fore_color.rgb = NAVY; bar.line.fill.background()
     text_box(slide, Inches(0.6), Inches(0.35), Inches(11), Inches(0.8), [[(title, True, NAVY)]], size=30)
     text_box(slide, Inches(0.6), Inches(7.0), Inches(12.1), Inches(0.35),
-             [[("Cross-sell targeting model  ·  Data Science  ·  Synthetic data", False, MUTED)]], size=10)
+             [[("Cross-sell targeting model  ·  Data Science  ·  Internal", False, MUTED)]], size=10)
     text_box(slide, Inches(12.2), Inches(7.0), Inches(0.6), Inches(0.35), [[(str(number), False, MUTED)]],
              size=10, align=PP_ALIGN.RIGHT)
 

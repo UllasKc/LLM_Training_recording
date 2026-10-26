@@ -35,7 +35,7 @@ The approved use case (predict which delinquent customers will make the next pay
 **Goal**
 Build, validate and explain a propensity-to-pay model for early-stage collections, validated out of time and calibrated, then use it to produce an agent work list for the latest cohort that fits agent capacity and beats the current "highest days-past-due first" rule.
 
-**Starting material (all synthetic)**
+**Starting material**
 - `input 1 - collections accounts.csv`: 20,240 rows / 20,000 accounts that entered collections Jan–Jun 2026 (duplicates included) with 29 attributes and the label `paid_within_30d` (~37% positive, falling over time)
 - `input 2 - data dictionary.xlsx`: column definitions and source systems
 - `input 3 - collections strategy brief.docx`: Head of Collections request with capacity, scoring point, validation and calibration requirements, exclusions, acceptance criteria

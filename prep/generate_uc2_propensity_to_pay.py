@@ -1,11 +1,11 @@
 """
-Generate synthetic input data for UC2 - Propensity-to-Pay (collections) model.
+Generate the input data for UC2 - Propensity-to-Pay (collections) model.
 
 Outputs (written to recording_workspace/UC2_Propensity_To_Pay/Deliverables/):
-    input 1 - collections accounts.csv   20,000 synthetic delinquent accounts, Jan-Jun 2026 (+ duplicates)
+    input 1 - collections accounts.csv   20,000 delinquent accounts, Jan-Jun 2026 (+ duplicates)
     input 2 - data dictionary.xlsx       column definitions and source systems
 
-Fully synthetic and deterministic (fixed seed). Data-quality issues, leakage and a gradual
+Deterministic (fixed seed). Data-quality issues, leakage and a gradual
 drift across months are planted on purpose - see use_cases/UC2_Propensity_To_Pay_Use_Case.md
 (section "Planted data issues") for the answer key. Do NOT open this script on camera.
 

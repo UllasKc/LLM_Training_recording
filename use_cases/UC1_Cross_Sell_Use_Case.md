@@ -1,6 +1,6 @@
 # UC1 – Build and Explain a Cross-Sell / Up-Sell Model
 
-> **Prep document, never open on camera.** Companion files: [UC1_Recording_Guide_Windows_Teams.md](UC1_Recording_Guide_Windows_Teams.md) (step-by-step take) and [UC1_Planted_Bugs_Answer_Key.md](UC1_Planted_Bugs_Answer_Key.md) (the 5 fixes).
+> **Prep document, never open on camera.** Companion files: [UC1_RECORDING_SCRIPT.md](../UC1_RECORDING_SCRIPT.md) (the complete take: clicks, narration, fixes) and [UC1_Planted_Bugs_Answer_Key.md](UC1_Planted_Bugs_Answer_Key.md) (the 5 fixes).
 
 | | |
 |---|---|
@@ -34,7 +34,7 @@ The approved use case (predict which existing customers will buy another product
 **Goal**
 Before Marketing commits its Q4 cross-sell budget, prove that model-based targeting beats random contact. Explore the 30-Jun-2026 customer snapshot, run the team's existing cross-sell pipeline on it, diagnose and fix what the new extract breaks, validate the model against acceptance criteria, and back-test the 4,000 customers it would have selected against their actual July–September outcomes.
 
-**Starting material (all synthetic)**
+**Starting material**
 - `input 1 - customers.csv`: 20,260 rows / 20,000 customers (CRM-merge duplicates), 25 attributes, label `next_product_purchased_90d` (Jul–Sep, 11.6%)
 - `input 2 - data dictionary.xlsx`; `input 3 - campaign brief.docx` (budget, $4/contact, $150 margin, opt-in only, no gender, exclude 2+ complaints, acceptance criteria); `input 4 - summary deck template.pptx`
 - **Pre-existing code:** `2_Code/` holds the team's pipeline (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 back-test & packaging), written for an earlier snapshot and not yet run on this extract
@@ -138,4 +138,4 @@ After recording (off camera), zip `Deliverables` → `Deliverables.zip`.
 | Back-test: expected / actual / random conversions | ~1,298 / **1,312** / 546 |
 | Profit: model vs random | **$180.8k vs $65.8k** |
 
-The excerpted run sheet is in the [recording guide](UC1_Recording_Guide_Windows_Teams.md), Part E.
+The full scene-by-scene script is in [UC1_RECORDING_SCRIPT.md](../UC1_RECORDING_SCRIPT.md).
