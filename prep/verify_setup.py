@@ -1,7 +1,9 @@
 """
-Check that the Mac is ready to record: Python, packages, input files, disk space and RAM.
+Check that the machine is ready to record: Python, packages, input files, disk space and RAM.
 
-Run by setup_mac.sh, or any time with:  .venv/bin/python prep/verify_setup.py
+Run by setup_mac.sh / setup_windows.ps1, or any time with:
+    Mac:      .venv/bin/python prep/verify_setup.py
+    Windows:  .venv\\Scripts\\python.exe prep\\verify_setup.py
 """
 import importlib
 import platform
@@ -37,8 +39,11 @@ def check(label, ok, msg="", warn_only=False):
 
 print("Python")
 check(f"Python {platform.python_version()}", sys.version_info[:2] == (3, 12), "Python 3.12 expected")
-check(f"Architecture {platform.machine()}", platform.machine() == "arm64", "Apple Silicon expected",
-      warn_only=sys.platform != "darwin")
+if sys.platform == "darwin":
+    check(f"Architecture {platform.machine()}", platform.machine() == "arm64", "Apple Silicon expected")
+else:
+    check(f"Architecture {platform.machine()} (practice machine)", platform.machine() in ("AMD64", "x86_64"),
+          "use x64 Python", warn_only=True)
 
 print("Packages")
 for mod, want in PACKAGES.items():
@@ -80,9 +85,25 @@ except Exception as exc:  # noqa: BLE001
 print("Machine")
 free_gb = shutil.disk_usage(Path.home()).free / 1e9
 check(f"Free disk {free_gb:.0f} GB", free_gb >= 50, "need ~50 GB+ for a 30-35 min recording", warn_only=True)
+ram_gb = None
 if sys.platform == "darwin":
     ram_gb = int(subprocess.run(["sysctl", "-n", "hw.memsize"], capture_output=True, text=True).stdout) / 2**30
-    check(f"RAM {ram_gb:.0f} GB", ram_gb >= 16, "16 GB+ preferred", warn_only=True)
+elif sys.platform == "win32":
+    import ctypes
+
+    class MemoryStatus(ctypes.Structure):
+        _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong),
+                    ("ullTotalPhys", ctypes.c_ulonglong), ("ullAvailPhys", ctypes.c_ulonglong),
+                    ("ullTotalPageFile", ctypes.c_ulonglong), ("ullAvailPageFile", ctypes.c_ulonglong),
+                    ("ullTotalVirtual", ctypes.c_ulonglong), ("ullAvailVirtual", ctypes.c_ulonglong),
+                    ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+
+    status = MemoryStatus(dwLength=ctypes.sizeof(MemoryStatus))
+    ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status))
+    ram_gb = status.ullTotalPhys / 2**30
+if ram_gb is not None:
+    # a "16 GB" machine reports ~15.7 GB usable
+    check(f"RAM {ram_gb:.0f} GB", ram_gb >= 15, "16 GB+ preferred", warn_only=True)
 
 print()
 if problems:

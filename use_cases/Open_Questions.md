@@ -11,6 +11,9 @@ Status values: `Open` · `Waiting` (asked someone) · `Resolved`
 | Q3 | Do you have admin rights on the provided Mac (to install Python 3.12 and VS Code)? | The python.org installer and dragging apps into /Applications need an admin password | Admin rights available | README §2, setup_mac.sh | Open | | |
 | Q4 | Does Mercor/Concentrix supply its own Metadata template, or is our Metadata.rtf accepted as is? | The guideline mentions "a template provided by Mercor" | Use our Metadata.rtf; copy sections into the template if one arrives | both Metadata.rtf | Open | | |
 | Q5 | Which use case is recorded first? | Decides the UI variation (UC1 light mode / Dock bottom, UC2 dark mode / Dock left) and which one to rehearse first | UC1 first | Recording_Checklist.md §B | Open | | |
+| Q7 | Can you install Python 3.12 and VS Code on the org Windows laptop (per-user installers)? | Needed for the Windows practice setup; some orgs block installers via AppLocker/Intune | Per-user install allowed | WINDOWS_SETUP.md §0–1 | Open | | |
+| Q8 | Can the org laptop reach github.com and pypi.org, or must pip use an internal mirror / proxy? | setup_windows downloads packages from PyPI | Direct access | WINDOWS_SETUP.md §3 | Open | | |
+| Q9 | Which screen recorder is allowed on the org laptop for the internal-review take (Snipping Tool / OBS / other)? | Internal approval needs a practice video | Snipping Tool | WINDOWS_SETUP.md §7 | Open | | |
 
 ## Resolved
 
