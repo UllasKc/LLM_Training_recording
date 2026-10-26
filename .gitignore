@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+.vscode/
+~$*
+
+# Work produced on camera lives on the Mac Desktop copy, never in the repo
+recording_workspace/**/artifact*
+recording_workspace/**/final output*
+
+# Client guideline documents are confidential and not needed on the Mac - keep them out of GitHub
+Project_Docs/

@@ -1,0 +1,20 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww12000\viewh15000\viewkind0
+\pard\tx720\pardirnatural\partightenfactor0
+\f1\b\fs28 App Topology\f0\b0\fs24 \par
+TextEdit (Lookup) -> Finder (Lookup) -> Microsoft Word (Lookup) -> Microsoft Excel (Lookup) -> Visual Studio Code (Create) -> Microsoft Excel (Create) -> Visual Studio Code (Modify) -> Microsoft PowerPoint (Create) -> Finder (Lookup)\par
+\par
+\f1\b\fs28 Request\f0\b0\fs24 \par
+Hi team - for the Q3 cross-sell campaign we only have budget for 4,000 contacts this time. Can you use the June customer snapshot to work out who is most likely to take up another product and why, and give me the target list with expected conversions and ROI? Remember we can only contact opted-in customers and gender can't be used. I need it for the 15 July planning meeting - brief and data dictionary are in the folder.\par
+\par
+\f1\b\fs28 Task Description\f0\b0\fs24 \par
+1. Review the campaign brief (Word) and data dictionary (Excel) to capture budget, unit economics ($4 per contact, $150 margin), compliance rules (opt-in only, no gender, exclude customers with 2+ complaints) and acceptance criteria; flag columns that may be populated after the purchase.\par
+2. In a VS Code Jupyter notebook, profile the 20,000-customer snapshot and fix data quality issues: CRM-merge duplicates, inconsistent region and product labels, sentinel ages and balances, negative tenure, mixed date formats, and non-random missing income; save the cleaned dataset (artifact 1).\par
+3. Audit for leakage, confirm and remove post-outcome fields (welcome_pack_sent, cross_sell_product_type), exclude gender, de-duplicate before a stratified 80/20 train/test split.\par
+4. Train a logistic-regression baseline, then an improved HistGradientBoosting model; evaluate on the hold-out with ROC-AUC, PR-AUC against the 11.6% base rate, decile lift and a calibration curve; save the model comparison (artifact 2).\par
+5. Explain purchase drivers with SHAP and translate them into messaging guidance for Marketing.\par
+6. Score the base, apply compliance and customer-care filters, select the top 4,000 customers (artifact 3), and validate the list and ROI in Excel (final output 2).\par
+7. Package the model, metrics and README (final output 3), confirm metrics reproduce after Restart Kernel and Run All, and build a 3-slide summary in PowerPoint (final output 4).\par
+Validation criteria: hold-out ROC-AUC >= 0.78; beats the logistic baseline on PR-AUC; top-20% lift >= 2.5x; no leaky or protected fields used; target list has exactly 4,000 compliant rows; metrics reproducible.\par
+}

@@ -1,0 +1,18 @@
+TASK: Collections propensity-to-pay model (Lending - Collections Strategy request)
+
+Request: Cure rates are falling and agents call the most overdue accounts first. Build a model that predicts payment within 30 days and produce a June agent work list that fits capacity (~37% of the cohort) and targets the largest expected unpaid amounts.
+
+Inputs (Deliverables folder):
+  input 1 - collections accounts.csv (20,000 accounts entering collections Jan-Jun 2026)
+  input 2 - data dictionary.xlsx
+  input 3 - collections strategy brief.docx (capacity, day-7 rule, calibration, exclusions)
+
+Plan:
+  1. Read brief + dictionary, note day-7 decision point and leakage suspects
+  2. Clean data (dates, labels, business-rule violations), remove post-day-7 fields
+  3. Out-of-time split: train Jan-Apr, calibrate May, test June
+  4. DPD-rule baseline vs logistic vs gradient boosting; calibrate; SHAP drivers
+  5. Rank June by (1 - p) x amount_due, exclude dispute/hardship, cut at capacity -> validate in Excel
+  6. Package model + README, reproduce, 3-slide summary
+
+Done when: out-of-time ROC-AUC >= 0.78, beats baselines, calibration checked, no post-day-7 fields, list fits capacity, reproducible.

@@ -1,0 +1,10 @@
+# Keep Unix line endings so shell scripts run on the Mac after committing from Windows
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
+*.csv text eol=lf
+*.xlsx binary
+*.docx binary
+*.pptx binary
+*.pdf binary
+*.rtf text eol=lf

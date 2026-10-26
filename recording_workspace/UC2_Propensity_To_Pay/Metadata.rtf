@@ -1,0 +1,21 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2822
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww12000\viewh15000\viewkind0
+\pard\tx720\pardirnatural\partightenfactor0
+\f1\b\fs28 App Topology\f0\b0\fs24 \par
+TextEdit (Lookup) -> Finder (Lookup) -> Microsoft Word (Lookup) -> Microsoft Excel (Lookup) -> Visual Studio Code (Create) -> Microsoft Excel (Create) -> Visual Studio Code (Modify) -> Microsoft PowerPoint (Create) -> Finder (Lookup)\par
+\par
+\f1\b\fs28 Request\f0\b0\fs24 \par
+Hi - cure rates keep dropping and we missed target again in June. Agents are still calling the most overdue accounts first. Can you build a propensity-to-pay model on the Jan-Jun collections data and give me a June work list that fits what the 25 agents can handle (about 37% of the cohort), so they focus where the money is? It has to hold up on future months and the probabilities need to be trustworthy because we use them for expected loss. Brief and data dictionary are attached.\par
+\par
+\f1\b\fs28 Task Description\f0\b0\fs24 \par
+1. Review the collections strategy brief (Word) and data dictionary (Excel) to capture agent capacity, the day-7 re-prioritisation point, out-of-time validation and calibration requirements, dispute/hardship exclusions and acceptance criteria; flag fields refreshed after the decision point.\par
+2. In a VS Code Jupyter notebook, clean 20,000 delinquent accounts: parse mixed DD/MM and ISO dates explicitly, remove duplicates, standardise product and employment labels, treat zero income as missing, and remove rows breaking business rules (invalid days past due, amount due above balance, utilisation sentinel); save the cleaned data (artifact 1).\par
+3. Remove leakage captured after day 7 (account_status_at_extract, amount_recovered_30d, total_contact_attempts_30d) while keeping legitimate 7-day contact fields; show the monthly decline in pay rate and split out of time (train Jan-Apr, calibrate May, test June).\par
+4. Compare the current business rule (highest days past due first), a logistic-regression baseline and a HistGradientBoosting model on the out-of-time month with ROC-AUC and PR-AUC.\par
+5. Check calibration with a reliability curve and Brier score, recalibrate with isotonic regression fitted on May, and save the model comparison (artifact 2).\par
+6. Explain payment drivers with SHAP and translate them into collections treatment paths.\par
+7. Score the June cohort, exclude dispute and hardship accounts, rank by expected unpaid amount (1 - p) x amount_due, cut at agent capacity, compare unpaid amount covered against the DPD rule (artifact 3), and validate the work list in Excel (final output 2).\par
+8. Package the model, calibrator, metrics and README (final output 3), confirm reproducibility with Restart Kernel and Run All, and build a 3-slide summary in PowerPoint (final output 4).\par
+Validation criteria: out-of-time ROC-AUC >= 0.78; beats logistic regression on PR-AUC; covers more unpaid amount than the DPD rule within capacity; calibration checked and corrected; no post-day-7 fields used; work list fits capacity and excludes dispute/hardship accounts; reproducible.\par
+}
