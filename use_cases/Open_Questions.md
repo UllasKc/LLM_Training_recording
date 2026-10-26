@@ -14,6 +14,7 @@ Status values: `Open` · `Waiting` (asked someone) · `Resolved`
 | Q7 | Can you install Python 3.12 and VS Code on the org Windows laptop (per-user installers)? | Needed for the Windows practice setup; some orgs block installers via AppLocker/Intune | Per-user install allowed | WINDOWS_SETUP.md §0–1 | Open | | |
 | Q8 | Can the org laptop reach github.com and pypi.org, or must pip use an internal mirror / proxy? | setup_windows downloads packages from PyPI | Direct access | WINDOWS_SETUP.md §3 | Open | | |
 | Q9 | Which screen recorder is allowed on the org laptop for the internal-review take (Snipping Tool / OBS / other)? | Internal approval needs a practice video | Snipping Tool | WINDOWS_SETUP.md §7 | Open | | |
+| Q10 | Does Mercor/partner accept a **pre-written pipeline** (prepared before recording, with planted issues fixed on camera) as a pre-existing asset? | Mercor bans AI tools *during* recording and asks for pre-existing assets to be documented; it says nothing about how those assets were prepared. The internal benchmark used pre-written code | Yes: it's declared as pre-existing code in Metadata and the pitch, as the benchmark did. You must understand every line | UC1 2_Code, Metadata.rtf, pitch | Open | | |
 
 ## Resolved
 

@@ -21,9 +21,10 @@ PACKAGES = {"numpy": "2.0.2", "pandas": "2.2.3", "sklearn": "1.5.2", "matplotlib
             "docx": None, "ipykernel": "6.29.5"}
 
 INPUTS = {
-    "UC1_Cross_Sell": {"input 1 - customers.csv": 20_260, "input 2 - data dictionary.xlsx": None,
-                       "input 3 - campaign brief.docx": None},
-    "UC2_Propensity_To_Pay": {"input 1 - collections accounts.csv": 20_240,
+    "UC1_Cross_Sell/Deliverables/1_Input": {"input 1 - customers.csv": 20_260, "input 2 - data dictionary.xlsx": None,
+                                            "input 3 - campaign brief.docx": None,
+                                            "input 4 - summary deck template.pptx": None},
+    "UC2_Propensity_To_Pay/Deliverables": {"input 1 - collections accounts.csv": 20_240,
                               "input 2 - data dictionary.xlsx": None,
                               "input 3 - collections strategy brief.docx": None},
 }
@@ -58,15 +59,21 @@ import pandas as pd  # noqa: E402
 
 for uc, files in INPUTS.items():
     for name, rows in files.items():
-        path = WS / uc / "Deliverables" / name
+        path = WS / uc / name
         if not path.exists():
-            check(f"{uc}/{name}", False, "missing - run the generators in prep/")
+            check(f"{uc.split('/')[0]}/{name}", False, "missing - run the generators in prep/")
             continue
         if rows:
             n = len(pd.read_csv(path))
-            check(f"{uc}/{name} ({n:,} rows)", n == rows, f"expected {rows:,} rows")
+            check(f"{uc.split('/')[0]}/{name} ({n:,} rows)", n == rows, f"expected {rows:,} rows")
         else:
-            check(f"{uc}/{name}", True)
+            check(f"{uc.split('/')[0]}/{name}", True)
+
+print("UC1 pipeline code")
+for name in ["pipeline_config.py", "01_data_preprocessing.ipynb", "02_model_training.ipynb",
+             "03_model_testing.ipynb", "04_backtest_and_package.ipynb"]:
+    check(f"UC1_Cross_Sell/2_Code/{name}", (WS / "UC1_Cross_Sell/Deliverables/2_Code" / name).exists(),
+          "missing - run prep/build_uc1_notebooks.py")
 
 print("Model training speed")
 try:

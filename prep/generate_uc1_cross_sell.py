@@ -1,7 +1,7 @@
 """
 Generate synthetic input data for UC1 - Cross-sell / Up-sell model.
 
-Outputs (written to recording_workspace/UC1_Cross_Sell/Deliverables/):
+Outputs (written to recording_workspace/UC1_Cross_Sell/Deliverables/1_Input/):
     input 1 - customers.csv          20,000 synthetic retail-bank customers (+ CRM-merge duplicates)
     input 2 - data dictionary.xlsx   column definitions and source systems
 
@@ -21,7 +21,7 @@ N_CUSTOMERS = 20_000
 SNAPSHOT_DATE = pd.Timestamp("2026-06-30")
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT_DIR = ROOT / "recording_workspace" / "UC1_Cross_Sell" / "Deliverables"
+OUT_DIR = ROOT / "recording_workspace" / "UC1_Cross_Sell" / "Deliverables" / "1_Input"
 
 
 def build_clean(rng: np.random.Generator) -> pd.DataFrame:

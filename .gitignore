@@ -12,3 +12,6 @@ recording_workspace/**/final output*
 
 # Client guideline documents are confidential and not needed on the Mac - keep them out of GitHub
 Project_Docs/
+recording_workspace/**/3_Intermediate/
+recording_workspace/**/4_Output/
+__pycache__/

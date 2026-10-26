@@ -31,6 +31,10 @@ if (Test-Path $Dest) {
 }
 
 Copy-Item -Path $Src -Destination $Dest -Recurse
+# empty working folders for the pipeline outputs (git does not keep empty folders)
+if (Test-Path (Join-Path $Dest "Deliverables\1_Input")) {
+    New-Item -ItemType Directory -Force -Path (Join-Path $Dest "Deliverables\3_Intermediate"), (Join-Path $Dest "Deliverables\4_Output") | Out-Null
+}
 # files from a downloaded ZIP carry Mark-of-the-Web, which makes Word/Excel open them in
 # "Protected View" with a yellow banner on camera
 Get-ChildItem -Path $Dest -Recurse -File | Unblock-File
@@ -51,14 +55,15 @@ $Settings = @"
   "notebook.markup.fontSize": 15,
   "terminal.integrated.fontSize": 14,
   "workbench.startupEditor": "none",
-  "files.exclude": { "**/.vscode": true, "**/.ipynb_checkpoints": true, "**/desktop.ini": true }
+  "files.exclude": { "**/.vscode": true, "**/.ipynb_checkpoints": true, "**/desktop.ini": true, "**/__pycache__": true },
+  "jupyter.notebookFileRoot": "`${fileDirname}"
 }
 "@
 [IO.File]::WriteAllText((Join-Path $VscodeDir "settings.json"), $Settings, (New-Object Text.UTF8Encoding $false))
 (Get-Item $VscodeDir).Attributes = (Get-Item $VscodeDir).Attributes -bor [IO.FileAttributes]::Hidden
 
 Write-Host "Staged clean workspace: $Dest"
-Get-ChildItem -Path (Join-Path $Dest "Deliverables") -Name
+Get-ChildItem -Path (Join-Path $Dest "Deliverables") -Recurse -Depth 1 -Name | Where-Object { $_ -notmatch "__pycache__" }
 Write-Host ""
 Write-Host "Open it in VS Code:  File > Open Folder... > Desktop > $Name"
 Write-Host "Then run the pre-recording checklist in WINDOWS_SETUP.md (section 6)"

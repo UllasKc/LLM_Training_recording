@@ -2,7 +2,7 @@
 Generate the stakeholder brief (input 3) for each use case as a Word document.
 
 Outputs:
-    recording_workspace/UC1_Cross_Sell/Deliverables/input 3 - campaign brief.docx
+    recording_workspace/UC1_Cross_Sell/Deliverables/1_Input/input 3 - campaign brief.docx
     recording_workspace/UC2_Propensity_To_Pay/Deliverables/input 3 - collections strategy brief.docx
 
 The brief carries the business context, constraints and acceptance criteria that the
@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 WS = ROOT / "recording_workspace"
 
 UC1 = {
-    "path": WS / "UC1_Cross_Sell" / "Deliverables" / "input 3 - campaign brief.docx",
+    "path": WS / "UC1_Cross_Sell" / "Deliverables" / "1_Input" / "input 3 - campaign brief.docx",
     "title": "Cross-Sell Targeting Model - Brief for Q4 Campaign",
     "meta": [("From", "Head of CRM & Cross-Sell (Marketing)"), ("To", "Data Science team"),
              ("Date", "1 October 2026"), ("Decision needed by", "15 October 2026 Q4 campaign planning meeting")],
@@ -41,7 +41,8 @@ UC1 = {
             "only with models that did not train on those customers, with expected and actual conversions "
             "and ROI compared to random selection.",
             "3. The main drivers of purchase in plain business language, so the creative team can tailor messaging.",
-            "4. A short (3-slide) summary for the campaign planning meeting.",
+            "4. A short (3-slide) summary for the campaign planning meeting, using the team template "
+            "(input 4 - summary deck template.pptx).",
         ]),
         ("Business constraints", [
             "Budget: 4,000 contacts per campaign. Cost per contact (incl. incentive): $4.",

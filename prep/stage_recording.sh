@@ -29,6 +29,8 @@ if [ -e "$DEST" ]; then
 fi
 
 cp -R "$SRC" "$DEST"
+# empty working folders for the pipeline outputs (git does not keep empty folders)
+if [ -d "$DEST/Deliverables/1_Input" ]; then mkdir -p "$DEST/Deliverables/3_Intermediate" "$DEST/Deliverables/4_Output"; fi
 # downloaded files carry a quarantine flag that triggers "file downloaded from the internet" pop-ups on camera
 xattr -dr com.apple.quarantine "$DEST" 2>/dev/null || true
 
@@ -47,12 +49,13 @@ cat > "$DEST/.vscode/settings.json" <<EOF
   "notebook.markup.fontSize": 15,
   "terminal.integrated.fontSize": 14,
   "workbench.startupEditor": "none",
-  "files.exclude": { "**/.vscode": true, "**/.DS_Store": true, "**/.ipynb_checkpoints": true }
+  "files.exclude": { "**/.vscode": true, "**/.DS_Store": true, "**/.ipynb_checkpoints": true, "**/__pycache__": true },
+  "jupyter.notebookFileRoot": "\${fileDirname}"
 }
 EOF
 
 echo "Staged clean workspace: $DEST"
-ls -1 "$DEST/Deliverables"
+(cd "$DEST/Deliverables" && find . -mindepth 1 -maxdepth 2 -not -name ".*" | sort | sed "s|^./||")
 echo
 echo "Open it in VS Code:  File > Open Folder... > Desktop > $NAME"
 echo "Then run the pre-recording checklist in use_cases/Recording_Checklist.md"

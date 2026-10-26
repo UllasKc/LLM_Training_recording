@@ -27,23 +27,28 @@ LLM_Training_recording/
 │   ├── UC2_Propensity_To_Pay_Use_Case.md
 │   ├── Use_Cases_v2.xlsx                 refined use cases, same format as the approved sheet
 │   ├── UC1_Recording_Guide_Windows_Teams.md   end-to-end UC1 take (Windows practice, Teams recording)
+│   ├── UC1_Planted_Bugs_Answer_Key.md    the 5 UC1 fixes: symptom, narration, exact code
 │   ├── Recording_Checklist.md
 │   └── Open_Questions.md                 undecided items; update as answers come in
 ├── prep/                         NOT shown on camera
 │   ├── generate_uc1_cross_sell.py        -> UC1 input 1 + input 2
 │   ├── generate_uc2_propensity_to_pay.py -> UC2 input 1 + input 2
 │   ├── generate_briefs.py                -> input 3 (stakeholder brief, .docx) for both
+│   ├── build_uc1_notebooks.py            -> UC1 2_Code notebooks (with planted bugs)
+│   ├── generate_uc1_deck_template.py     -> UC1 input 4 deck template (needs python-pptx)
+│   ├── selftest_uc1.py                   proves each UC1 bug fails and each fix works
 │   ├── stage_recording.sh                copies a clean workspace to ~/Desktop before a take (Mac)
 │   ├── stage_recording.cmd / .ps1        same, for Windows
 │   └── verify_setup.py                   readiness check
 └── recording_workspace/          what you record with (copied to the Desktop)
     ├── UC1_Cross_Sell/
-    │   ├── Task Notes.txt        paste into TextEdit before starting TaskRecorder
+    │   ├── Task Notes.txt        open in TextEdit/Notepad before starting the recording
     │   ├── Metadata.rtf          upload separately to Mercor Studio
     │   └── Deliverables/
-    │       ├── input 1 - customers.csv
-    │       ├── input 2 - data dictionary.xlsx
-    │       └── input 3 - campaign brief.docx
+    │       ├── 1_Input/          input 1 data · input 2 dictionary · input 3 brief · input 4 deck template
+    │       ├── 2_Code/           team pipeline: pipeline_config.py + notebooks 01-04 (contains the planted bugs)
+    │       ├── 3_Intermediate/   created by staging; artifacts 1-8 are written here on camera
+    │       └── 4_Output/         created by staging; final outputs 1-3 are written here on camera
     └── UC2_Propensity_To_Pay/
         ├── Task Notes.txt
         ├── Metadata.rtf
@@ -53,7 +58,7 @@ LLM_Training_recording/
             └── input 3 - collections strategy brief.docx
 ```
 
-Artifacts (`artifact 1…3`) and final outputs (`final output 1…4`) are created **live on camera** inside the Desktop copy of `Deliverables/`. See the "Deliverables map" in each use-case document.
+Artifacts and final outputs are created **live on camera** inside the Desktop copy of `Deliverables/`. See the "Deliverables map" in each use-case document. Check the UC1 pipeline on any machine with `python prep/selftest_uc1.py`.
 
 ---
 
