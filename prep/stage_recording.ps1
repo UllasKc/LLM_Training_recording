@@ -11,7 +11,7 @@ Anything already on the Desktop with that name (e.g. a rehearsal) is moved to
 param(
     [Parameter(Mandatory = $true)][ValidateSet("UC1", "UC2")][string]$UseCase,
     # the real Desktop, including when it is redirected to OneDrive
-    [string]$Destination = [Environment]::GetFolderPath("Desktop")
+    [string]$Destination = $(if ($env:STAGE_DESTINATION) { $env:STAGE_DESTINATION } else { [Environment]::GetFolderPath("Desktop") })
 )
 $ErrorActionPreference = "Stop"
 

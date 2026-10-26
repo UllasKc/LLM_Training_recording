@@ -100,7 +100,9 @@ cd $env:USERPROFILE\LLM_Training_recording
 prep\stage_recording.cmd UC1        # or UC2
 ```
 
-This copies a fresh workspace to your **Desktop** (`Desktop\UC1_Cross_Sell`); it also works when the Desktop is redirected to OneDrive. A previous copy, such as a rehearsal, is **moved** to `C:\Users\<you>\Rehearsal_Backups\`, never deleted. The script also:
+Or **double-click** `prep\stage_recording.cmd` in File Explorer, type `1` (UC1) or `2` (UC2) and press Enter; the window stays open until you press a key.
+
+This copies a fresh workspace to your **Desktop** (`Desktop\UC1_Cross_Sell`); it also works when the Desktop is redirected to OneDrive. The full path is printed at the end. A previous copy, such as a rehearsal, is **moved** to `C:\Users\<you>\Rehearsal_Backups\`, never deleted. The script also:
 - removes the "downloaded from the internet" mark, so Word/Excel don't open the inputs in yellow **Protected View** on camera
 - writes hidden VS Code settings: AI features off, the venv interpreter, larger fonts
 
