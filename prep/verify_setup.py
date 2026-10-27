@@ -22,11 +22,11 @@ PACKAGES = {"numpy": "2.0.2", "pandas": "2.2.3", "sklearn": "1.5.2", "matplotlib
 
 INPUTS = {
     "UC1_Cross_Sell/Deliverables/1_Input": {"input 1 - customers.csv": 20_260, "input 2 - data dictionary.xlsx": None,
-                                            "input 3 - campaign brief.docx": None,
+                                            "input 3 - campaign brief.pdf": None,
                                             "input 4 - summary deck template.pptx": None},
     "UC2_Propensity_To_Pay/Deliverables/1_Input": {"input 1 - collections accounts.csv": 20_240,
                                                    "input 2 - data dictionary.xlsx": None,
-                                                   "input 3 - collections strategy brief.docx": None,
+                                                   "input 3 - collections strategy brief.pdf": None,
                                                    "input 4 - summary deck template.pptx": None},
 }
 

@@ -22,7 +22,7 @@ The approved use case (predict which customers will make the next payment; build
 | 1 | VS Code **or Internal AutoML Tool** | VS Code (Jupyter) only | Reviewers can't check a proprietary tool |
 | 2 | Terminal, GitHub Desktop, "commit with README" | No Git on camera; README and model package generated into `4_Output` | Your decision |
 | 3 | Code written during the video | The **team's existing pipeline** (config + 4 notebooks, built for last year's extract) is a **pre-existing asset**, run, debugged (5 issues) and interpreted on camera | Matches the internal benchmark and Mercor's "diagnosing an existing data pipeline" pattern |
-| 4 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **Word → Excel (pivot EDA) → VS Code → Excel (validation) → PowerPoint** | Multiple connected apps |
+| 4 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **VS Code (notes) → Firefox (brief) → Calc (pivot EDA) → VS Code → Calc (el (validation) → PowerPoint** | Multiple connected apps |
 | 5 | "Split appropriately into train and test" | **Out-of-time** (train Jan–Apr, calibrate May, test June), **day-7 scoring point**, **calibration**, business-rule baseline, capacity-constrained work list | Different from UC1 (avoids duplicate-task rejection) and passes the intern test |
 | 6 | Output: notebook; repo; 3-slide summary | Pivot workbook; corrected pipeline + model package; validated June work list; summary deck | Labelled `input N` / `artifact N` / `final output N` |
 
@@ -37,11 +37,11 @@ Give the collections team a June agent work list that puts 25 agents where the u
 
 **Starting material**
 - `input 1 - collections accounts.csv`: 20,240 rows / 20,000 accounts entering collections Jan–Jun 2026, 29 attributes, label `paid_within_30d` (43%, falling from 50% to 37%)
-- `input 2 - data dictionary.xlsx`; `input 3 - collections strategy brief.docx` (capacity, day-7 rule, out-of-time and calibration requirements, exclusions, acceptance criteria); `input 4 - summary deck template.pptx`
+- `input 2 - data dictionary.xlsx`; `input 3 - collections strategy brief.pdf` (capacity, day-7 rule, out-of-time and calibration requirements, exclusions, acceptance criteria); `input 4 - summary deck template.pptx`
 - **Pre-existing code:** `2_Code/` holds the team's pipeline (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 work list & packaging), not yet run on this extract
 
 **Apps**
-Microsoft Word, Microsoft Excel (PivotTables, formulas), Visual Studio Code (Jupyter, Python: pandas, scikit-learn, SHAP), Microsoft PowerPoint, File Explorer / Finder
+Firefox (PDF brief), LibreOffice Calc (pivot tables, formulas), Visual Studio Code (Markdown preview, Jupyter, Python: pandas, scikit-learn, SHAP), LibreOffice Impress, Finder
 
 **Deliverable**
 Exploratory pivot workbook; corrected pipeline with outputs; cleaned data and quality log; time split; trained models and calibrator; June comparison and charts; validated June agent work list; packaged model (model, calibrator, metrics, README); completed summary deck.
@@ -53,7 +53,7 @@ June (out-of-time) ROC-AUC ≥ 0.78; beats the logistic baseline on PR-AUC; cali
 Cure rates fall every month and the collections target is being missed. Agents call the most overdue accounts first, spending time on customers who would pay anyway and missing high-value accounts that need help.
 
 **Pitch: solution**
-A senior data scientist profiles the extract in Excel, then runs the team's pipeline and fixes five issues: day-first dates silently parsed into the wrong months, zero incomes breaking the affordability ratio, a training window overlapping the calibration month, a contact count that leaks the outcome (exposed by permutation importance), and a ranking that prioritised customers likely to pay. Validated on June, the model reaches ROC-AUC 0.825; calibration corrects a 9-point over-prediction; and the agent list covers 81% of June's unpaid amount vs 47% for the current rule, with the same capacity.
+A senior data scientist profiles the extract with LibreOffice Calc pivot tables, then runs the team's pipeline and fixes five issues: day-first dates silently parsed into the wrong months, zero incomes breaking the affordability ratio, a training window overlapping the calibration month, a contact count that leaks the outcome (exposed by permutation importance), and a ranking that prioritised customers likely to pay. Validated on June, the model reaches ROC-AUC 0.825; calibration corrects a 9-point over-prediction; and the agent list covers 81% of June's unpaid amount vs 47% for the current rule, with the same capacity.
 
 ---
 
@@ -64,14 +64,14 @@ A senior data scientist profiles the extract in Excel, then runs the team's pipe
 **Business context and constraints**: ~3,500 accounts per month; 25 agents ≈ 37% capacity; re-prioritised on day 7 (7-day contact fields legal, later ones not); out-of-time validation; probabilities feed expected loss, so calibration is required; dispute/hardship accounts go to a specialist team.
 
 **Multi-phase workflow**
-1. Brief (Word) and dictionary (Excel): day-7 rule, capacity, three "refreshed at extract" suspects, business rules.
-2. Excel PivotTables: product label drift and BNPL, employment placeholders, status-at-extract leak, prior-delinquency gradient → **artifact 1**.
+1. Brief (PDF in Firefox) and dictionary (LibreOffice Calc): day-7 rule, capacity, three "refreshed at extract" suspects, business rules.
+2. LibreOffice Calc pivot tables: product label drift and BNPL, employment placeholders, status-at-extract leak, prior-delinquency gradient → **artifact 1**.
 3. Review the pipeline config in VS Code.
 4. 01 preprocessing → fix **P1** (dates) and **P2** (zero income) → artifacts 2–3.
 5. 02 training → fix **T1** (window overlap) and **T2** (contact-count leak) → artifacts 4–5.
 6. 03 testing on June → fix **E1** (inverted expected-unpaid formula) → calibration, coverage, SHAP → artifacts 6–7.
 7. 04 work list and packaging → artifact 8, **final output 3**.
-8. Excel validation → **final output 1**. 9. Deck → **final output 2**.
+8. LibreOffice Calc validation → **final output 1**. 9. Deck → **final output 2**.
 
 **Why an intern could not do this:** they'd let pandas guess dates, divide by zero incomes, random-split drifting data, keep a post-decision feature, trust uncalibrated probabilities that overstate collections by a quarter, and rank by the wrong side of the probability.
 
@@ -79,7 +79,7 @@ A senior data scientist profiles the extract in Excel, then runs the team's pipe
 
 ## 4. App topology (for Metadata.rtf)
 
-`TextEdit (Lookup) -> Finder (Lookup) -> Microsoft Word (Lookup) -> Microsoft Excel (Lookup) -> Microsoft Excel (Create) -> Visual Studio Code (Modify) -> Microsoft Excel (Create) -> Microsoft PowerPoint (Modify) -> Finder (Lookup)`
+`Visual Studio Code (Lookup) -> Finder (Lookup) -> Firefox (Lookup) -> LibreOffice Calc (Lookup) -> LibreOffice Calc (Create) -> Visual Studio Code (Modify) -> LibreOffice Calc (Create) -> LibreOffice Impress (Modify) -> Finder (Lookup)`
 
 ---
 
@@ -89,13 +89,13 @@ A senior data scientist profiles the extract in Excel, then runs the team's pipe
 |---|---|
 | `1_Input/input 1–4` | pre-loaded |
 | `1_Input/input 5 - pipeline code as received/` | added by the packager (original code) |
-| `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | Excel |
+| `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | LibreOffice Calc |
 | `artifact 2 - cleaned accounts.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `artifact 4 - time split.csv` · `artifact 5 - trained models/` (+ calibrator) | notebooks 02–03 |
 | `artifact 6 - model comparison.csv` · `artifact 7 - charts/` (missing values, accounts by month, pay rate by burden, data-quality fixes, pay rate by month, permutation importance, calibration, prioritisation, SHAP summary and dependence, work list vs current rule) | notebooks 02–03 |
 | `artifact 8 - june agent work list.csv` | notebook 04 |
-| `4_Output/final output 1 - june agent work list.xlsx` | Excel |
-| `4_Output/final output 2 - collections summary.pptx` | PowerPoint |
+| `4_Output/final output 1 - june agent work list.xlsx` | LibreOffice Calc |
+| `4_Output/final output 2 - collections summary.pptx` | LibreOffice Impress |
 | `4_Output/final output 3 - model package/` (`model.joblib`, `calibrator.joblib`, `metrics.json`, `README.md`) | notebook 04 |
 | `4_Output/final output 4 - corrected pipeline code/` | added by the packager (your fixed `2_Code`) |
 

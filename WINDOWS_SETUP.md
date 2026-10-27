@@ -5,11 +5,11 @@ Use this on your **org Windows laptop** to set up, rehearse and record a practic
 | Mac (final) | Windows (practice) |
 |---|---|
 | Finder | File Explorer |
-| TextEdit (task notes) | Notepad |
+| Task notes: VS Code Markdown preview | same |
 | TaskRecorder | Snipping Tool screen recording, or OBS Studio (section 7) |
 | `bash setup_mac.sh` | `setup_windows.cmd` |
 | `bash prep/stage_recording.sh UC1` | `prep\stage_recording.cmd UC1` |
-| Word, Excel, PowerPoint, VS Code | same |
+| Firefox, LibreOffice Calc, LibreOffice Impress, VS Code | same (Microsoft Office is not used: the Mac doesn't have it) |
 
 ---
 
@@ -32,7 +32,7 @@ Open **PowerShell** (Start → type "PowerShell" → Windows PowerShell).
 | **Git** (optional) | <https://git-scm.com/download/win>, default options | Or `winget install --id Git.Git --scope user`. Not needed if you use the ZIP download |
 | **VS Code** | <https://code.visualstudio.com/> → **User Installer** (x64) | Tick "Add to PATH" |
 | **VS Code extensions** | In VS Code: Extensions panel → install **Python** and **Jupyter** (publisher: Microsoft) | Do **not** install Copilot or any AI extension. If Copilot is pre-installed, disable it: Extensions → GitHub Copilot → Disable. Settings → search **"disable AI features"** → tick it |
-| **Microsoft Office** | Word, Excel and PowerPoint, usually already on org laptops | Open each once and dismiss any sign-in or "What's new" prompts |
+| **Firefox** and **LibreOffice** | <https://www.mozilla.org/firefox/> and <https://www.libreoffice.org/download/> (includes Calc and Impress). Both free | Practise with the same apps as the Mac. Open each once and dismiss any first-run or "What's new" prompts |
 
 Close and reopen PowerShell, then check:
 
@@ -103,7 +103,7 @@ prep\stage_recording.cmd UC1        # or UC2
 Or **double-click** `prep\stage_recording.cmd` in File Explorer, type `1` (UC1) or `2` (UC2) and press Enter; the window stays open until you press a key.
 
 This copies a fresh workspace to your **Desktop** (`Desktop\UC1_Cross_Sell`); it also works when the Desktop is redirected to OneDrive. The full path is printed at the end. A previous copy, such as a rehearsal, is **moved** to `C:\Users\<you>\Rehearsal_Backups\`, never deleted. The script also:
-- removes the "downloaded from the internet" mark, so Word/Excel don't open the inputs in yellow **Protected View** on camera
+- removes the "downloaded from the internet" mark, so LibreOffice doesn't show "downloaded from the internet" warnings on camera
 - writes hidden VS Code settings: AI features off, the venv interpreter, larger fonts
 
 ## 5. First-time VS Code check (off camera, once)
@@ -123,9 +123,9 @@ If **Select Kernel** doesn't list `ds-venv`, see Troubleshooting.
 - [ ] **Do not disturb on:** Settings → System → Notifications → Do not disturb
 - [ ] Display scale 100–125% (Settings → System → Display); maximise windows
 - [ ] Desktop tidy: only the UC folder visible (or right-click Desktop → View → untick "Show desktop icons" and open the folder from File Explorer)
-- [ ] Copilot / AI features off in VS Code; Copilot in Word/Excel/PowerPoint **not used** (don't click the Copilot button in Office)
+- [ ] Copilot / AI features off in VS Code; no AI assistants in any app (don't click any Copilot button in Office)
 - [ ] Headset mic, quiet room
-- [ ] `Task Notes.txt` open in **Notepad** before you start recording (typing it takes under 3 minutes)
+- [ ] `Task Notes.md` open as a **preview in VS Code** before you start recording
 - [ ] Vary the look between takes: UC1 Light mode, UC2 Dark mode (Settings → Personalization → Colors)
 - [ ] Narration rules are the same as on the Mac: see [use_cases/Recording_Checklist.md](use_cases/Recording_Checklist.md) section C and the run sheet in each use-case document
 
@@ -150,7 +150,7 @@ Everything carries over: the same data, briefs, package versions, notebook flow 
 1. `git clone` (or `git pull`) into `~/LLM_Training_recording`, as in README section 1
 2. `bash setup_mac.sh`, then `bash prep/stage_recording.sh UC1`
 3. Work through the full Mac [Recording_Checklist.md](use_cases/Recording_Checklist.md) (TaskRecorder, OTA account, Accessibility Inspector, clock with seconds…)
-4. Rehearse once on the Mac: menus sit in the top menu bar, **Finder** replaces File Explorer, **TextEdit** replaces Notepad, and `Ctrl` shortcuts become `Cmd`
+4. Rehearse once on the Mac: menus sit in the top menu bar, **Finder** replaces File Explorer, and `Ctrl` shortcuts become `Cmd`
 5. Apply any reviewer comments from the internal review
 
 > Your notebook from the practice take is **not** reused on the Mac. Each recording is done live from a clean workspace.
@@ -166,9 +166,9 @@ Everything carries over: the same data, briefs, package versions, notebook flow 
 | "running scripts is disabled on this system" | Use `setup_windows.cmd` (it bypasses the policy for that one script) or the manual commands in section 3 |
 | Kernel `Python 3.12 (ds-venv)` missing in VS Code | Restart VS Code. Still missing: Select Kernel → **Python Environments…** → choose `.venv\Scripts\python.exe` inside the project |
 | VS Code asks to install `ipykernel` | You picked the wrong interpreter; choose the `ds-venv` kernel |
-| Word/Excel open the inputs in **Protected View** | Re-run `prep\stage_recording.cmd UC1` (it unblocks the files) |
+| LibreOffice shows a read-only or "downloaded" warning | Re-run `prep\stage_recording.cmd UC1` (it unblocks the files) |
 | Long `UserWarning: Could not find the number of physical cores` in a notebook | Restart VS Code after setup (setup sets `LOKY_MAX_CPU_COUNT` for your user) |
-| Excel shows the CSV in one column | Region uses `;` as list separator: open via **Data → From Text/CSV** → Delimiter: Comma |
+| Calc shows the CSV in one column | In the Text Import dialog tick **Comma** only (character set UTF-8). Delimiter: Comma |
 
 ## Cleanup (if you ever need it)
 

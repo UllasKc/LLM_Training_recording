@@ -9,7 +9,7 @@
 | ✔ **CHECK** | What you should see. If it's different, see Emergency at the end |
 | 🔧 **FIX** | Code to change, exactly as written |
 
-Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextEdit**, File Explorer → **Finder**. **Use Dark mode for UC2** (UC1 is Light) so your recordings vary, as Mercor asks.
+**Apps on camera** (the same for the Windows practice and the Mac): **VS Code · Firefox · LibreOffice Calc · LibreOffice Impress · File Explorer** (Mac: **Finder**). Microsoft Office is not used because the Mac doesn't have it. **Use Dark mode for UC2** (UC1 is Light) so your recordings vary, as Mercor asks.
 
 ---
 
@@ -45,6 +45,7 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
    ```
    ✔ **READY** and **SELF-TEST PASSED**.
 2. VS Code: only the Python and Jupyter extensions, Copilot disabled, "disable AI features" ticked.
+   **Windows practice only:** install **Firefox** and **LibreOffice** (free) if missing; open Firefox, Calc and Impress once and dismiss first-run pop-ups.
 3. **Read every line** in `recording_workspace\UC2_Propensity_To_Pay\Deliverables\2_Code`.
 4. **Rehearse PART 4 once, out loud, with a stopwatch.** Then reset: `prep\stage_recording.cmd UC2`
 
@@ -54,14 +55,15 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 - [ ] Quit Outlook, Slack and chat apps · Teams status **Do not disturb** · Windows **Do not disturb ON**
 - [ ] Browser closed · Windows Update paused · charger in
 - [ ] Settings → Personalization → Colors → **Dark** mode
-- [ ] File Explorer at `Desktop\UC2_Propensity_To_Pay`, maximised · **Task Notes.txt** open in Notepad, maximised, on top
-- [ ] VS Code, Word, Excel and PowerPoint closed · headset on · Teams test call
+- [ ] File Explorer at `Desktop\UC2_Propensity_To_Pay`, maximised
+- [ ] **VS Code** → **File → Open Folder…** → Desktop → **UC2_Propensity_To_Pay** → trust → click **Task Notes.md** (formatted preview) → maximised, on top
+- [ ] Firefox, LibreOffice Calc and Impress closed · headset on · Teams test call
 
 ## PART 3: Start the Teams recording
 
 1. Teams → **Calendar → Meet now** → `UC2 practice` → **Start meeting** → camera **off**, mic **on** → **Join now** → close "Invite people"
 2. **Share → Screen** (main display) → drag the floating Teams window to the **bottom-right corner**
-3. Sharing toolbar → **More (…) → Record and transcribe → Start recording** → click Notepad → wait 3 s → Scene 1
+3. Sharing toolbar → **More (…) → Record and transcribe → Start recording** → click VS Code → wait 3 s → Scene 1
 
 ---
 
@@ -71,24 +73,26 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 
 ---
 
-### Scene 1 · Task notes (0:00–1:00), Notepad
+### Scene 1 · Task notes (0:00–1:00), VS Code
+
+▶ **DO** VS Code is in front showing the **Task Notes** preview.
 
 🎙 **SAY** (cursor under each line)
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of Collections Strategy.
 > Every month about three and a half thousand accounts fall into early collections: credit cards, personal loans and buy-now-pay-later. Our twenty-five agents can work about thirty-seven percent of them in depth, and today they simply call the most overdue accounts first.
 > Cure rates have been falling all year and we're missing target. So they want a propensity-to-pay model, and a June work list that puts the agents where the unpaid money really is.
 > Our team has a collections pipeline from last year that hasn't been run on this extract.
-> My plan: read the brief and the dictionary, explore the data in Excel, run the pipeline and fix what breaks, validate out of time, and build the June list. I'm done when the criteria at the bottom are met."
+> My plan: read the brief and the dictionary, explore the data in LibreOffice Calc, run the pipeline and fix what breaks, validate out of time, and build the June list. I'm done when the criteria at the bottom are met."
 
-▶ **DO** Minimise Notepad.
+▶ **DO** Minimise VS Code.
 
 ---
 
-### Scene 2 · The brief (1:00–2:30), File Explorer → Word
+### Scene 2 · The brief (1:00–2:30), File Explorer → Firefox
 
 🎙 **SAY** "Inside Deliverables there are four folders: Input, Code, Intermediate and Output."
 
-▶ **DO** **Deliverables → 1_Input →** double-click **input 3 - collections strategy brief.docx** → Maximise.
+▶ **DO** **Deliverables → 1_Input →** right-click **input 3 - collections strategy brief.pdf → Open with → Firefox** (Mac: **Open With → Firefox**) → maximise. Scroll down slowly with the mouse wheel as you talk.
 
 🎙 **SAY** (hover over each item)
 > "Twenty-five agents can work about thirteen hundred accounts a month, roughly thirty-seven percent of intake. The rest get an SMS or app nudge.
@@ -98,13 +102,13 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 > Accounts with an open dispute or a hardship flag always go to a specialist team, so they're excluded from the agent list.
 > Acceptance: out-of-time ROC-AUC of at least 0.78; beat the current rule, highest-days-past-due first, on unpaid amount covered within capacity; beat a logistic baseline on PR-AUC; calibration checked and corrected."
 
-▶ **DO** Close Word.
+▶ **DO** Close Firefox (Mac: **Firefox → Quit Firefox**).
 
 ---
 
-### Scene 3 · Data dictionary (2:30–4:00), Excel
+### Scene 3 · Data dictionary (2:30–4:00), LibreOffice Calc
 
-▶ **DO** Double-click **input 2 - data dictionary.xlsx** → Maximise.
+▶ **DO** Double-click **input 2 - data dictionary.xlsx**. It opens in **LibreOffice Calc**; if another app opens it, right-click → **Open with → LibreOffice Calc**. Maximise.
 
 🎙 **SAY** (trace the **Notes** column, then stop on each row named)
 > "The key column is Notes. Three fields say 'Refreshed at extract': `account_status_at_extract`, `amount_recovered_30d`, and `total_contact_attempts_30d`. Extract means the fifteenth of August, long after day seven, so all three are leakage suspects.
@@ -112,41 +116,43 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 > By contrast, `contact_attempts_7d`, `right_party_contact_7d` and `promise_to_pay_7d` are explicitly first-seven-days, so they're legal.
 > And the dictionary gives business rules I'll enforce: days past due must be between 1 and 90, and the amount due must not exceed the outstanding balance."
 
-▶ **DO** Close Excel (Don't Save).
+▶ **DO** **File → Close** → **Don't Save**.
 
 ---
 
-### Scene 4 · Exploring the raw data with pivots (4:00–10:30), Excel → artifact 1
+### Scene 4 · Exploring the raw data with pivot tables (4:00–10:30), LibreOffice Calc → artifact 1
 
-▶ **DO** Double-click **input 1 - collections accounts.csv** → Maximise → click the **column A header**.
+▶ **DO** Right-click **input 1 - collections accounts.csv** → **Open with → LibreOffice Calc** → Text Import: **Unicode (UTF-8)**, separated by **Comma** only → **OK** → maximise. Click the **column A header**, then right-click the number in the status bar (bottom right) and tick **CountA**.
 
-✔ **CHECK** status bar **Count: 20241**
+✔ **CHECK** status bar **CountA: 20241**
 
 🎙 **SAY** "Twenty thousand two hundred and forty rows plus the header, but the brief says twenty thousand accounts, so there are duplicates. Let me profile the data with pivot tables."
 
+**How to build each pivot in Calc:** click **A1** on the data sheet → **Insert → Pivot Table… → Current selection → OK** → in the layout dialog drag fields into **Row Fields** and **Data Fields** → double-click a data field to choose **Count** or **Average** → **OK**. Format averages via right-click → **Format Cells… → Numbers → Percent**, 1 decimal. Rename a sheet via right-click on its tab → **Rename Sheet…**.
+
 **Pivot 1: products**
 
-▶ **DO** Click **A2** → **Insert → PivotTable → New Worksheet → OK** → drag **product_type** to **Rows**, **account_id** to **Values** (Count), **paid_within_30d** to **Values** → its arrow → **Value Field Settings → Average → Number Format → Percentage, 1 dp → OK → OK**. Rename the tab `Products`.
+▶ **DO** **product_type** → Row Fields · **account_id** → Data Fields (**Count**) · **paid_within_30d** → Data Fields (**Average**, Percent). Rename the sheet `Products`.
 
-✔ **CHECK** Items like **BNPL**, **Buy Now Pay Later**, **CC**, **credit_card**, **Credit Card**, **Personal Loan**, **Personal-Loan**, **PL**. BNPL about 34% paid; cards and loans about 46%.
+✔ **CHECK** Items like **BNPL**, **Buy Now Pay Later**, **CC**, **credit_card**, **Credit Card**, **Personal Loan**, **Personal-Loan**, **PL** (and possibly case variants such as **CREDIT CARD**). BNPL about 34% paid; cards and loans about 46%.
 
 🎙 **SAY**
-> "Three products, but eight spellings: 'CC', 'credit underscore card', 'PL', 'Buy Now Pay Later'. Excel already merges upper and lower case, code won't. The pipeline must map these.
+> "Three products, but many spellings: 'CC', 'credit underscore card', 'PL', 'Buy Now Pay Later'. The pipeline must map all of these to three products.
 > And buy-now-pay-later customers pay noticeably less often: about thirty-four percent against forty-six for cards and loans."
 
 **Pivot 2: employment**
 
-▶ **DO** Data sheet → **A2** → **Insert → PivotTable → New Worksheet → OK** → **employment_status** to Rows; **account_id** to Values; **paid_within_30d** to Values as Average %. Rename `Employment`.
+▶ **DO** **employment_status** → Row Fields · **account_id** → Count · **paid_within_30d** → Average (Percent). Rename `Employment`.
 
-✔ **CHECK** `(blank)`, `N/A` and `Unknown` rows · Unemployed ≈ 19.6% · Salaried ≈ 48.3% · Student ≈ 31.2%
+✔ **CHECK** `(empty)`, `N/A` and `Unknown` rows · Unemployed ≈ 19.6% · Salaried ≈ 48.3% · Student ≈ 31.2%
 
 🎙 **SAY**
-> "Three different placeholders mean the same thing: blank, N/A and Unknown, about twelve hundred accounts in total. They should be one category.
+> "Three different placeholders mean the same thing: empty, N/A and Unknown, about twelve hundred accounts in total. They should be one category.
 > And employment matters a lot: unemployed customers pay under twenty percent of the time, salaried customers about forty-eight."
 
 **Pivot 3: leakage check**
 
-▶ **DO** Data sheet → new PivotTable → **account_status_at_extract** to Rows; **paid_within_30d** Average %; **account_id** Count. Rename `Leakage check`.
+▶ **DO** **account_status_at_extract** → Row Fields · **paid_within_30d** → Average (Percent) · **account_id** → Count. Rename `Leakage check`.
 
 ✔ **CHECK** Current 100% · Settled 100% · Delinquent / Charged-Off / Payment Plan 0%
 
@@ -155,7 +161,7 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 
 **Pivot 4: payment history**
 
-▶ **DO** New PivotTable → **num_prior_delinquencies_12m** to Rows; **paid_within_30d** Average %; **account_id** Count. Rename `Payment history`.
+▶ **DO** **num_prior_delinquencies_12m** → Row Fields · **paid_within_30d** → Average (Percent) · **account_id** → Count. Rename `Payment history`.
 
 ✔ **CHECK** 0 → 53.5% · 1 → 41.9% · 2 → 30.6% · 3 → 20.7%
 
@@ -164,7 +170,7 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 
 *(Optional: **promise_to_pay_7d** → 67.3% vs 38.1%. "A promise in the first week is legitimate information at day seven, and a strong one.")*
 
-▶ **DO** **File → Save As → Browse** → `Deliverables\3_Intermediate` → **Excel Workbook (*.xlsx)** → `artifact 1 - exploratory pivot analysis` → **Save** → close Excel.
+▶ **DO** **File → Save As…** → `Deliverables\3_Intermediate` → **File type: Excel 2007-365 (.xlsx)** → `artifact 1 - exploratory pivot analysis` → **Save** → **Use Excel 2007-365!** → **File → Close**.
 
 🎙 **SAY** "Saved as artifact one in Intermediate."
 
@@ -172,13 +178,13 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 
 ### Scene 5 · The existing pipeline (10:30–12:00), VS Code
 
-▶ **DO** Start → **Visual Studio Code** → Maximise → **File → Open Folder…** → Desktop → **UC2_Propensity_To_Pay** → **Select Folder** → trust if asked. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py** and scroll slowly.
+▶ **DO** Click **VS Code** in the taskbar (Mac: Dock) → maximise. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py** and scroll slowly.
 
 🎙 **SAY**
-> "This is the team's pipeline: one configuration file and four notebooks: preprocessing, training, testing, and the work list with packaging.
+> "Back in VS Code. This is the team's pipeline: one configuration file and four notebooks: preprocessing, training, testing, and the work list with packaging.
 > The business rules from the brief are here: scoring on day seven, thirty-seven percent agent capacity, and the time windows: train on months one to four, calibrate on month five, test on month six.
 > The leaky-column list currently has the account status and the recovered amount. I noted a third suspect in the dictionary, so I'll watch for it.
-> Dispute and hardship are kept as model inputs, but those accounts are routed to the specialist team.
+> Dispute and hardship are kept as model inputs, but those accounts are routed to the specialist team. There's also a small date-parsing helper.
 > It was built for last year's extract. Let's run it on this one."
 
 ---
@@ -333,9 +339,9 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 ---
 
-### Scene 10 · Validating the work list in Excel (29:30–32:30) → final output 1
+### Scene 10 · Validating the work list in LibreOffice Calc (29:30–32:30) → final output 1
 
-▶ **DO** File Explorer → `Deliverables\3_Intermediate` → double-click **artifact 8 - june agent work list.csv** → Maximise.
+▶ **DO** File Explorer → `Deliverables\3_Intermediate` → right-click **artifact 8 - june agent work list.csv** → **Open with → LibreOffice Calc** → Text Import: **Comma** → **OK** → maximise.
 
 🎙 **SAY** "Before handing this to the team leads, I'll validate it independently."
 
@@ -361,22 +367,22 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 > That's eighty-one percent of all the eligible unpaid money in June, against forty-seven percent with the old rule.
 > And no dispute or hardship account is on the list."
 
-▶ **DO** **File → Save As → Browse** → `Deliverables\4_Output` → **Excel Workbook (*.xlsx)** → `final output 1 - june agent work list` → **Save** → close Excel.
+▶ **DO** **File → Save As…** → `Deliverables\4_Output` → **File type: Excel 2007-365 (.xlsx)** → `final output 1 - june agent work list` → **Save** → **Use Excel 2007-365!** → **File → Close**.
 
 ---
 
-### Scene 11 · Summary deck (32:30–36:30), PowerPoint → final output 2
+### Scene 11 · Summary deck (32:30–36:30), LibreOffice Impress → final output 2
 
-▶ **DO** `1_Input` → double-click **input 4 - summary deck template.pptx** → **File → Save As → Browse** → `4_Output` → `final output 2 - collections summary` → **Save**.
+▶ **DO** `1_Input` → right-click **input 4 - summary deck template.pptx** → **Open with → LibreOffice Impress** → **File → Save As…** → `4_Output` → **File type: PowerPoint 2007-365 (.pptx)** → `final output 2 - collections summary` → **Save** → **Use PowerPoint 2007-365!**.
 
 🎙 **SAY** "I'll save my copy to Output first so the template stays clean, then fill in the orange brackets."
 
-▶ **DO** For each orange `[ ]`: click → replace with the value → select it → **Home → Font Colour → Automatic**.
+▶ **DO** For each orange `[ ]`: double-click into the text → select the brackets → type the value → select it → **Properties** sidebar → **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects**).
 
 **Slide 2:** `[ ]` accounts removed → **420**
 🎙 "Four hundred and twenty accounts removed: duplicates and business-rule violations."
 
-**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate → **45.7%** → **40.0%** vs **36.9%** · click the dashed box → **Delete** → **Insert → Pictures → This Device…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → fit it on the right.
+**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate → **45.7%** → **40.0%** vs **36.9%** · click the **border of the dashed box** → **Delete** → **Insert → Image…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → **Open** → fit it on the right.
 🎙 "Out of time, 0.825 ROC-AUC. And the calibration chart shows why recalibration matters: raw predictions overstate payment."
 
 **Slide 4:** Unpaid covered → **81%** vs **47%** · Accounts → **1,351** of **3,652** · Specialist → **388**
@@ -388,7 +394,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 > "The model's list covers eighty-one percent of the unpaid money against forty-seven with the old rule, with the same thirteen hundred and fifty-one agent slots. Three hundred and eighty-eight accounts go straight to the specialist team.
 > Recommendation: give agents the top thirty-seven percent by expected unpaid amount, nudge the rest digitally, re-calibrate monthly because pay rates keep falling, and track coverage against the old rule every month."
 
-▶ **DO** **File → Save** → close PowerPoint.
+▶ **DO** **File → Save** → **Use PowerPoint 2007-365!** → **File → Close**.
 
 ---
 
@@ -428,5 +434,6 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 | Notebook 03 says the calibrator is missing | Notebook 02 must have finished first. Run 02, then 03 |
 | A notebook stops somewhere not in this script | Stop the take, re-stage, run `prep\selftest_uc2.py` |
 | Numbers very different from the cheat sheet | Stop, re-stage, start again |
-| Protected View bar in Word or Excel | Click **Enable Editing**; re-stage next time |
+| LibreOffice shows a yellow read-only bar | Click **Edit Document**; re-stage next time |
+| The PDF opens in a different app | Right-click → **Open with → Firefox** |
 | Running long | Skip the optional promise-to-pay pivot; shorten the SHAP talk to three drivers |

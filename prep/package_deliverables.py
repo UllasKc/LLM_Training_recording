@@ -31,7 +31,7 @@ USE_CASES = {
         "name": "UC1_Cross_Sell",
         "required": [
             "1_Input/input 1 - customers.csv", "1_Input/input 2 - data dictionary.xlsx",
-            "1_Input/input 3 - campaign brief.docx", "1_Input/input 4 - summary deck template.pptx",
+            "1_Input/input 3 - campaign brief.pdf", "1_Input/input 4 - summary deck template.pptx",
             "3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx",
             "3_Intermediate/artifact 2 - cleaned customers.csv", "3_Intermediate/artifact 3 - data quality log.csv",
             "3_Intermediate/artifact 4 - train test split.csv",
@@ -50,7 +50,7 @@ USE_CASES = {
         "name": "UC2_Propensity_To_Pay",
         "required": [
             "1_Input/input 1 - collections accounts.csv", "1_Input/input 2 - data dictionary.xlsx",
-            "1_Input/input 3 - collections strategy brief.docx", "1_Input/input 4 - summary deck template.pptx",
+            "1_Input/input 3 - collections strategy brief.pdf", "1_Input/input 4 - summary deck template.pptx",
             "3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx",
             "3_Intermediate/artifact 2 - cleaned accounts.csv", "3_Intermediate/artifact 3 - data quality log.csv",
             "3_Intermediate/artifact 4 - time split.csv",

@@ -11,7 +11,7 @@
 | ✔ **CHECK** | What you should see. If it's different, see Emergency at the end |
 | 🔧 **FIX** | Code to change, exactly as written |
 
-Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextEdit**, File Explorer → **Finder**, `Ctrl` → `Cmd`.
+**Apps on camera** (the same for the Windows practice and the Mac): **VS Code · Firefox · LibreOffice Calc · LibreOffice Impress · File Explorer** (Mac: **Finder**). Microsoft Office is not used because the Mac doesn't have it. On the Mac, `Ctrl` → `Cmd`.
 
 ---
 
@@ -49,7 +49,8 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
    ```
    ✔ setup ends with **READY**; the self-test ends with **SELF-TEST PASSED**.
 2. VS Code: only the **Python** and **Jupyter** extensions. Copilot disabled. Settings → search "disable AI features" → ticked. Restart VS Code.
-3. Open Word, Excel and PowerPoint once each, close every pop-up, close them.
+3. **Windows practice only:** install **Firefox** (firefox.com) and **LibreOffice** (libreoffice.org, includes Calc and Impress), both free. On the Mac they're already installed.
+   Open Firefox, Calc and Impress once each and dismiss every first-run pop-up (Firefox: skip import and "default browser"; LibreOffice: close "Tip of the Day" and untick "Show tips on startup"), then close them.
 4. **Read every line** of the code in `recording_workspace\UC1_Cross_Sell\Deliverables\2_Code` so you can explain any of it.
 5. **Rehearse the whole of PART 4 once, out loud, with a stopwatch** (not recorded). Then reset:
    ```powershell
@@ -68,8 +69,8 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 - [ ] Close the browser. Pause Windows Update. Plug in the charger
 - [ ] Settings → Personalization → Colors → **Light** mode
 - [ ] Open **File Explorer** at `Desktop\UC1_Cross_Sell` and maximise it
-- [ ] Double-click **Task Notes.txt** → opens in **Notepad** → maximise
-- [ ] VS Code, Word, Excel and PowerPoint **closed**
+- [ ] Open **VS Code** → **File → Open Folder…** → Desktop → **UC1_Cross_Sell** → **Select Folder** → trust it if asked → in the Explorer panel click **Task Notes.md** (it opens as a formatted preview) → maximise VS Code
+- [ ] Firefox, LibreOffice Calc and Impress **closed**
 - [ ] Headset on. Teams → Settings → Devices → **Make a test call**
 - [ ] Phone silent, with this script open on the second laptop
 
@@ -83,7 +84,7 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 3. **Share** (top bar) → **Screen** → your main display (leave "Include sound" off)
 4. Drag the small floating Teams window to the **bottom-right corner**
 5. Hover over the sharing toolbar at the top → **More (…)** → **Record and transcribe** → **Start recording**
-6. Click Notepad so it's in front. **Wait 3 seconds in silence.** Start Scene 1.
+6. Click VS Code so the task notes are in front. **Wait 3 seconds in silence.** Start Scene 1.
 
 ---
 
@@ -93,9 +94,9 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 
 ---
 
-### Scene 1 · Task notes (0:00–1:00), Notepad
+### Scene 1 · Task notes (0:00–1:00), VS Code
 
-▶ **DO** Notepad is on screen. Move the cursor slowly under each line as you talk.
+▶ **DO** VS Code is in front showing the **Task Notes** preview. Move the cursor slowly under each line as you talk.
 
 🎙 **SAY**
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of CRM and Cross-Sell.
@@ -103,38 +104,42 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 > Before they sign off the Q4 budget, they want proof that a model would do better.
 > We have a customer snapshot from the thirtieth of June, and we now know who bought an additional product between July and September.
 > Our team already has a cross-sell pipeline, but it was built for an earlier snapshot and hasn't been run on this extract yet.
-> So my plan is: read the brief and the data dictionary, explore the raw data in Excel, run the pipeline and fix whatever the new extract breaks, and then back-test: which four thousand customers would the model have picked, and how many of them actually bought.
+> So my plan is: read the brief and the data dictionary, explore the raw data in LibreOffice Calc, run the pipeline and fix whatever the new extract breaks, and then back-test: which four thousand customers would the model have picked, and how many of them actually bought.
 > I'm done when the criteria at the bottom of my notes are met."
 
-▶ **DO** Click the **Minimise** button (the "–" at the top right of Notepad).
+▶ **DO** Click VS Code's **Minimise** button (the "–" at the top right; on the Mac, the yellow button at the top left).
 
 ---
 
-### Scene 2 · The brief (1:00–2:30), File Explorer → Word
+### Scene 2 · The brief (1:00–2:30), File Explorer → Firefox
 
 ▶ **DO** In File Explorer, hover over the folders.
 
 🎙 **SAY**
 > "Everything for this task is in the Deliverables folder. It has four sub-folders: Input, Code, Intermediate and Output. Inputs are read-only, the pipeline writes its working files to Intermediate, and the business deliverables go to Output."
 
-▶ **DO** Double-click **Deliverables** → double-click **1_Input** → double-click **input 3 - campaign brief.docx** → click **Maximise** in Word.
+▶ **DO** Double-click **Deliverables** → double-click **1_Input** → **right-click input 3 - campaign brief.pdf → Open with → Firefox** (Mac: right-click → **Open With → Firefox**) → maximise Firefox.
 
 🎙 **SAY** (hover over each line as you say it)
 > "This is the brief from the Head of CRM, dated the first of October, so the July-to-September outcomes are complete.
 > The budget is four thousand contacts per campaign, at four dollars per contact. Each additional product sold is worth a hundred and fifty dollars of margin.
 > Compliance: we can only contact customers who have opted in to marketing, and gender must not be used as a model input.
 > Customer care: anyone with two or more complaints in the last twelve months is excluded.
-> And the model may only use information available on the snapshot date. That's my rule for spotting leakage.
-> They want a back-test scored only by models that didn't train on those customers, the drivers in plain language, and a short summary on the team template.
+> And the model may only use information available on the snapshot date. That's my rule for spotting leakage."
+
+▶ **DO** Scroll down slowly with the mouse wheel to the acceptance criteria.
+
+🎙 **SAY**
+> "They want a back-test scored only by models that didn't train on those customers, the drivers in plain language, and a short summary on the team template.
 > Acceptance criteria: ROC-AUC of at least 0.78 on a hold-out set, beat a logistic-regression baseline on PR-AUC, top-twenty-percent lift of at least 2.5, and the back-test list must convert at least twice the eligible average."
 
-▶ **DO** Click the **X** (top right) to close Word.
+▶ **DO** Close Firefox (the **X**; on the Mac, **Firefox → Quit Firefox**).
 
 ---
 
-### Scene 3 · Data dictionary (2:30–4:00), Excel
+### Scene 3 · Data dictionary (2:30–4:00), LibreOffice Calc
 
-▶ **DO** Double-click **input 2 - data dictionary.xlsx** → **Maximise**.
+▶ **DO** Double-click **input 2 - data dictionary.xlsx**. It opens in **LibreOffice Calc**; if another app opens it, right-click → **Open with → LibreOffice Calc**. Maximise.
 
 🎙 **SAY**
 > "The data dictionary lists every column with its source system."
@@ -152,90 +157,92 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 > `gender` is marked as a protected attribute, and the brief excludes it.
 > And `email_open_rate` is only tracked when emails were sent, so I expect it to be blank for customers who opted out."
 
-▶ **DO** Click **X** to close Excel → **Don't Save** if asked.
+▶ **DO** **File → Close** → **Don't Save** if asked.
 
 ---
 
-### Scene 4 · Exploring the raw data with pivots (4:00–11:00), Excel → artifact 1
+### Scene 4 · Exploring the raw data with pivot tables (4:00–11:00), LibreOffice Calc → artifact 1
 
-▶ **DO** Double-click **input 1 - customers.csv** → **Maximise**. Click the **column A header** (the letter A).
+▶ **DO** Right-click **input 1 - customers.csv** → **Open with → LibreOffice Calc**. The **Text Import** dialog appears: Character set **Unicode (UTF-8)**, Separated by **Comma** only → **OK**. Maximise.
 
-✔ **CHECK** The status bar (bottom right) shows **Count: 20261**.
+▶ **DO** Click the **column A header** (the letter A). Then right-click the number in the status bar at the bottom right and tick **CountA**.
+
+✔ **CHECK** The status bar shows **CountA: 20261**.
 
 🎙 **SAY**
-> "This is the raw extract. When I select column A, the status bar shows twenty thousand two hundred and sixty-one cells, which is twenty thousand two hundred and sixty rows plus the header. But the brief says twenty thousand customers. So there are duplicates. I'll handle those in the pipeline. First I want to understand the data with a few pivot tables."
+> "This is the raw extract. When I select column A, the status bar counts twenty thousand two hundred and sixty-one cells, which is twenty thousand two hundred and sixty rows plus the header. But the brief says twenty thousand customers. So there are duplicates. I'll handle those in the pipeline. First I want to understand the data with a few pivot tables."
 
 **Pivot 1: products**
 
-▶ **DO** Click cell **A2** → **Insert** tab → **PivotTable** → the range is filled in → **New Worksheet** → **OK**.
+▶ **DO** Click cell **A1** → **Insert → Pivot Table…** → **Current selection** → **OK**. The **Pivot Table Layout** dialog opens.
 
 🎙 **SAY**
-> "I'll click the Insert tab and then PivotTable. Excel has picked up the whole table. I'll put it on a new worksheet."
+> "I'll use Insert, Pivot Table. Calc has picked up the whole table, and this layout dialog lets me drag fields into rows and data."
 
-▶ **DO** In the **PivotTable Fields** pane on the right:
-1. Drag **num_products** into **Rows**
-2. Drag **customer_id** into **Values** (it shows "Count of customer_id")
-3. Drag **next_product_purchased_90d** into **Values** → click its arrow in the Values box → **Value Field Settings…** → **Average** → **Number Format** → **Percentage**, 1 decimal place → **OK** → **OK**
+▶ **DO** In the layout dialog:
+1. Drag **num_products** into **Row Fields**
+2. Drag **customer_id** into **Data Fields** → double-click it → choose **Count** → **OK**
+3. Drag **next_product_purchased_90d** into **Data Fields** → double-click it → choose **Average** → **OK**
+4. **OK**. The pivot appears on a new sheet.
+5. Select the Average cells → right-click → **Format Cells… → Numbers → Percent**, decimal places **1** → **OK**
 
 ✔ **CHECK** 1 → 7.8% · 2 → 15.7% · 3 → 20.1% · 4 → 9.2%
 
 🎙 **SAY** (hover over each row)
 > "Customers with one product convert at 7.8 percent, two products 15.7, three products 20.1, but four products drops back to 9.2. So it isn't linear: customers who already hold everything are saturated. That's a pattern a tree-based model can capture and a straight line can't."
 
-▶ **DO** Right-click the sheet tab at the bottom → **Rename** → type `Products` → click away.
+▶ **DO** Right-click the sheet tab at the bottom → **Rename Sheet…** → type `Products` → **OK**.
 
 **Pivot 2: data quality**
 
-▶ **DO** Click the **input 1 - customers** sheet tab → click cell **A2** → **Insert → PivotTable → New Worksheet → OK**. Drag **region** into **Rows** and **customer_id** into **Values**.
+▶ **DO** Click the **input 1 - customers** sheet tab → cell **A1** → **Insert → Pivot Table… → OK**. Drag **region** into **Row Fields** and **customer_id** into **Data Fields** (double-click → **Count**) → **OK**.
 
-✔ **CHECK** Besides Central / East / North / South / West, you see extra items such as **N.**, **W.** and duplicates of East / North / South (these have hidden leading or trailing spaces).
+✔ **CHECK** Besides Central / East / North / South / West you see extra items such as **N.**, **W.**, and repeats of East / North / South that differ only by capital letters or a hidden space.
 
 🎙 **SAY**
-> "There should be five regions. I can see 'N.' and 'W.' as abbreviations, and a second East, North and South. Those have a hidden space before or after the name. Excel ignores upper and lower case here, but code won't, so the pipeline has to normalise these labels."
+> "There should be five regions. But I can see abbreviations like 'N.' and 'W.', and the same region repeated with different capitals or a hidden space before or after the name. The pipeline has to normalise these labels before modelling."
 
-▶ **DO** Rename the tab `Data quality`.
+▶ **DO** Rename the sheet `Data quality`.
 
 **Pivot 3: leakage check**
 
-▶ **DO** Data sheet → **A2** → **Insert → PivotTable → New Worksheet → OK**. Drag **welcome_pack_sent** into **Rows**; **customer_id** into **Values**; **next_product_purchased_90d** into **Values** → **Average** → **Percentage**.
+▶ **DO** Data sheet → **A1** → **Insert → Pivot Table… → OK**. **welcome_pack_sent** into **Row Fields**; **customer_id** into **Data Fields** (Count); **next_product_purchased_90d** into **Data Fields** (Average) → **OK** → format the averages as **Percent**.
 
 ✔ **CHECK** 0 → 0.7% · 1 → 85.4%
 
 🎙 **SAY**
 > "This confirms what I suspected from the dictionary. Customers with a welcome pack converted at 85 percent; without one, less than one percent. The welcome pack isn't a predictor, it's a *record* of the purchase. If this column reaches the model, the model will look brilliant in testing and fail in production. It must be excluded."
 
-▶ **DO** Rename the tab `Leakage check`.
+▶ **DO** Rename the sheet `Leakage check`.
 
 **Pivot 4: missing income**
 
-▶ **DO** Data sheet → **A2** → **Insert → PivotTable → New Worksheet → OK**. Drag **customer_segment** into **Rows**; **customer_id** into **Values**; **monthly_income** into **Values** → its arrow → **Value Field Settings… → Count** → **OK**.
+▶ **DO** Data sheet → **A1** → **Insert → Pivot Table… → OK**. **customer_segment** into **Row Fields**; **customer_id** into **Data Fields** (Count); **monthly_income** into **Data Fields** → double-click → **Count** → **OK** → **OK**.
 
 ✔ **CHECK** Mass: 14,802 customers vs 13,326 incomes · Affluent 4,538 vs 4,361 · Premier 920 vs 879
 
 🎙 **SAY**
 > "Count ignores blank cells, so comparing the two columns shows the missing incomes. In the Mass segment ten percent of incomes are missing; in Affluent and Premier it's around four percent. So it's not missing at random. Lower-income customers skip the field more often. That means I shouldn't just fill it in; I'll keep a flag that says the income was missing, because that itself carries information."
 
-▶ **DO** Rename the tab `Missing income`.
+▶ **DO** Rename the sheet `Missing income`.
 
-*(Optional if time allows: one more pivot with **complaints_12m** in Rows and the average purchase rate: 12.8% → 7.2% → 2.4%. "That supports the brief's rule of excluding customers with two or more complaints.")*
+*(Optional if time allows: one more pivot with **complaints_12m** in Row Fields and the average purchase rate: 12.8% → 7.2% → 2.4%. "That supports the brief's rule of excluding customers with two or more complaints.")*
 
 **Save as artifact 1**
 
-▶ **DO** **File → Save As → Browse** → go to `Desktop\UC1_Cross_Sell\Deliverables\3_Intermediate` → **Save as type: Excel Workbook (*.xlsx)** → File name: `artifact 1 - exploratory pivot analysis` → **Save** → close Excel with **X**.
+▶ **DO** **File → Save As…** → go to `Desktop\UC1_Cross_Sell\Deliverables\3_Intermediate` → **File type: Excel 2007-365 (.xlsx)** → File name: `artifact 1 - exploratory pivot analysis` → **Save** → in the format question click **Use Excel 2007-365!** → **File → Close**.
 
 🎙 **SAY**
-> "I'll save this as an Excel workbook in the Intermediate folder as artifact one, so the pivots are kept as evidence. Saving as CSV would lose them."
+> "I'll save this as a workbook in the Intermediate folder as artifact one, so the pivots are kept as evidence. Saving as CSV would lose them."
 
 ---
 
 ### Scene 5 · The existing pipeline (11:00–12:30), VS Code
 
-▶ **DO** **Start** menu → **Visual Studio Code** → **Maximise** → **File → Open Folder…** → Desktop → **UC1_Cross_Sell** → **Select Folder** → if asked, **Yes, I trust the authors**.
-
-▶ **DO** In the Explorer panel on the left, click **Deliverables** to expand it, then **1_Input**, **2_Code**, **3_Intermediate** and **4_Output** in turn.
+▶ **DO** Click **VS Code** in the taskbar (Mac: the Dock) to bring it back → maximise. In the Explorer panel on the left, click **Deliverables** to expand it, then **1_Input**, **2_Code**, **3_Intermediate** and **4_Output** in turn.
 
 🎙 **SAY**
-> "This is the project in VS Code. Input holds the four files I've just looked at. Code holds the team's pipeline. Intermediate already has my pivot workbook, and Output is empty."
+> "Back in VS Code, where the project is open. Input holds the four files I've just looked at. Code holds the team's pipeline. Intermediate already has my pivot workbook, and Output is empty."
 
 ▶ **DO** Click **2_Code → pipeline_config.py**. Scroll slowly from top to bottom.
 
@@ -244,7 +251,7 @@ Windows names are used (Notepad, File Explorer). On the Mac: Notepad → **TextE
 > At the top are the paths, and the four-notebook flow is described in the header.
 > Then the business rules from the brief: four thousand contacts, four dollars per contact, a hundred and fifty dollars margin, and a maximum of one complaint.
 > Then the columns: the target, the ID columns, gender as a protected column, and a list of leaky columns, which currently only contains `cross_sell_product_type`. I'll keep an eye on that, given what the pivot showed.
-> And at the bottom the two models: a logistic-regression baseline and histogram gradient boosting.
+> A small helper for parsing dates, and at the bottom the two models: a logistic-regression baseline and histogram gradient boosting.
 > This was written for the earlier snapshot. Let's see how it handles the new one."
 
 ---
@@ -466,12 +473,12 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 
 ---
 
-### Scene 10 · Validating the back-test in Excel (29:30–32:30) → final output 1
+### Scene 10 · Validating the back-test in LibreOffice Calc (29:30–32:30) → final output 1
 
-▶ **DO** File Explorer → `Deliverables\3_Intermediate` → double-click **artifact 8 - backtest scored customers.csv** → **Maximise**.
+▶ **DO** File Explorer → `Deliverables\3_Intermediate` → right-click **artifact 8 - backtest scored customers.csv** → **Open with → LibreOffice Calc** → Text Import: **Comma** → **OK** → maximise.
 
 🎙 **SAY**
-> "Before this goes to Marketing, I'll validate the list independently in Excel."
+> "Before this goes to Marketing, I'll validate the list independently in a spreadsheet."
 
 ▶ **DO** Click cell **M1** and type the labels in column **M**, then the formulas in column **N**:
 
@@ -497,18 +504,18 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 > Profit is a hundred and eighty thousand eight hundred dollars against about sixty-six thousand: an uplift of roughly a hundred and fifteen thousand dollars for the same budget.
 > And the compliance checks: the minimum opt-in is one, so everyone has opted in, and the maximum complaints is one, so nobody with two or more complaints is on the list."
 
-▶ **DO** **File → Save As → Browse** → `Deliverables\4_Output` → **Save as type: Excel Workbook (*.xlsx)** → name `final output 1 - backtest target list` → **Save** → close Excel.
+▶ **DO** **File → Save As…** → `Deliverables\4_Output` → **File type: Excel 2007-365 (.xlsx)** → name `final output 1 - backtest target list` → **Save** → **Use Excel 2007-365!** → **File → Close**.
 
 ---
 
-### Scene 11 · Summary deck (32:30–37:00), PowerPoint → final output 2
+### Scene 11 · Summary deck (32:30–37:00), LibreOffice Impress → final output 2
 
-▶ **DO** File Explorer → `Deliverables\1_Input` → double-click **input 4 - summary deck template.pptx**. **Immediately: File → Save As → Browse** → `Deliverables\4_Output` → name `final output 2 - cross-sell summary` → **Save**.
+▶ **DO** File Explorer → `Deliverables\1_Input` → right-click **input 4 - summary deck template.pptx** → **Open with → LibreOffice Impress**. **Immediately: File → Save As…** → `Deliverables\4_Output` → **File type: PowerPoint 2007-365 (.pptx)** → name `final output 2 - cross-sell summary` → **Save** → **Use PowerPoint 2007-365!**.
 
 🎙 **SAY**
 > "This is the team's summary template. I'll save my own copy into the Output folder first, so the template stays clean. The orange brackets are what I need to fill in."
 
-▶ **DO** For every orange `[ ]`: click into it → delete the brackets → type the value → select the value → **Home → Font Colour (arrow) → Automatic**.
+▶ **DO** For every orange `[ ]`: double-click into the text → select the brackets → type the value → select the value → in the **Properties** sidebar on the right, **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects → Font color: Automatic**).
 
 **Slide 2: Problem and approach**
 - `[ ]` duplicate rows → **260**
@@ -519,7 +526,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 - ROC-AUC → **0.81**
 - PR-AUC → **0.42** vs **0.37** baseline
 - Top-20% lift → **2.83**×
-- Click the **dashed box** → press **Delete** → **Insert → Pictures → This Device…** → `Deliverables\3_Intermediate\artifact 7 - charts\05_lift_by_decile.png` → **Insert** → drag it to fill the right-hand side
+- Click the **border of the dashed box** → press **Delete** → **Insert → Image…** → `Deliverables\3_Intermediate\artifact 7 - charts\05_lift_by_decile.png` → **Open** → drag it to fill the right-hand side
 
 🎙 **SAY** "ROC-AUC 0.81 against a target of 0.78, PR-AUC 0.42 against 0.37 for the baseline, and 2.83 times lift in the top twenty percent. The chart shows how sharply conversion falls from the top decile down."
 
@@ -536,7 +543,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 > The drivers become messaging guidance: target engaged email and app users, customers with an established relationship of two or three products, and avoid customers who just bought or have complained.
 > And the recommendation: use the packaged model on the September snapshot for Q4, keep a ten-percent random control group to measure the real uplift, and re-validate every quarter."
 
-▶ **DO** **File → Save** → close PowerPoint.
+▶ **DO** **File → Save** → **Use PowerPoint 2007-365!** → **File → Close**.
 
 ---
 
@@ -581,7 +588,8 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 | The kernel picker doesn't show `Python 3.12 (ds-venv)` | Select Kernel → **Python Environments…** → the `.venv` inside `LLM_Training_recording` |
 | A notebook stops somewhere not listed in this script | Stop the take. Re-stage and run `prep\selftest_uc1.py` |
 | Numbers very different from the cheat sheet | Stop. Re-stage (`prep\stage_recording.cmd UC1`) and start again |
-| Word or Excel shows a yellow "Protected View" bar | Click **Enable Editing**. Next time re-stage (it removes the flag) |
+| LibreOffice shows a yellow "read-only" or "downloaded from the internet" bar | Click **Edit Document**. Next time re-stage (it removes the flag) |
+| The PDF opens in a different app | Right-click → **Open with → Firefox** (Windows: **Choose another app → Firefox**) |
 | A pop-up or notification appears | Close it and carry on without comment |
 | Running long | Skip the optional complaints pivot and shorten the SHAP talk to the top four drivers |
 | Teams freezes or disconnects | Stop, re-stage and restart the practice take |

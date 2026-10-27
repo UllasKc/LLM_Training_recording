@@ -1,25 +1,30 @@
 """
-Generate the stakeholder brief (input 3) for each use case as a Word document.
+Generate the stakeholder brief (input 3) for each use case as a PDF (opened in Firefox on camera).
 
 Outputs:
-    recording_workspace/UC1_Cross_Sell/Deliverables/1_Input/input 3 - campaign brief.docx
-    recording_workspace/UC2_Propensity_To_Pay/Deliverables/1_Input/input 3 - collections strategy brief.docx
+    recording_workspace/UC1_Cross_Sell/Deliverables/1_Input/input 3 - campaign brief.pdf
+    recording_workspace/UC2_Propensity_To_Pay/Deliverables/1_Input/input 3 - collections strategy brief.pdf
 
 The brief carries the business context, constraints and acceptance criteria that the
 expert must honour on camera. All names and numbers are fictional.
 
-Usage:  python prep/generate_briefs.py
+Needs reportlab, which is NOT part of the recording environment:
+    pip install reportlab
+    python prep/generate_briefs.py
 """
 from pathlib import Path
 
-from docx import Document
-from docx.shared import Pt
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import ListFlowable, ListItem, Paragraph, SimpleDocTemplate, Spacer
 
 ROOT = Path(__file__).resolve().parents[1]
 WS = ROOT / "recording_workspace"
 
 UC1 = {
-    "path": WS / "UC1_Cross_Sell" / "Deliverables" / "1_Input" / "input 3 - campaign brief.docx",
+    "path": WS / "UC1_Cross_Sell" / "Deliverables" / "1_Input" / "input 3 - campaign brief.pdf",
     "title": "Cross-Sell Targeting Model - Brief for Q4 Campaign",
     "meta": [("From", "Head of CRM & Cross-Sell (Marketing)"), ("To", "Data Science team"),
              ("Date", "1 October 2026"), ("Decision needed by", "15 October 2026 Q4 campaign planning meeting")],
@@ -60,13 +65,13 @@ UC1 = {
             "No leakage: no field that is only populated after the purchase is used.",
             "Back-test list honours every compliance and customer-care rule above, has exactly 4,000 rows, "
             "and its actual conversion rate is at least 2x the eligible-customer average.",
-            "Results can be reproduced by re-running one script end to end.",
+            "Results can be reproduced by re-running the pipeline notebooks end to end.",
         ]),
     ],
 }
 
 UC2 = {
-    "path": WS / "UC2_Propensity_To_Pay" / "Deliverables" / "1_Input" / "input 3 - collections strategy brief.docx",
+    "path": WS / "UC2_Propensity_To_Pay" / "Deliverables" / "1_Input" / "input 3 - collections strategy brief.pdf",
     "title": "Collections Prioritisation - Propensity-to-Pay Brief",
     "meta": [("From", "Head of Collections Strategy"), ("To", "Data Science team"),
              ("Date", "18 August 2026"), ("Decision needed by", "September collections planning")],
@@ -107,29 +112,44 @@ UC2 = {
             "Calibration checked on the out-of-time period (Brier score and reliability curve); "
             "recalibrated if predicted and actual pay rates differ materially.",
             "No leakage: no field captured after day 7 is used.",
-            "Work list fits capacity, excludes dispute / hardship accounts, and is reproducible from one script.",
+            "Work list fits capacity, excludes dispute / hardship accounts, and is reproducible by re-running the pipeline notebooks.",
         ]),
     ],
 }
 
 
 def build(spec: dict) -> None:
-    doc = Document()
-    doc.styles["Normal"].font.name = "Calibri"
-    doc.styles["Normal"].font.size = Pt(11)
-    doc.add_heading(spec["title"], level=1)
+    base = getSampleStyleSheet()
+    navy = colors.HexColor("#1F3A5F")
+    styles = {
+        "title": ParagraphStyle("t", parent=base["Title"], fontName="Helvetica-Bold", fontSize=18,
+                                textColor=navy, alignment=0, spaceAfter=10),
+        "h2": ParagraphStyle("h", parent=base["Heading2"], fontName="Helvetica-Bold", fontSize=13,
+                             textColor=navy, spaceBefore=10, spaceAfter=4),
+        "body": ParagraphStyle("b", parent=base["BodyText"], fontName="Helvetica", fontSize=10.5, leading=15),
+    }
+    story = [Paragraph(spec["title"], styles["title"])]
     for label, value in spec["meta"]:
-        p = doc.add_paragraph()
-        p.add_run(f"{label}: ").bold = True
-        p.add_run(value)
+        story.append(Paragraph(f"<b>{label}:</b> {value}", styles["body"]))
     for heading, paras in spec["sections"]:
-        doc.add_heading(heading, level=2)
+        story.append(Paragraph(heading, styles["h2"]))
+        bullets = []
         for text in paras:
             numbered = text[0].isdigit()
-            bullet = heading != "Background" and not numbered
-            doc.add_paragraph(text, style="List Bullet" if bullet else None)
+            if heading != "Background" and not numbered:
+                bullets.append(ListItem(Paragraph(text, styles["body"]), leftIndent=12))
+                continue
+            if bullets:
+                story.append(ListFlowable(bullets, bulletType="bullet", start="\u2022", leftIndent=12))
+                bullets = []
+            story.append(Paragraph(text, styles["body"]))
+            story.append(Spacer(1, 3))
+        if bullets:
+            story.append(ListFlowable(bullets, bulletType="bullet", start="\u2022", leftIndent=12))
     spec["path"].parent.mkdir(parents=True, exist_ok=True)
-    doc.save(spec["path"])
+    doc = SimpleDocTemplate(str(spec["path"]), pagesize=A4, leftMargin=20 * mm, rightMargin=20 * mm,
+                            topMargin=18 * mm, bottomMargin=18 * mm, title=spec["title"], author="Data Science team")
+    doc.build(story)
     print(f"wrote {spec['path']}")
 
 

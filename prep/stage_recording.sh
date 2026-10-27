@@ -49,7 +49,8 @@ cat > "$DEST/.vscode/settings.json" <<EOF
   "notebook.markup.fontSize": 15,
   "terminal.integrated.fontSize": 14,
   "workbench.startupEditor": "none",
-  "files.exclude": { "**/.vscode": true, "**/.DS_Store": true, "**/.ipynb_checkpoints": true, "**/__pycache__": true },
+  "files.exclude": { "**/.vscode": true, "**/.DS_Store": true, "**/.ipynb_checkpoints": true, "**/__pycache__": true, "Metadata.rtf": true },
+  "workbench.editorAssociations": { "*.md": "vscode.markdown.preview.editor" },
   "jupyter.notebookFileRoot": "\${fileDirname}"
 }
 EOF
@@ -58,4 +59,4 @@ echo "Staged clean workspace: $DEST"
 (cd "$DEST/Deliverables" && find . -mindepth 1 -maxdepth 2 -not -name ".*" | sort | sed "s|^./||")
 echo
 echo "Open it in VS Code:  File > Open Folder... > Desktop > $NAME"
-echo "Then run the pre-recording checklist in use_cases/Recording_Checklist.md"
+echo "Then follow PART 2 of the recording script (UC1_RECORDING_SCRIPT.md / UC2_RECORDING_SCRIPT.md)"

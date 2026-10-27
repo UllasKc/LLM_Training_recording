@@ -36,7 +36,7 @@ LLM_Training_recording/
 ├── prep/                         NOT shown on camera
 │   ├── generate_uc1_cross_sell.py        -> UC1 input 1 + input 2
 │   ├── generate_uc2_propensity_to_pay.py -> UC2 input 1 + input 2
-│   ├── generate_briefs.py                -> input 3 (stakeholder brief, .docx) for both
+│   ├── generate_briefs.py                -> input 3 (stakeholder brief, PDF) for both (needs reportlab)
 │   ├── build_uc1_notebooks.py / build_uc2_notebooks.py   -> 2_Code notebooks (with planted bugs)
 │   ├── generate_deck_templates.py        -> input 4 deck templates for UC1 and UC2 (needs python-pptx)
 │   ├── selftest_uc1.py / selftest_uc2.py proves each bug fails and each fix works
@@ -46,14 +46,14 @@ LLM_Training_recording/
 │   └── verify_setup.py                   readiness check
 └── recording_workspace/          what you record with (copied to the Desktop)
     ├── UC1_Cross_Sell/
-    │   ├── Task Notes.txt        open in TextEdit/Notepad before starting the recording
+    │   ├── Task Notes.md         opened as a VS Code Markdown preview before starting the recording
     │   ├── Metadata.rtf          upload separately to Mercor Studio
     │   └── Deliverables/
     │       ├── 1_Input/          input 1 data · input 2 dictionary · input 3 brief · input 4 deck template
     │       ├── 2_Code/           team pipeline: pipeline_config.py + notebooks 01-04 (contains the planted bugs)
     │       ├── 3_Intermediate/   created by staging; artifacts 1-8 are written here on camera
     │       └── 4_Output/         created by staging; final outputs 1-3 are written here on camera
-    └── UC2_Propensity_To_Pay/   same layout: Task Notes.txt, Metadata.rtf, Deliverables/1_Input · 2_Code · 3_Intermediate · 4_Output
+    └── UC2_Propensity_To_Pay/   same layout: Task Notes.md, Metadata.rtf, Deliverables/1_Input · 2_Code · 3_Intermediate · 4_Output
 ```
 
 Artifacts and final outputs are created **live on camera** inside the Desktop copy of `Deliverables/`. See the "Deliverables map" in each use-case document. Check the pipelines on any machine with `python prep/selftest_uc1.py` / `selftest_uc2.py`. After a take, `prep/package_deliverables` validates the Mercor deliverable rules and builds `Deliverables.zip`.
@@ -128,5 +128,5 @@ The inputs are already committed. Generation is deterministic (fixed seeds), so 
 | Kernel `Python 3.12 (ds-venv)` not listed in VS Code | Reload the VS Code window (View → Command Palette → "Developer: Reload Window"), or re-run `bash setup_mac.sh` |
 | VS Code asks to install `ipykernel` | You picked the wrong interpreter; select the `ds-venv` kernel instead |
 | "File downloaded from the internet" pop-up | Re-run `bash prep/stage_recording.sh UC1` (it clears the quarantine flag) |
-| Excel opens the CSV with the wrong delimiter or encoding | Open it via File → Open (it's comma-separated UTF-8) |
+| LibreOffice Calc shows the CSV in one column | In the Text Import dialog tick **Comma** only, character set UTF-8 |
 | pip errors behind a corporate proxy or VPN | Frost forbids VPN/proxy at sign-in anyway. Disconnect and re-run setup |

@@ -41,7 +41,7 @@ df["customer_since"] = cfg.parse_dates(df["customer_since"])
 ```python
 df["region"] = df["region"].str.lower().replace(REGION_FIXES).str.title()
 ```
-**Say:** "The check expected 5 regions and found 8: 'North' and 'North ' with a trailing space, ' South' with a leading one. I saw the same in the Excel pivot. The product line underneath strips whitespace, but the region line doesn't."
+**Say:** "The check expected 5 regions and found 8: 'North' and 'North ' with a trailing space, ' South' with a leading one. I saw the same in the Calc pivot. The product line underneath strips whitespace, but the region line doesn't."
 **Fixed:**
 ```python
 df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.title()

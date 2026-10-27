@@ -35,8 +35,8 @@ Copy-Item -Path $Src -Destination $Dest -Recurse
 if (Test-Path (Join-Path $Dest "Deliverables\1_Input")) {
     New-Item -ItemType Directory -Force -Path (Join-Path $Dest "Deliverables\3_Intermediate"), (Join-Path $Dest "Deliverables\4_Output") | Out-Null
 }
-# files from a downloaded ZIP carry Mark-of-the-Web, which makes Word/Excel open them in
-# "Protected View" with a yellow banner on camera
+# files from a downloaded ZIP carry Mark-of-the-Web, which makes LibreOffice / Firefox show
+# "downloaded from the internet" warnings on camera
 Get-ChildItem -Path $Dest -Recurse -File | Unblock-File
 
 # VS Code workspace settings: AI features off, venv interpreter, readable font sizes
@@ -55,7 +55,8 @@ $Settings = @"
   "notebook.markup.fontSize": 15,
   "terminal.integrated.fontSize": 14,
   "workbench.startupEditor": "none",
-  "files.exclude": { "**/.vscode": true, "**/.ipynb_checkpoints": true, "**/desktop.ini": true, "**/__pycache__": true },
+  "files.exclude": { "**/.vscode": true, "**/.ipynb_checkpoints": true, "**/desktop.ini": true, "**/__pycache__": true, "Metadata.rtf": true },
+  "workbench.editorAssociations": { "*.md": "vscode.markdown.preview.editor" },
   "jupyter.notebookFileRoot": "`${fileDirname}"
 }
 "@
@@ -66,4 +67,4 @@ Write-Host "Staged clean workspace: $Dest"
 Get-ChildItem -Path (Join-Path $Dest "Deliverables") -Recurse -Depth 1 -Name | Where-Object { $_ -notmatch "__pycache__" }
 Write-Host ""
 Write-Host "Open it in VS Code:  File > Open Folder... > Desktop > $Name"
-Write-Host "Then run the pre-recording checklist in WINDOWS_SETUP.md (section 6)"
+Write-Host "Then follow PART 2 of the recording script (UC1_RECORDING_SCRIPT.md / UC2_RECORDING_SCRIPT.md)"

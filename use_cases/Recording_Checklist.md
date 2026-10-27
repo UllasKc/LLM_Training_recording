@@ -10,7 +10,7 @@ Print this or keep it on your phone, **not** on the Mac screen.
 - [ ] Menu-bar clock shows **seconds** (System Settings → Control Center → Clock Options → Display the time with seconds)
 - [ ] Python 3.12 from python.org installed → `bash setup_mac.sh` ends with **READY**
 - [ ] VS Code installed, with only the **Python** and **Jupyter** extensions (Microsoft). **No GitHub Copilot / Copilot Chat or any AI extension.** Also turn off AI features globally: Settings → search "disable AI features" → tick it
-- [ ] Microsoft Word, Excel and PowerPoint open without sign-in prompts or "What's New" pop-ups (open each once beforehand and dismiss everything)
+- [ ] Firefox, LibreOffice Calc and LibreOffice Impress open without first-run pop-ups (open each once beforehand and dismiss everything)
 - [ ] Built-in display at default scaled resolution (not native 4K/5K)
 - [ ] Notifications off (Focus → Do Not Disturb)
 
@@ -21,8 +21,8 @@ Print this or keep it on your phone, **not** on the Mac screen.
 - [ ] Desktop clean: only the UC folder visible; Finder window ready
 - [ ] Vary the UI compared with the previous recording: UC1 = Light mode, Dock bottom; UC2 = Dark mode, Dock left or auto-hide. Keep the default cursor size and colour
 - [ ] Headset mic on, quiet room, water nearby
-- [ ] `Task Notes.txt` typed or pasted into TextEdit (**under 3 min**) **before** starting TaskRecorder
-- [ ] Open VS Code once off camera and check that the `Python 3.12 (ds-venv)` kernel appears in the kernel picker, then close VS Code
+- [ ] VS Code open on the use-case folder with `Task Notes.md` shown as a preview **before** starting TaskRecorder
+- [ ] Off camera, open any notebook once and check that the `Python 3.12 (ds-venv)` kernel appears in the kernel picker, then close the notebook and leave VS Code on the `Task Notes.md` preview
 - [ ] No ChatGPT / Claude / Gemini / Copilot / Grammarly anywhere
 
 ## C. During the take (15:00–45:59, one continuous take)
