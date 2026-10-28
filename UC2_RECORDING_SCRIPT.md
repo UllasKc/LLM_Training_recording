@@ -38,7 +38,7 @@
 
 1. Recording laptop, PowerShell:
    ```powershell
-   cd $env:USERPROFILE\LLM_Training_recording
+   cd C:\Users\ullas.kc\Cnx\LLM_Training_recording      # your project folder
    git pull
    .\setup_windows.cmd
    .\.venv\Scripts\python.exe prep\selftest_uc2.py
@@ -51,12 +51,12 @@
 
 ## PART 2: 30 minutes before
 
-- [ ] `prep\stage_recording.cmd UC2` → fresh `Desktop\UC2_Propensity_To_Pay`
+- [ ] `prep\stage_recording.cmd UC2` → a fresh, new `Cnx\Mercor_UC2\UC2_Propensity_To_Pay_vN` folder (v1, v2, v3…; path printed at the end). Always use the **newest** one
 - [ ] Quit Outlook, Slack and chat apps · Teams status **Do not disturb** · Windows **Do not disturb ON**
 - [ ] Browser closed · Windows Update paused · charger in
 - [ ] Settings → Personalization → Colors → **Dark** mode
-- [ ] File Explorer at `Desktop\UC2_Propensity_To_Pay`, maximised
-- [ ] **VS Code** → **File → Open Folder…** → Desktop → **UC2_Propensity_To_Pay** → trust → click **Task Notes.md** (formatted preview) → maximised, on top
+- [ ] File Explorer at `Cnx\Mercor_UC2\UC2_Propensity_To_Pay_vN` (newest), maximised
+- [ ] **VS Code** → **File → Open Folder…** → `Cnx` → `Mercor_UC2` → **UC2_Propensity_To_Pay_vN** (newest) → trust → click **Task Notes.md** (formatted preview) → maximised, on top
 - [ ] Firefox, LibreOffice Calc and Impress closed · headset on · Teams test call
 
 ## PART 3: Start the Teams recording
@@ -417,10 +417,10 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 2. Teams → Chat → `UC2 practice` → recording → **⋯ → Download** → rename `UC2_practice_v1.mp4`
 3. **Validate and zip the deliverables:**
    ```powershell
-   cd $env:USERPROFILE\LLM_Training_recording
+   cd C:\Users\ullas.kc\Cnx\LLM_Training_recording      # your project folder
    prep\package_deliverables.cmd UC2
    ```
-   ✔ ends with **READY TO UPLOAD** and creates `Desktop\UC2_Propensity_To_Pay\Deliverables.zip`. It checks every file is labelled input / artifact / final output, all deliverables exist, every fix is in place and no notebook shows an error. It also adds the original code as **input 5** and your corrected code as **final output 4**. If it says **NOT READY**, fix what it lists and run it again.
+   ✔ ends with **READY TO UPLOAD** and creates `Cnx\Mercor_UC2\UC2_Propensity_To_Pay_vN\Deliverables.zip` in the newest version folder. It checks every file is labelled input / artifact / final output, all deliverables exist, every fix is in place and no notebook shows an error. It also adds the original code as **input 5** and your corrected code as **final output 4**. If it says **NOT READY**, fix what it lists and run it again.
 4. Watch the video at 1.5×: notes visible at the start · 15:00–45:59 · no pop-ups or AI tools · every click named · every fix explained.
 5. Send your manager `UC2_practice_v1.mp4` + `Deliverables.zip`. *(For the final Mac take, upload video.mp4, the unmodified recording zip, Deliverables.zip and Metadata.rtf to Mercor Studio.)*
 6. Reset: `prep\stage_recording.cmd UC2`

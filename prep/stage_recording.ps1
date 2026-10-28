@@ -1,34 +1,34 @@
 <#
-Copy a fresh, clean recording workspace to the Desktop before a take (or after a rehearsal).
-Windows counterpart of stage_recording.sh.
+Copy a fresh, clean recording workspace next to the project folder before a take (or after a rehearsal).
+Windows counterpart of stage_recording.sh. Every run creates a NEW version; nothing is moved or deleted.
 
-    prep\stage_recording.cmd UC1      -> Desktop\UC1_Cross_Sell
-    prep\stage_recording.cmd UC2      -> Desktop\UC2_Propensity_To_Pay
+    prep\stage_recording.cmd UC1      -> <parent of project>\Mercor_UC1\UC1_Cross_Sell_v1, _v2, ...
+    prep\stage_recording.cmd UC2      -> <parent of project>\Mercor_UC2\UC2_Propensity_To_Pay_v1, _v2, ...
 
-Anything already on the Desktop with that name (e.g. a rehearsal) is moved to
-%USERPROFILE%\Rehearsal_Backups\<name>_<timestamp> - nothing is deleted.
+e.g. project C:\Users\you\Cnx\LLM_Training_recording -> C:\Users\you\Cnx\Mercor_UC1\UC1_Cross_Sell_v1
+Set STAGE_DESTINATION to use a different parent folder.
 #>
 param(
     [Parameter(Mandatory = $true)][ValidateSet("UC1", "UC2")][string]$UseCase,
-    # the real Desktop, including when it is redirected to OneDrive
-    [string]$Destination = $(if ($env:STAGE_DESTINATION) { $env:STAGE_DESTINATION } else { [Environment]::GetFolderPath("Desktop") })
+    [string]$Destination = $env:STAGE_DESTINATION
 )
 $ErrorActionPreference = "Stop"
 
 $RepoDir = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+if (-not $Destination) { $Destination = Split-Path $RepoDir -Parent }
 $Name = if ($UseCase -eq "UC1") { "UC1_Cross_Sell" } else { "UC2_Propensity_To_Pay" }
 $Src = Join-Path $RepoDir "recording_workspace\$Name"
-$Dest = Join-Path $Destination $Name
 $VenvPy = Join-Path $RepoDir ".venv\Scripts\python.exe"
 if (-not (Test-Path $VenvPy)) { Write-Host "Run setup_windows.cmd first." -ForegroundColor Red; exit 1 }
 
-if (Test-Path $Dest) {
-    $BackupRoot = Join-Path $env:USERPROFILE "Rehearsal_Backups"
-    New-Item -ItemType Directory -Force -Path $BackupRoot | Out-Null
-    $Backup = Join-Path $BackupRoot ("{0}_{1}" -f $Name, (Get-Date -Format "yyyyMMdd_HHmmss"))
-    Move-Item -Path $Dest -Destination $Backup
-    Write-Host "Moved previous $Name to $Backup"
-}
+$Group = Join-Path $Destination "Mercor_$UseCase"
+New-Item -ItemType Directory -Force -Path $Group | Out-Null
+# next free version number: v1, v2, ...
+$Last = Get-ChildItem -Path $Group -Directory -Filter "$($Name)_v*" |
+    ForEach-Object { if ($_.Name -match "_v(\d+)$") { [int]$Matches[1] } } | Measure-Object -Maximum
+$Version = if ($Last.Count) { $Last.Maximum + 1 } else { 1 }
+$Folder = "$($Name)_v$Version"
+$Dest = Join-Path $Group $Folder
 
 Copy-Item -Path $Src -Destination $Dest -Recurse
 # empty working folders for the pipeline outputs (git does not keep empty folders)
@@ -66,5 +66,5 @@ $Settings = @"
 Write-Host "Staged clean workspace: $Dest"
 Get-ChildItem -Path (Join-Path $Dest "Deliverables") -Recurse -Depth 1 -Name | Where-Object { $_ -notmatch "__pycache__" }
 Write-Host ""
-Write-Host "Open it in VS Code:  File > Open Folder... > Desktop > $Name"
+Write-Host "Open it in VS Code:  File > Open Folder... > $Group > $Folder"
 Write-Host "Then follow PART 2 of the recording script (UC1_RECORDING_SCRIPT.md / UC2_RECORDING_SCRIPT.md)"

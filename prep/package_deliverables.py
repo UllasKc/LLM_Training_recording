@@ -19,6 +19,8 @@ Junk (__pycache__, .ipynb_checkpoints, .vscode, .DS_Store, desktop.ini, Office l
 """
 import argparse
 import json
+import os
+import re
 import sys
 import zipfile
 from pathlib import Path
@@ -73,13 +75,12 @@ JUNK_DIRS = {"__pycache__", ".ipynb_checkpoints", ".vscode"}
 JUNK_FILES = {".DS_Store", "desktop.ini", "Thumbs.db"}
 
 
-def desktop():
-    if sys.platform == "win32":
-        import ctypes
-        buf = ctypes.create_unicode_buffer(260)
-        ctypes.windll.shell32.SHGetFolderPathW(None, 0x0010, None, 0, buf)  # CSIDL_DESKTOPDIRECTORY
-        return Path(buf.value)
-    return Path.home() / "Desktop"
+def latest_workspace(uc, name):
+    """Newest <parent of project>/Mercor_<UC>/<name>_vN folder created by stage_recording."""
+    group = Path(os.environ.get("STAGE_DESTINATION") or ROOT.parent) / f"Mercor_{uc}"
+    versions = [(int(m.group(1)), p) for p in group.glob(f"{name}_v*")
+                if p.is_dir() and (m := re.fullmatch(rf"{re.escape(name)}_v(\d+)", p.name))]
+    return max(versions)[1] if versions else group / f"{name}_v1"
 
 
 def is_junk(path):
@@ -115,11 +116,12 @@ def source_text(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("use_case", choices=["UC1", "UC2", "uc1", "uc2"])
-    parser.add_argument("--workspace", type=Path, help="folder that contains Deliverables (default: Desktop/<use case>)")
+    parser.add_argument("--workspace", type=Path,
+                        help="folder that contains Deliverables (default: the newest Mercor_<UC>/<use case>_vN)")
     args = parser.parse_args()
     uc = args.use_case.upper()
     spec = USE_CASES[uc]
-    workspace = args.workspace or desktop() / spec["name"]
+    workspace = args.workspace or latest_workspace(uc, spec["name"])
     deliverables = workspace / "Deliverables"
     code_dir = deliverables / "2_Code"
     original_code = ROOT / "recording_workspace" / spec["name"] / "Deliverables" / "2_Code"

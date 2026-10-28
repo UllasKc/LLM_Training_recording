@@ -58,7 +58,7 @@ A senior data scientist profiles the extract with LibreOffice Calc pivot tables 
 
 ## 3. Detailed task scenario
 
-**Pre-existing assets**: `Desktop/UC1_Cross_Sell/Deliverables/`:
+**Pre-existing assets**: `~/Mercor_UC1/UC1_Cross_Sell_vN/Deliverables/` (staged next to the project folder):
 ```
 1_Input/         input 1-4 (data, dictionary, brief, deck template)
 2_Code/          pipeline_config.py, 01_data_preprocessing, 02_model_training, 03_model_testing, 04_backtest_and_package

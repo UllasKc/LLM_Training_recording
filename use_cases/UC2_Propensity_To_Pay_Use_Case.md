@@ -59,7 +59,7 @@ A senior data scientist profiles the extract with LibreOffice Calc pivot tables,
 
 ## 3. Detailed task scenario
 
-**Pre-existing assets**: `Desktop/UC2_Propensity_To_Pay/Deliverables/` with `1_Input` (inputs 1–4), `2_Code` (pipeline), and empty `3_Intermediate` and `4_Output`; Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
+**Pre-existing assets**: `~/Mercor_UC2/UC2_Propensity_To_Pay_vN/Deliverables/` (staged next to the project folder) with `1_Input` (inputs 1–4), `2_Code` (pipeline), and empty `3_Intermediate` and `4_Output`; Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 
 **Business context and constraints**: ~3,500 accounts per month; 25 agents ≈ 37% capacity; re-prioritised on day 7 (7-day contact fields legal, later ones not); out-of-time validation; probabilities feed expected loss, so calibration is required; dispute/hardship accounts go to a specialist team.
 

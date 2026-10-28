@@ -41,10 +41,10 @@ LLM_Training_recording/
 │   ├── generate_deck_templates.py        -> input 4 deck templates for UC1 and UC2 (needs python-pptx)
 │   ├── selftest_uc1.py / selftest_uc2.py proves each bug fails and each fix works
 │   ├── package_deliverables.py/.cmd/.sh  after a take: validates the Mercor rules and builds Deliverables.zip
-│   ├── stage_recording.sh                copies a clean workspace to ~/Desktop before a take (Mac)
+│   ├── stage_recording.sh                creates a clean, versioned workspace next to the project before a take (Mac)
 │   ├── stage_recording.cmd / .ps1        same, for Windows
 │   └── verify_setup.py                   readiness check
-└── recording_workspace/          what you record with (copied to the Desktop)
+└── recording_workspace/          what you record with (copied to ../Mercor_UCx/<name>_vN)
     ├── UC1_Cross_Sell/
     │   ├── Task Notes.md         opened as a VS Code Markdown preview before starting the recording
     │   ├── Metadata.rtf          upload separately to Mercor Studio
@@ -56,7 +56,7 @@ LLM_Training_recording/
     └── UC2_Propensity_To_Pay/   same layout: Task Notes.md, Metadata.rtf, Deliverables/1_Input · 2_Code · 3_Intermediate · 4_Output
 ```
 
-Artifacts and final outputs are created **live on camera** inside the Desktop copy of `Deliverables/`. See the "Deliverables map" in each use-case document. Check the pipelines on any machine with `python prep/selftest_uc1.py` / `selftest_uc2.py`. After a take, `prep/package_deliverables` validates the Mercor deliverable rules and builds `Deliverables.zip`.
+Artifacts and final outputs are created **live on camera** inside the staged copy of `Deliverables/`. See the "Deliverables map" in each use-case document. Check the pipelines on any machine with `python prep/selftest_uc1.py` / `selftest_uc2.py`. After a take, `prep/package_deliverables` validates the Mercor deliverable rules and builds `Deliverables.zip`.
 
 ---
 
@@ -97,15 +97,15 @@ Either way the project ends up at `~/LLM_Training_recording`. Git is never opene
 bash prep/stage_recording.sh UC1     # or UC2
 ```
 
-This copies a clean workspace to `~/Desktop/UC1_Cross_Sell`. A previous copy, such as a rehearsal, is **moved** to `~/Rehearsal_Backups/`, never deleted. The script also:
+This creates a clean workspace next to the project folder: `~/Mercor_UC1/UC1_Cross_Sell_v1` the first time, then `_v2`, `_v3`… on every run (UC2: `~/Mercor_UC2/UC2_Propensity_To_Pay_vN`). Older versions such as rehearsals are kept, never moved or deleted; always record in the **newest** one. The full path is printed at the end. The script also:
 - removes macOS "downloaded from the internet" quarantine pop-ups from the files
 - writes hidden VS Code workspace settings: AI features off, the venv interpreter, larger fonts for legibility
 
-In VS Code: **File → Open Folder… → Desktop → UC1_Cross_Sell**. In a new notebook, choose the kernel **Python 3.12 (ds-venv)** (top right → Select Kernel → Jupyter Kernel).
+In VS Code: **File → Open Folder… → Mercor_UC1 → UC1_Cross_Sell_vN** (newest). In a new notebook, choose the kernel **Python 3.12 (ds-venv)** (top right → Select Kernel → Jupyter Kernel).
 
 ## 4. After the take
 
-Zip `~/Desktop/<UC>/Deliverables` → `Deliverables.zip`. Upload `video.mp4`, the unmodified `recording_TIMESTAMP.zip`, `Deliverables.zip` and `Metadata.rtf` to Mercor Studio, then run both AutoQC checks.
+Run `bash prep/package_deliverables.sh UC1` (or UC2): it validates the newest version folder and builds its `Deliverables.zip`. Upload `video.mp4`, the unmodified `recording_TIMESTAMP.zip`, `Deliverables.zip` and `Metadata.rtf` to Mercor Studio, then run both AutoQC checks.
 
 > If Mercor provides its own Metadata template, copy the three sections (App Topology, Request, Task Description) from the prepared `Metadata.rtf` into it.
 

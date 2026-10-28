@@ -15,10 +15,10 @@ Print this or keep it on your phone, **not** on the Mac screen.
 - [ ] Notifications off (Focus → Do Not Disturb)
 
 ## B. Before every take
-- [ ] `bash prep/stage_recording.sh UC1` (or UC2) → a fresh, clean folder on the Desktop
+- [ ] `bash prep/stage_recording.sh UC1` (or UC2) → a fresh, clean `~/Mercor_UC1/UC1_Cross_Sell_vN` folder (record in the newest version)
 - [ ] **≥ 50 GB free disk** (about 35 GB per 20 min)
 - [ ] Close every app not in the topology; quit Terminal after staging
-- [ ] Desktop clean: only the UC folder visible; Finder window ready
+- [ ] Desktop clean (no stray files or icons); Finder window open at the newest UC folder
 - [ ] Vary the UI compared with the previous recording: UC1 = Light mode, Dock bottom; UC2 = Dark mode, Dock left or auto-hide. Keep the default cursor size and colour
 - [ ] Headset mic on, quiet room, water nearby
 - [ ] VS Code open on the use-case folder with `Task Notes.md` shown as a preview **before** starting TaskRecorder

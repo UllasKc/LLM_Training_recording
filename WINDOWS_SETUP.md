@@ -96,23 +96,23 @@ py -3.12 -m venv .venv
 ## 4. Stage a clean workspace (before every take, and to reset after a rehearsal)
 
 ```powershell
-cd $env:USERPROFILE\LLM_Training_recording
+cd C:\Users\<you>\Cnx\LLM_Training_recording     # your project folder
 prep\stage_recording.cmd UC1        # or UC2
 ```
 
 Or **double-click** `prep\stage_recording.cmd` in File Explorer, type `1` (UC1) or `2` (UC2) and press Enter; the window stays open until you press a key.
 
-This copies a fresh workspace to your **Desktop** (`Desktop\UC1_Cross_Sell`); it also works when the Desktop is redirected to OneDrive. The full path is printed at the end. A previous copy, such as a rehearsal, is **moved** to `C:\Users\<you>\Rehearsal_Backups\`, never deleted. The script also:
+This creates a fresh workspace **next to the project folder**: with the project in `C:\Users\<you>\Cnx\LLM_Training_recording` you get `C:\Users\<you>\Cnx\Mercor_UC1\UC1_Cross_Sell_v1`, then `_v2`, `_v3`… on every run (UC2: `Cnx\Mercor_UC2\UC2_Propensity_To_Pay_vN`). Older versions such as rehearsals are kept; always record in the **newest** one. The full path is printed at the end. The script also:
 - removes the "downloaded from the internet" mark, so LibreOffice doesn't show "downloaded from the internet" warnings on camera
 - writes hidden VS Code settings: AI features off, the venv interpreter, larger fonts
 
 ## 5. First-time VS Code check (off camera, once)
 
-1. VS Code → **File → Open Folder…** → Desktop → `UC1_Cross_Sell` → "Yes, I trust the authors"
+1. VS Code → **File → Open Folder…** → `Cnx\Mercor_UC1` → `UC1_Cross_Sell_vN` (newest) → "Yes, I trust the authors"
 2. **File → New File… → Jupyter Notebook**
 3. Top right → **Select Kernel** → **Jupyter Kernel…** → **Python 3.12 (ds-venv)**
 4. In a cell type `import pandas, sklearn, shap; print("ok")` and click the ▶ Run button → `ok`
-5. Close without saving, then re-stage (`prep\stage_recording.cmd UC1`) so the folder is clean again
+5. Close without saving, then re-stage (`prep\stage_recording.cmd UC1`) to get a clean new version
 
 If **Select Kernel** doesn't list `ds-venv`, see Troubleshooting.
 
@@ -122,7 +122,7 @@ If **Select Kernel** doesn't list `ds-venv`, see Troubleshooting.
 - [ ] **Teams, Outlook, Slack and any chat apps quit** (not just minimised); org pop-ups on camera are the most common problem
 - [ ] **Do not disturb on:** Settings → System → Notifications → Do not disturb
 - [ ] Display scale 100–125% (Settings → System → Display); maximise windows
-- [ ] Desktop tidy: only the UC folder visible (or right-click Desktop → View → untick "Show desktop icons" and open the folder from File Explorer)
+- [ ] Desktop tidy: no stray files or icons (or right-click Desktop → View → untick "Show desktop icons"); open the newest `CnxMercor_UC1C1_CROSS_SELL_VN` FOLDER FROM FILE EXPLORER
 - [ ] Copilot / AI features off in VS Code; no AI assistants in any app (don't click any Copilot button in Office)
 - [ ] Headset mic, quiet room
 - [ ] `Task Notes.md` open as a **preview in VS Code** before you start recording

@@ -42,7 +42,7 @@
 
 1. On the recording laptop, in PowerShell:
    ```powershell
-   cd $env:USERPROFILE\LLM_Training_recording
+   cd C:\Users\ullas.kc\Cnx\LLM_Training_recording      # your project folder
    git pull
    .\setup_windows.cmd
    .\.venv\Scripts\python.exe prep\selftest_uc1.py
@@ -63,13 +63,13 @@
 ## PART 2: 30 minutes before the take
 
 ▶ **DO**
-- [ ] `prep\stage_recording.cmd UC1` → a fresh `Desktop\UC1_Cross_Sell`
+- [ ] `prep\stage_recording.cmd UC1` → a fresh, new `Cnx\Mercor_UC1\UC1_Cross_Sell_vN` folder (v1 the first time, then v2, v3…; the full path is printed at the end). Always use the **newest** one
 - [ ] **Quit** Outlook, Slack, WhatsApp and other chat apps (tray icon → right-click → Quit). Teams stays open.
 - [ ] Teams status → **Do not disturb**. Windows Settings → System → Notifications → **Do not disturb ON**
 - [ ] Close the browser. Pause Windows Update. Plug in the charger
 - [ ] Settings → Personalization → Colors → **Light** mode
-- [ ] Open **File Explorer** at `Desktop\UC1_Cross_Sell` and maximise it
-- [ ] Open **VS Code** → **File → Open Folder…** → Desktop → **UC1_Cross_Sell** → **Select Folder** → trust it if asked → in the Explorer panel click **Task Notes.md** (it opens as a formatted preview) → maximise VS Code
+- [ ] Open **File Explorer** at `Cnx\Mercor_UC1\UC1_Cross_Sell_vN` (the newest version) and maximise it
+- [ ] Open **VS Code** → **File → Open Folder…** → `Cnx` → `Mercor_UC1` → **UC1_Cross_Sell_vN** (newest) → **Select Folder** → trust it if asked → in the Explorer panel click **Task Notes.md** (it opens as a formatted preview) → maximise VS Code
 - [ ] Firefox, LibreOffice Calc and Impress **closed**
 - [ ] Headset on. Teams → Settings → Devices → **Make a test call**
 - [ ] Phone silent, with this script open on the second laptop
@@ -230,7 +230,7 @@
 
 **Save as artifact 1**
 
-▶ **DO** **File → Save As…** → go to `Desktop\UC1_Cross_Sell\Deliverables\3_Intermediate` → **File type: Excel 2007-365 (.xlsx)** → File name: `artifact 1 - exploratory pivot analysis` → **Save** → in the format question click **Use Excel 2007-365!** → **File → Close**.
+▶ **DO** **File → Save As…** → go to `Cnx\Mercor_UC1\UC1_Cross_Sell_vN\Deliverables\3_Intermediate` → **File type: Excel 2007-365 (.xlsx)** → File name: `artifact 1 - exploratory pivot analysis` → **Save** → in the format question click **Use Excel 2007-365!** → **File → Close**.
 
 🎙 **SAY**
 > "I'll save this as a workbook in the Intermediate folder as artifact one, so the pivots are kept as evidence. Saving as CSV would lose them."
@@ -567,10 +567,10 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 2. A few minutes later: Teams → **Chat** → `UC1 practice` → recording tile → **⋯ → Download** → rename it `UC1_practice_v1.mp4`
 3. **Validate and zip the deliverables:**
    ```powershell
-   cd $env:USERPROFILE\LLM_Training_recording
+   cd C:\Users\ullas.kc\Cnx\LLM_Training_recording      # your project folder
    prep\package_deliverables.cmd UC1
    ```
-   ✔ ends with **READY TO UPLOAD** and creates `Desktop\UC1_Cross_Sell\Deliverables.zip`. It checks every file is labelled input / artifact / final output, all deliverables exist, every fix is in place and no notebook shows an error. It also adds the original code as **input 5** and your corrected code as **final output 4**, and leaves out junk such as `__pycache__`. If it says **NOT READY**, fix what it lists and run it again.
+   ✔ ends with **READY TO UPLOAD** and creates `Cnx\Mercor_UC1\UC1_Cross_Sell_vN\Deliverables.zip` in the newest version folder. It checks every file is labelled input / artifact / final output, all deliverables exist, every fix is in place and no notebook shows an error. It also adds the original code as **input 5** and your corrected code as **final output 4**, and leaves out junk such as `__pycache__`. If it says **NOT READY**, fix what it lists and run it again.
 4. Watch the video at 1.5× and check:
    - [ ] Task notes visible at the start · total length between 15:00 and 45:59
    - [ ] No pop-ups, notifications or AI tools visible · no overlapping windows

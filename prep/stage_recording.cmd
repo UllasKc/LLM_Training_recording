@@ -7,7 +7,7 @@ set "INTERACTIVE="
 if not "%UC%"=="" goto run
 set "INTERACTIVE=1"
 echo.
-echo Which use case do you want to stage on your Desktop?
+echo Which use case do you want to stage? (creates a new _vN folder next to the project)
 echo    1 = UC1  Cross-Sell model
 echo    2 = UC2  Propensity-to-Pay model
 echo.

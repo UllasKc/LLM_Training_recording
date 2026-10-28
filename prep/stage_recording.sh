@@ -1,32 +1,32 @@
 #!/usr/bin/env bash
-# Copy a fresh, clean recording workspace to the Desktop before a take (or after a rehearsal).
+# Copy a fresh, clean recording workspace next to the project folder before a take (or after a rehearsal).
+# Every run creates a NEW version; nothing is moved or deleted.
 #
-#   bash prep/stage_recording.sh UC1     # -> ~/Desktop/UC1_Cross_Sell
-#   bash prep/stage_recording.sh UC2     # -> ~/Desktop/UC2_Propensity_To_Pay
+#   bash prep/stage_recording.sh UC1     # -> <parent of project>/Mercor_UC1/UC1_Cross_Sell_v1, _v2, ...
+#   bash prep/stage_recording.sh UC2     # -> <parent of project>/Mercor_UC2/UC2_Propensity_To_Pay_v1, _v2, ...
 #
-# Anything already on the Desktop with that name (e.g. a rehearsal) is moved to
-# ~/Rehearsal_Backups/<name>_<timestamp> - nothing is deleted.
+# e.g. project ~/LLM_Training_recording -> ~/Mercor_UC1/UC1_Cross_Sell_v1
+# Set STAGE_DESTINATION to use a different parent folder.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 REPO_DIR="$(pwd)"
 
 case "${1:-}" in
-  UC1|uc1) NAME="UC1_Cross_Sell" ;;
-  UC2|uc2) NAME="UC2_Propensity_To_Pay" ;;
+  UC1|uc1) UC="UC1"; NAME="UC1_Cross_Sell" ;;
+  UC2|uc2) UC="UC2"; NAME="UC2_Propensity_To_Pay" ;;
   *) echo "Usage: bash prep/stage_recording.sh UC1|UC2" >&2; exit 1 ;;
 esac
 
 SRC="$REPO_DIR/recording_workspace/$NAME"
-DEST="$HOME/Desktop/$NAME"
 [ -x "$REPO_DIR/.venv/bin/python" ] || { echo "Run 'bash setup_mac.sh' first." >&2; exit 1; }
 
-if [ -e "$DEST" ]; then
-  BACKUP="$HOME/Rehearsal_Backups/${NAME}_$(date +%Y%m%d_%H%M%S)"
-  mkdir -p "$HOME/Rehearsal_Backups"
-  mv "$DEST" "$BACKUP"
-  echo "Moved previous $NAME to $BACKUP"
-fi
+GROUP="${STAGE_DESTINATION:-$(dirname "$REPO_DIR")}/Mercor_$UC"
+mkdir -p "$GROUP"
+# next free version number: v1, v2, ...
+LAST=$(find "$GROUP" -mindepth 1 -maxdepth 1 -type d -name "${NAME}_v*" | sed -n 's/.*_v\([0-9][0-9]*\)$/\1/p' | sort -n | tail -1)
+FOLDER="${NAME}_v$(( ${LAST:-0} + 1 ))"
+DEST="$GROUP/$FOLDER"
 
 cp -R "$SRC" "$DEST"
 # empty working folders for the pipeline outputs (git does not keep empty folders)
@@ -58,5 +58,5 @@ EOF
 echo "Staged clean workspace: $DEST"
 (cd "$DEST/Deliverables" && find . -mindepth 1 -maxdepth 2 -not -name ".*" | sort | sed "s|^./||")
 echo
-echo "Open it in VS Code:  File > Open Folder... > Desktop > $NAME"
+echo "Open it in VS Code:  File > Open Folder... > $GROUP > $FOLDER"
 echo "Then follow PART 2 of the recording script (UC1_RECORDING_SCRIPT.md / UC2_RECORDING_SCRIPT.md)"
