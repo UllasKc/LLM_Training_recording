@@ -122,7 +122,7 @@ If **Select Kernel** doesn't list `ds-venv`, see Troubleshooting.
 - [ ] **Teams, Outlook, Slack and any chat apps quit** (not just minimised); org pop-ups on camera are the most common problem
 - [ ] **Do not disturb on:** Settings → System → Notifications → Do not disturb
 - [ ] Display scale 100–125% (Settings → System → Display); maximise windows
-- [ ] Desktop tidy: no stray files or icons (or right-click Desktop → View → untick "Show desktop icons"); open the newest `CnxMercor_UC1C1_CROSS_SELL_VN` FOLDER FROM FILE EXPLORER
+- [ ] Desktop tidy: no stray files or icons (or right-click Desktop → View → untick "Show desktop icons"); open the newest `Cnx\Mercor_UC1\UC1_Cross_Sell_vN` folder from File Explorer
 - [ ] Copilot / AI features off in VS Code; no AI assistants in any app (don't click any Copilot button in Office)
 - [ ] Headset mic, quiet room
 - [ ] `Task Notes.md` open as a **preview in VS Code** before you start recording
