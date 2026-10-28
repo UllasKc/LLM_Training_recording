@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WS = ROOT / "recording_workspace"
 
-PACKAGES = {"numpy": "2.0.2", "pandas": "2.2.3", "sklearn": "1.5.2", "matplotlib": "3.9.2",
+PACKAGES = {"numpy": "2.0.2", "pandas": "2.2.3", "sklearn": "1.5.2", "scipy": "1.14.1", "matplotlib": "3.9.2",
             "seaborn": "0.13.2", "shap": "0.46.0", "joblib": "1.4.2", "openpyxl": "3.1.5",
             "docx": None, "ipykernel": "6.29.5"}
 
