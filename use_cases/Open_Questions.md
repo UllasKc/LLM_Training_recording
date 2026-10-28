@@ -14,6 +14,7 @@ Status values: `Open` · `Waiting` (asked someone) · `Resolved`
 | Q8 | Can the org laptop reach github.com and pypi.org, or must pip use an internal mirror / proxy? | setup_windows downloads packages from PyPI | Direct access | WINDOWS_SETUP.md §3 | Open | | |
 | Q9 | Which screen recorder is allowed on the org laptop for the internal-review take (Snipping Tool / OBS / other)? | Internal approval needs a practice video | Snipping Tool | WINDOWS_SETUP.md §7 | Open | | |
 | Q10 | Does Mercor/partner accept a **pre-written pipeline** (prepared before recording, with planted issues fixed on camera) as a pre-existing asset? | Mercor bans AI tools *during* recording and asks for pre-existing assets to be documented; it says nothing about how those assets were prepared. The internal benchmark used pre-written code | Yes: it's declared as pre-existing code in Metadata and the pitch, as the benchmark did. You must understand every line | UC1 2_Code, Metadata.rtf, pitch | Open | | |
+| Q11 | Backup plan: use a prebuilt Docker image instead of installing Python on the Mac? | Only needed if Python 3.12 can't be installed (no admin rights) or the package install fails. Plan: GitHub Actions builds a tested ARM64 + x86 image to ghcr.io (public, no login to pull); VS Code opens the folder with Dev Containers; on camera only a small "Dev Container" label differs | Not set up; current plan is Python 3.12 + setup_mac.sh. Ask Claude to set it up if needed | .devcontainer/, .github/workflows/, both scripts Part 1 | Open | | |
 
 ## Resolved
 
