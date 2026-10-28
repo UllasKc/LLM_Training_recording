@@ -57,10 +57,15 @@ $Settings = @"
   "workbench.startupEditor": "none",
   "files.exclude": { "**/.vscode": true, "**/.ipynb_checkpoints": true, "**/desktop.ini": true, "**/__pycache__": true, "Metadata.rtf": true },
   "workbench.editorAssociations": { "*.md": "vscode.markdown.preview.editor" },
-  "jupyter.notebookFileRoot": "`${fileDirname}"
+  "jupyter.notebookFileRoot": "`${fileDirname}",
+  "python.envFile": "`${workspaceFolder}/.vscode/kernel.env"
 }
 "@
 [IO.File]::WriteAllText((Join-Path $VscodeDir "settings.json"), $Settings, (New-Object Text.UTF8Encoding $false))
+# environment for the notebook kernel: silences joblib's long CPU-count warning on Windows 11
+$Loky = [Environment]::GetEnvironmentVariable("LOKY_MAX_CPU_COUNT", "User")
+if (-not $Loky) { $Loky = [Math]::Max(1, [int]$env:NUMBER_OF_PROCESSORS - 1) }
+[IO.File]::WriteAllText((Join-Path $VscodeDir "kernel.env"), "LOKY_MAX_CPU_COUNT=$Loky`n", (New-Object Text.UTF8Encoding $false))
 (Get-Item $VscodeDir).Attributes = (Get-Item $VscodeDir).Attributes -bor [IO.FileAttributes]::Hidden
 
 Write-Host "Staged clean workspace: $Dest"

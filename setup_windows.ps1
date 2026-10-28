@@ -95,6 +95,13 @@ $Physical = (Get-CimInstance Win32_Processor | Measure-Object -Property NumberOf
 if (-not $Physical -or $Physical -ge $Logical) { $Physical = [Math]::Max(1, $Logical - 1) }
 [Environment]::SetEnvironmentVariable("LOKY_MAX_CPU_COUNT", "$Physical", "User")
 $env:LOKY_MAX_CPU_COUNT = "$Physical"
+# also store it in the kernel itself: an already-running VS Code doesn't see new user variables
+$KernelJson = Join-Path $env:APPDATA "jupyter\kernels\$KernelName\kernel.json"
+if (Test-Path $KernelJson) {
+    $Spec = Get-Content $KernelJson -Raw | ConvertFrom-Json
+    $Spec | Add-Member -NotePropertyName env -NotePropertyValue @{ LOKY_MAX_CPU_COUNT = "$Physical" } -Force
+    [IO.File]::WriteAllText($KernelJson, ($Spec | ConvertTo-Json -Depth 5), (New-Object Text.UTF8Encoding $false))
+}
 
 Say "Verifying setup"
 Invoke-Checked $VenvPy @("prep\verify_setup.py") "Verification"
