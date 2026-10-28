@@ -21,7 +21,7 @@ The approved use case (predict which customers will make the next payment; build
 |---|---|---|---|
 | 1 | VS Code **or Internal AutoML Tool** | VS Code (Jupyter) only | Reviewers can't check a proprietary tool |
 | 2 | Terminal, GitHub Desktop, "commit with README" | No Git on camera; README and model package generated into `4_Output` | Your decision |
-| 3 | Code written during the video | The **team's existing pipeline** (config + 4 notebooks, built for last year's extract) is a **pre-existing asset**, run, debugged (5 issues) and interpreted on camera | Matches the internal benchmark and Mercor's "diagnosing an existing data pipeline" pattern |
+| 3 | Code written during the video | The **expert's own pipeline** (config + 4 notebooks, prepared for this request) is a **pre-existing asset**, walked through, run end to end for the first time, debugged (5 issues) and interpreted on camera | Matches the internal benchmark and Mercor's "diagnosing issues in a data pipeline" pattern |
 | 4 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **VS Code (notes) → Firefox (brief) → Calc (pivot EDA) → VS Code → Calc (el (validation) → PowerPoint** | Multiple connected apps |
 | 5 | "Split appropriately into train and test" | **Out-of-time** (train Jan–Apr, calibrate May, test June), **day-7 scoring point**, **calibration**, business-rule baseline, capacity-constrained work list | Different from UC1 (avoids duplicate-task rejection) and passes the intern test |
 | 6 | Output: notebook; repo; 3-slide summary | Pivot workbook; corrected pipeline + model package; validated June work list; summary deck | Labelled `input N` / `artifact N` / `final output N` |
@@ -33,12 +33,12 @@ The approved use case (predict which customers will make the next payment; build
 ## 2. Mercor Studio idea submission (copy into the fields)
 
 **Goal**
-Give the collections team a June agent work list that puts 25 agents where the unpaid money is. Explore the January–June 2026 collections extract, run the team's existing propensity-to-pay pipeline on it, fix what the new extract and earlier code changes break, validate out of time on June, calibrate the probabilities, and show that the list covers more unpaid amount than today's "most overdue first" rule.
+Give the collections team a June agent work list that puts 25 agents where the unpaid money is. Explore the January–June 2026 collections extract, walk through and run the propensity-to-pay pipeline built for this request, fix what its first full run exposes, validate out of time on June, calibrate the probabilities, and show that the list covers more unpaid amount than today's "most overdue first" rule.
 
 **Starting material**
 - `input 1 - collections accounts.csv`: 20,240 rows / 20,000 accounts entering collections Jan–Jun 2026, 29 attributes, label `paid_within_30d` (43%, falling from 50% to 37%)
 - `input 2 - data dictionary.xlsx`; `input 3 - collections strategy brief.pdf` (capacity, day-7 rule, out-of-time and calibration requirements, exclusions, acceptance criteria); `input 4 - summary deck template.pptx`
-- **Pre-existing code:** `2_Code/` holds the team's pipeline (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 work list & packaging), not yet run on this extract
+- **Pre-existing code:** `2_Code/` holds the pipeline built for this request (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 work list & packaging), not yet run end to end on the full extract
 
 **Apps**
 Firefox (PDF brief), LibreOffice Calc (pivot tables, formulas), Visual Studio Code (Markdown preview, Jupyter, Python: pandas, scikit-learn, SHAP), LibreOffice Impress, Finder
@@ -53,7 +53,7 @@ June (out-of-time) ROC-AUC ≥ 0.78; beats the logistic baseline on PR-AUC; cali
 Cure rates fall every month and the collections target is being missed. Agents call the most overdue accounts first, spending time on customers who would pay anyway and missing high-value accounts that need help.
 
 **Pitch: solution**
-A senior data scientist profiles the extract with LibreOffice Calc pivot tables, then runs the team's pipeline and fixes five issues: day-first dates silently parsed into the wrong months, zero incomes breaking the affordability ratio, a training window overlapping the calibration month, a contact count that leaks the outcome (exposed by permutation importance), and a ranking that prioritised customers likely to pay. Validated on June, the model reaches ROC-AUC 0.825; calibration corrects a 9-point over-prediction; and the agent list covers 81% of June's unpaid amount vs 47% for the current rule, with the same capacity.
+A senior data scientist profiles the extract with LibreOffice Calc pivot tables, then walks through and runs their pipeline and fixes five issues: day-first dates silently parsed into the wrong months, zero incomes breaking the affordability ratio, a training window overlapping the calibration month, a contact count that leaks the outcome (exposed by permutation importance), and a ranking that prioritised customers likely to pay. Validated on June, the model reaches ROC-AUC 0.825; calibration corrects a 9-point over-prediction; and the agent list covers 81% of June's unpaid amount vs 47% for the current rule, with the same capacity.
 
 ---
 
@@ -88,7 +88,7 @@ A senior data scientist profiles the extract with LibreOffice Calc pivot tables,
 | File | Made by |
 |---|---|
 | `1_Input/input 1–4` | pre-loaded |
-| `1_Input/input 5 - pipeline code as received/` | added by the packager (original code) |
+| `1_Input/input 5 - pipeline code before the run/` | added by the packager (original code) |
 | `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | LibreOffice Calc |
 | `artifact 2 - cleaned accounts.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `artifact 4 - time split.csv` · `artifact 5 - trained models/` (+ calibrator) | notebooks 02–03 |

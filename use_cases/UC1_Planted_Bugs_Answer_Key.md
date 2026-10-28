@@ -4,9 +4,9 @@
 
 ## Story you tell on camera
 
-*"The team built this pipeline for an earlier snapshot. The warehouse has since changed the extract: new date formats, new region codes and new columns. I'm running it on the 30 June snapshot for the first time, so I expect it to need fixes."*
+*"I've built this pipeline for the request. Today I walk you through it and run it end to end on the full 30 June snapshot for the first time, checking every result and fixing what the run exposes."*
 
-Every bug below fits that story: they are schema-drift and code-review problems a senior data scientist finds in someone else's pipeline. Fix them the way an expert would: **read the error → say what it means → find the cause → make the smallest correct fix → re-run → confirm.**
+Every bug below fits that story: they are data-quality and code-review problems a senior data scientist catches in their own first full run. Fix them the way an expert would: **read the error → say what it means → find the cause → make the smallest correct fix → re-run → confirm.**
 
 How to re-run after each fix: notebook toolbar **Restart** → **Run All**. Every notebook runs in seconds. For a fix in `pipeline_config.py`, save the file first (**File → Save**), then Restart and Run All in the notebook.
 
@@ -14,10 +14,10 @@ Proven by `prep/selftest_uc1.py`: every bug fails as described here and every fi
 
 | # | Where | Symptom you'll see | Root cause | Fix |
 |---|---|---|---|---|
-| **P1** | `01_data_preprocessing.ipynb`, section 3 "Dates and tenure" | **ValueError**: `time data "30/08/2023" doesn't match format "%Y-%m-%d"` | The new extract has some `customer_since` dates in DD/MM/YYYY | Use the config's `cfg.parse_dates(...)` helper (one line) |
+| **P1** | `01_data_preprocessing.ipynb`, section 3 "Dates and tenure" | **ValueError**: `time data "30/08/2023" doesn't match format "%Y-%m-%d"` | The extract has some `customer_since` dates in DD/MM/YYYY; the cell only parses ISO | Use the config's `cfg.parse_dates(...)` helper (one line) |
 | **P2** | `01_data_preprocessing.ipynb`, section 4 "Category labels" | **AssertionError**: `unexpected regions: [' South', 'Central', 'East', 'East ', 'North', 'North ', 'South', 'West']` | Region cleaning doesn't strip spaces (the product line below it does) | Add `.str.strip()` |
 | **T1** | `pipeline_config.py`, `build_baseline()` (surfaces in `02_model_training.ipynb`, section 2) | **ValueError**: `Input X contains NaN. LogisticRegression does not accept missing values…` | The baseline pipeline has no imputer; `age`, `avg_monthly_balance` and `credit_score` legitimately contain NaN | Wrap the scaler with a median `SimpleImputer` |
-| **T2** | `pipeline_config.py`, `LEAKY_COLUMNS` (surfaces in `02`, section 2) | No error, but **CV ROC-AUC ≈ 0.98** for both models: too good to be true | `welcome_pack_sent` (a new column) is populated after the purchase and isn't excluded | Add it to `LEAKY_COLUMNS` |
+| **T2** | `pipeline_config.py`, `LEAKY_COLUMNS` (surfaces in `02`, section 2) | No error, but **CV ROC-AUC ≈ 0.98** for both models: too good to be true | `welcome_pack_sent` is populated after the purchase and isn't excluded | Add it to `LEAKY_COLUMNS` |
 | **E1** | `03_model_testing.ipynb`, section 1 "Hold-out metrics" | No error, but **hold-out ROC-AUC ≈ 0.58** after CV ≈ 0.80, and the acceptance checks show `False` | Metrics are computed on `predict()` (0/1 labels at a 0.5 threshold) instead of probabilities | Use `predict_proba(X_test)[:, 1]` |
 
 ---
@@ -28,7 +28,7 @@ Proven by `prep/selftest_uc1.py`: every bug fails as described here and every fi
 ```python
 df["customer_since"] = pd.to_datetime(df["customer_since"], format="%Y-%m-%d")
 ```
-**Say:** "The parser fails at position 13 on '30/08/2023'. That's day-first, not ISO. The new extract mixes two formats. I won't let pandas guess, because 05/03 is ambiguous. The config already has a `parse_dates` helper that reads both formats explicitly; this notebook isn't using it."
+**Say:** "The parser fails at position 13 on '30/08/2023'. That's day-first, not ISO. The extract mixes two formats. I won't let pandas guess, because 05/03 is ambiguous. I wrote a `parse_dates` helper in the config that reads both formats explicitly; this cell only parsed ISO, so I'll switch it to the helper."
 **Fixed** (one line):
 ```python
 df["customer_since"] = cfg.parse_dates(df["customer_since"])
@@ -41,7 +41,7 @@ df["customer_since"] = cfg.parse_dates(df["customer_since"])
 ```python
 df["region"] = df["region"].str.lower().replace(REGION_FIXES).str.title()
 ```
-**Say:** "The check expected 5 regions and found 8: 'North' and 'North ' with a trailing space, ' South' with a leading one. I saw the same in the Calc pivot. The product line underneath strips whitespace, but the region line doesn't."
+**Say:** "The check expected 5 regions and found 8: 'North' and 'North ' with a trailing space, ' South' with a leading one. I saw the same in the Calc pivot. The product line underneath strips whitespace, but I left it out of the region line."
 **Fixed:**
 ```python
 df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.title()
@@ -55,7 +55,7 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 ```python
         ("num", StandardScaler(), numeric_columns(df)),
 ```
-**Say:** "Logistic regression can't take missing values. Age, balance and credit score still have NaNs, which I deliberately left for the model pipeline. Gradient boosting handles NaN natively, the baseline doesn't. `SimpleImputer` is even imported at the top of the config but never used, so this was simply forgotten. I'll impute with the median inside the pipeline so it's learned on training folds only."
+**Say:** "Logistic regression can't take missing values. Age, balance and credit score still have NaNs, which I deliberately left for the model pipeline. Gradient boosting handles NaN natively, the baseline doesn't. I imported `SimpleImputer` at the top of the config but never added it here; I'd only tried the boosting model, which doesn't need it. I'll impute with the median inside the pipeline so it's learned on training folds only."
 **Fixed:**
 ```python
         ("num", make_pipeline(SimpleImputer(strategy="median"), StandardScaler()), numeric_columns(df)),
@@ -68,7 +68,7 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 ```python
 LEAKY_COLUMNS = ["cross_sell_product_type"]         # populated only after the purchase
 ```
-**Say:** "Cross-validated AUC is 0.98 for both models. For a marketing propensity model that's not a win, it's a red flag. In the pivot, customers with a welcome pack converted 85% vs under 1% without. A welcome pack is sent *after* someone opens a product. It's a new column in this extract and the exclusion list predates it."
+**Say:** "Cross-validated AUC is 0.98 for both models. For a marketing propensity model that's not a win, it's a red flag. In the pivot, customers with a welcome pack converted 85% vs under 1% without. A welcome pack is sent *after* someone opens a product. So it goes on the leaky-column list next to the product type."
 **Optional one-line proof** (type it in a new cell below, then delete it or keep it):
 ```python
 df.groupby("welcome_pack_sent")[cfg.TARGET].mean()

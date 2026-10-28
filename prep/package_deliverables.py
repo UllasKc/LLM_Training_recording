@@ -12,7 +12,7 @@ Checks
   - no notebook contains an error output (and warns about notebooks that were never run)
 
 Builds  <workspace>/Deliverables.zip  with the Mercor layout:
-  1_Input/        inputs 1-4  +  "input 5 - pipeline code as received"  (the original code, from this repo)
+  1_Input/        inputs 1-4  +  "input 5 - pipeline code before the run"  (the original code, from this repo)
   3_Intermediate/ artifacts
   4_Output/       final outputs 1-3  +  "final output 4 - corrected pipeline code"  (your fixed 2_Code)
 Junk (__pycache__, .ipynb_checkpoints, .vscode, .DS_Store, desktop.ini, Office lock files) is left out.
@@ -169,7 +169,7 @@ def main():
                 continue
             zf.write(path, Path("Deliverables") / rel)
             count += 1
-        for src, dest in [(original_code, "1_Input/input 5 - pipeline code as received"),
+        for src, dest in [(original_code, "1_Input/input 5 - pipeline code before the run"),
                           (code_dir, "4_Output/final output 4 - corrected pipeline code")]:
             for path in sorted(src.rglob("*")):
                 rel = path.relative_to(src)

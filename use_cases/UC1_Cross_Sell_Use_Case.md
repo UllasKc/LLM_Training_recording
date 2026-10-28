@@ -21,7 +21,7 @@ The approved use case (predict which existing customers will buy another product
 |---|---|---|---|
 | 1 | VS Code **or Internal AutoML Tool** | VS Code (Jupyter) only | Reviewers can't check a proprietary tool; expert judgment must be visible |
 | 2 | Terminal, GitHub Desktop, "commit with README" | No Git on camera. README and model package generated into `4_Output` | Your decision (no Git in the demo) |
-| 3 | Code written during the video | The **team's existing pipeline** (config + 4 notebooks, built for an earlier snapshot) is a **pre-existing asset**; on camera the expert runs it on the new extract, **diagnoses and fixes 5 issues**, and interprets every result | Matches the internal benchmark recording and Mercor's accepted pattern ("diagnosing schema drift in an existing data pipeline"); keeps 35–40 min focused on judgment instead of typing |
+| 3 | Code written during the video | The **expert's own pipeline** (config + 4 notebooks, prepared for this request) is a **pre-existing asset**; on camera the expert walks through it, runs it end to end for the first time, **diagnoses and fixes 5 issues**, and interprets every result | Matches the internal benchmark recording and Mercor's accepted pattern ("diagnosing issues in a data pipeline"); keeps 35–40 min focused on judgment instead of typing |
 | 4 | Apps: VS Code, Terminal, GitHub Desktop, PowerPoint | **VS Code (notes) → Firefox (brief) → Calc (pivot EDA) → VS Code → Calc (el (ROI) → PowerPoint** | Multiple connected apps: the benchmark spends 5–10 min on Excel pivots |
 | 5 | "Starting material: CSV" | CSV + data dictionary + campaign brief + **deck template** | Business context, constraints and acceptance criteria are mandatory |
 | 6 | Generic "train baseline and improve" | Leakage, compliance (opt-in, no gender), budget-constrained **out-of-fold back-test** with ROI | Passes the intern test; real outcomes prove the value |
@@ -32,12 +32,12 @@ The approved use case (predict which existing customers will buy another product
 ## 2. Mercor Studio idea submission (copy into the fields)
 
 **Goal**
-Before Marketing commits its Q4 cross-sell budget, prove that model-based targeting beats random contact. Explore the 30-Jun-2026 customer snapshot, run the team's existing cross-sell pipeline on it, diagnose and fix what the new extract breaks, validate the model against acceptance criteria, and back-test the 4,000 customers it would have selected against their actual July–September outcomes.
+Before Marketing commits its Q4 cross-sell budget, prove that model-based targeting beats random contact. Explore the 30-Jun-2026 customer snapshot, walk through and run the cross-sell pipeline built for this request, diagnose and fix what its first full run exposes, validate the model against acceptance criteria, and back-test the 4,000 customers it would have selected against their actual July–September outcomes.
 
 **Starting material**
 - `input 1 - customers.csv`: 20,260 rows / 20,000 customers (CRM-merge duplicates), 25 attributes, label `next_product_purchased_90d` (Jul–Sep, 11.6%)
 - `input 2 - data dictionary.xlsx`; `input 3 - campaign brief.pdf` (budget, $4/contact, $150 margin, opt-in only, no gender, exclude 2+ complaints, acceptance criteria); `input 4 - summary deck template.pptx`
-- **Pre-existing code:** `2_Code/` holds the team's pipeline (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 back-test & packaging), written for an earlier snapshot and not yet run on this extract
+- **Pre-existing code:** `2_Code/` holds the pipeline built for this request (`pipeline_config.py` + notebooks 01 preprocessing, 02 training, 03 testing, 04 back-test & packaging), not yet run end to end on the full snapshot
 
 **Apps**
 Firefox (PDF brief), LibreOffice Calc (pivot tables, formulas), Visual Studio Code (Markdown preview, Jupyter, Python: pandas, scikit-learn, SHAP), LibreOffice Impress, Finder
@@ -49,10 +49,10 @@ Exploratory pivot workbook; corrected pipeline with outputs; cleaned data and da
 Hold-out ROC-AUC ≥ 0.78; beats the logistic baseline on PR-AUC; top-20% lift ≥ 2.5×; no leaky or protected fields; back-test list of exactly 4,000 compliant customers, scored out of fold, converting at ≥ 2× the eligible average; profit compared with random selection.
 
 **Pitch: problem statement**
-Cross-selling to existing customers is the cheapest growth lever, but random campaigns convert only ~1 in 9. Marketing needs evidence, on real outcomes, that targeting pays before committing budget, and an existing pipeline has to work on a changed data extract.
+Cross-selling to existing customers is the cheapest growth lever, but random campaigns convert only ~1 in 9. Marketing needs evidence, on real outcomes, that targeting pays before committing budget.
 
 **Pitch: solution**
-A senior data scientist profiles the new extract with LibreOffice Calc pivot tables (pivots reveal duplicates, label drift, a leaking column and non-random missing income), runs the team's pipeline on it, and fixes five issues: two schema-drift breaks (date format, region labels), a missing imputer, a newly added leaky column that inflates AUC to 0.98, and an evaluation bug that scored labels instead of probabilities. The fixed model reaches ROC-AUC 0.81 and 2.8× top-20% lift. An out-of-fold back-test shows the 4,000 customers it would have picked converted 1,312 times vs 546 at random, worth $181k vs $66k on the same budget.
+A senior data scientist profiles the extract with LibreOffice Calc pivot tables (pivots reveal duplicates, label drift, a leaking column and non-random missing income), walks through and runs their pipeline, and fixes five issues: two data-quality breaks (date format, region labels), a missing imputer, a leaky column that inflates AUC to 0.98, and an evaluation bug that scored labels instead of probabilities. The fixed model reaches ROC-AUC 0.81 and 2.8× top-20% lift. An out-of-fold back-test shows the 4,000 customers it would have picked converted 1,312 times vs 546 at random, worth $181k vs $66k on the same budget.
 
 ---
 
@@ -72,7 +72,7 @@ Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 **Multi-phase workflow**
 1. Brief (PDF in Firefox) and dictionary (LibreOffice Calc): constraints, leakage suspects.
 2. LibreOffice Calc pivot tables on the raw extract: conversion by product count, region label drift, the welcome-pack leak, income missingness by segment → **artifact 1**.
-3. Review the existing pipeline structure and config in VS Code.
+3. Walk through the pipeline structure and config in VS Code.
 4. Run 01 preprocessing → fix **P1** (date formats) and **P2** (region labels) → artifacts 2–3.
 5. Run 02 training → fix **T1** (missing imputer) and **T2** (leaky column) → artifacts 4–5.
 6. Run 03 testing → fix **E1** (labels vs probabilities) → artifacts 6–7, acceptance check.
@@ -97,7 +97,7 @@ Python 3.12 venv with the `Python 3.12 (ds-venv)` kernel.
 | File | Made by |
 |---|---|
 | `1_Input/input 1 - customers.csv`, `input 2 - data dictionary.xlsx`, `input 3 - campaign brief.pdf`, `input 4 - summary deck template.pptx` | pre-loaded |
-| `2_Code/*` | pre-loaded pipeline, **corrected on camera**. In `Deliverables.zip` the packager (`prep/package_deliverables`) delivers the original as `1_Input/input 5 - pipeline code as received/` and your corrected version as `4_Output/final output 4 - corrected pipeline code/` |
+| `2_Code/*` | pre-loaded pipeline, **corrected on camera**. In `Deliverables.zip` the packager (`prep/package_deliverables`) delivers the original as `1_Input/input 5 - pipeline code before the run/` and your corrected version as `4_Output/final output 4 - corrected pipeline code/` |
 | `3_Intermediate/artifact 1 - exploratory pivot analysis.xlsx` | LibreOffice Calc |
 | `3_Intermediate/artifact 2 - cleaned customers.csv` · `artifact 3 - data quality log.csv` | notebook 01 |
 | `3_Intermediate/artifact 4 - train test split.csv` · `artifact 5 - trained models/` | notebook 02 |

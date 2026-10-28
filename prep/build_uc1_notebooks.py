@@ -2,7 +2,7 @@
 Build the four UC1 pipeline notebooks (without outputs) into
 recording_workspace/UC1_Cross_Sell/Deliverables/2_Code/.
 
-The notebooks are the team's "existing pipeline" that the expert runs, debugs and
+The notebooks are the expert's own pipeline that they walk through, run, debugs and
 completes on camera. They deliberately contain the planted bugs documented in
 use_cases/UC1_Planted_Bugs_Answer_Key.md. Do NOT open this script on camera.
 

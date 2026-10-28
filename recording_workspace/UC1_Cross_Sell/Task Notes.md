@@ -4,12 +4,12 @@
 
 ## Starting point
 - **1_Input**: customers.csv (20,000 customers, 30 Jun 2026 snapshot, Jul–Sep outcome) · data dictionary · campaign brief (PDF) · deck template
-- **2_Code**: the team's existing cross-sell pipeline (config + 4 notebooks), built for an earlier snapshot, not yet run on this extract
+- **2_Code**: my cross-sell pipeline (config + 4 notebooks), built for this request, first full run today
 
 ## Plan
 1. Brief + dictionary: constraints and leakage suspects
 2. LibreOffice Calc pivots on the raw extract: conversion drivers, data quality, leakage, missing data
-3. Run the pipeline on the new extract and fix what breaks: preprocessing → training → testing → back-test
+3. Walk through and run the pipeline end to end, fixing what the run exposes: preprocessing → training → testing → back-test
 4. Validate the back-test ROI in Calc
 5. Complete the summary deck in Impress
 

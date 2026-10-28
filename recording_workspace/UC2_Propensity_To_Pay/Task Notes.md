@@ -4,7 +4,7 @@
 
 ## Starting point
 - **1_Input**: collections accounts (20,000 accounts entering collections Jan–Jun 2026) · data dictionary · strategy brief (PDF) · deck template
-- **2_Code**: the team's existing collections pipeline (config + 4 notebooks), built for last year's extract, not yet run on this one
+- **2_Code**: my propensity-to-pay pipeline (config + 4 notebooks), built for this request, first full run today
 
 ## Plan
 1. Brief + dictionary: day-7 decision point, capacity, leakage suspects

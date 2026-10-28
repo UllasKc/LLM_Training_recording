@@ -2,7 +2,7 @@
 
 > Prep document, never on screen. Everything here is also inside [UC2_RECORDING_SCRIPT.md](../UC2_RECORDING_SCRIPT.md), which is the file to follow during the take. Proven by `prep/selftest_uc2.py`.
 
-**Story on camera:** *"The team's collections pipeline was built for last year's extract. I'm running it on the January–June 2026 extract for the first time."*
+**Story on camera:** *"I've built this collections pipeline for the request. Today I walk you through it and run it end to end on the full January–June 2026 extract for the first time."*
 
 After each fix: (save the config if you changed it) → notebook **Restart** → **Run All**.
 

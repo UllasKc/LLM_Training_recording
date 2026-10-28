@@ -81,8 +81,8 @@
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of Collections Strategy.
 > Every month about three and a half thousand accounts fall into early collections: credit cards, personal loans and buy-now-pay-later. Our twenty-five agents can work about thirty-seven percent of them in depth, and today they simply call the most overdue accounts first.
 > Cure rates have been falling all year and we're missing target. So they want a propensity-to-pay model, and a June work list that puts the agents where the unpaid money really is.
-> Our team has a collections pipeline from last year that hasn't been run on this extract.
-> My plan: read the brief and the dictionary, explore the data in LibreOffice Calc, run the pipeline and fix what breaks, validate out of time, and build the June list. I'm done when the criteria at the bottom are met."
+> I've built a propensity-to-pay pipeline for this request: a configuration file and four notebooks. Today I'll walk you through it and run it end to end on the full extract for the first time.
+> My plan: read the brief and the dictionary, explore the data in LibreOffice Calc, walk through and run my pipeline, fixing anything the first full run exposes, validate out of time, and build the June list. I'm done when the criteria at the bottom are met."
 
 ▶ **DO** Minimise VS Code.
 
@@ -176,16 +176,16 @@
 
 ---
 
-### Scene 5 · The existing pipeline (10:30–12:00), VS Code
+### Scene 5 · My pipeline (10:30–12:00), VS Code
 
 ▶ **DO** Click **VS Code** in the taskbar (Mac: Dock) → maximise. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py** and scroll slowly.
 
 🎙 **SAY**
-> "Back in VS Code. This is the team's pipeline: one configuration file and four notebooks: preprocessing, training, testing, and the work list with packaging.
+> "Back in VS Code. This is the pipeline I've built: one configuration file and four notebooks: preprocessing, training, testing, and the work list with packaging.
 > The business rules from the brief are here: scoring on day seven, thirty-seven percent agent capacity, and the time windows: train on months one to four, calibrate on month five, test on month six.
-> The leaky-column list currently has the account status and the recovered amount. I noted a third suspect in the dictionary, so I'll watch for it.
+> In the leaky-column list I've put the account status and the recovered amount. I noted a third suspect in the dictionary, so I'll watch for it.
 > Dispute and hardship are kept as model inputs, but those accounts are routed to the specialist team. There's also a small date-parsing helper.
-> It was built for last year's extract. Let's run it on this one."
+> This is its first run on the complete extract, so let's run it and check every result."
 
 ---
 
@@ -197,7 +197,7 @@
 `AssertionError: cohort months outside Jan-Jun: [7, 8, 9, 10, 11, 12]`
 
 🎙 **SAY**
-> "The extract only covers January to June, but the parsed dates include July to December. The code uses format 'mixed', which guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three silently becomes the third of May. That's inside the range, so nothing would ever flag it, and the account lands in the wrong month of my out-of-time split. The shared config already has a `parse_dates` helper that reads ISO and day-first dates explicitly, so I'll use it instead of guessing."
+> "The extract only covers January to June, but the parsed dates include July to December. I used format 'mixed' here, which guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three silently becomes the third of May. That's inside the range, so nothing would ever flag it, and the account lands in the wrong month of my out-of-time split. I wrote a `parse_dates` helper in the config that reads ISO and day-first dates explicitly, so I'll use it instead of guessing."
 
 ▶ **DO** Click the **pipeline_config.py** tab → hover over the `parse_dates` function → back to the notebook.
 
@@ -249,7 +249,7 @@ df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 
 🎙 **SAY**
 > "First the bar chart: the pay rate falls every month, from about fifty percent in January to thirty-seven in June. That's exactly why a random split would be misleading, and why calibration matters.
-> Then the split fails: training and calibration overlap. The training filter says 'cohort month less than or equal to the calibration month', so May is in both. It's an off-by-one in the time window. The config already defines the training months, so I'll use them."
+> Then the split fails: training and calibration overlap. My training filter says 'cohort month less than or equal to the calibration month', so May is in both. It's an off-by-one in my time window. The config already defines the training months, so I'll use them."
 
 🔧 **FIX T1** In section 2, change:
 ```python
@@ -297,7 +297,7 @@ LEAKY_COLUMNS = ["account_status_at_extract", "amount_recovered_30d", "total_con
 ▶ **DO** Scroll to section 3 and hover over the `expected_unpaid` line.
 
 🎙 **SAY**
-> "Here: expected unpaid is calculated as the probability of paying times the amount due. That ranks the accounts most *likely to pay* at the top: the opposite of what we want. Expected unpaid is one minus the probability of paying, times the amount. Notebook four already uses one minus p, so this evaluation is simply inconsistent."
+> "Here: expected unpaid is calculated as the probability of paying times the amount due. That ranks the accounts most *likely to pay* at the top: the opposite of what we want. Expected unpaid is one minus the probability of paying, times the amount. Notebook four already uses one minus p; I got it backwards in this evaluation."
 
 🔧 **FIX E1** In section 3, change:
 ```python
@@ -403,7 +403,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 ▶ **DO** Open `Deliverables` and hover over each folder and file.
 
 🎙 **SAY**
-> "To wrap up: Input holds the four files I received, plus the original pipeline code, which is delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds the pivot analysis, cleaned accounts, quality log, time split, models and calibrator, the model comparison, charts and the June work list. Output holds the validated work list, the summary deck and the packaged model.
+> "To wrap up: Input holds the four files I received, plus my pipeline code as it was before this run, delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds the pivot analysis, cleaned accounts, quality log, time split, models and calibrator, the model comparison, charts and the June work list. Output holds the validated work list, the summary deck and the packaged model.
 > Five issues fixed: a date parser that silently put accounts in the wrong month, zero incomes that broke the affordability ratio, a training window that overlapped the calibration month, a contact count that leaked the outcome, and a ranking that prioritised the customers most likely to pay.
 > Every acceptance criterion is met, and the June list is ready for the team leads. Thank you."
 

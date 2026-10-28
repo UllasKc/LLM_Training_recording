@@ -50,7 +50,7 @@ LLM_Training_recording/
     │   ├── Metadata.rtf          upload separately to Mercor Studio
     │   └── Deliverables/
     │       ├── 1_Input/          input 1 data · input 2 dictionary · input 3 brief · input 4 deck template
-    │       ├── 2_Code/           team pipeline: pipeline_config.py + notebooks 01-04 (contains the planted bugs)
+    │       ├── 2_Code/           your pipeline: pipeline_config.py + notebooks 01-04 (contains the planted bugs)
     │       ├── 3_Intermediate/   created by staging; artifacts 1-8 are written here on camera
     │       └── 4_Output/         created by staging; final outputs 1-3 are written here on camera
     └── UC2_Propensity_To_Pay/   same layout: Task Notes.md, Metadata.rtf, Deliverables/1_Input · 2_Code · 3_Intermediate · 4_Output

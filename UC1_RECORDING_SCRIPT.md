@@ -103,8 +103,8 @@
 > Marketing contacts four thousand customers in every cross-sell campaign. Right now those customers are picked at random, and about one in nine buys another product.
 > Before they sign off the Q4 budget, they want proof that a model would do better.
 > We have a customer snapshot from the thirtieth of June, and we now know who bought an additional product between July and September.
-> Our team already has a cross-sell pipeline, but it was built for an earlier snapshot and hasn't been run on this extract yet.
-> So my plan is: read the brief and the data dictionary, explore the raw data in LibreOffice Calc, run the pipeline and fix whatever the new extract breaks, and then back-test: which four thousand customers would the model have picked, and how many of them actually bought.
+> I've built a cross-sell pipeline for this request: a configuration file and four notebooks. Today I'll walk you through it and run it end to end on the full snapshot for the first time.
+> So my plan is: read the brief and the data dictionary, explore the raw data in LibreOffice Calc, walk through and run my pipeline, fixing anything the first full run exposes, and then back-test: which four thousand customers would the model have picked, and how many of them actually bought.
 > I'm done when the criteria at the bottom of my notes are met."
 
 ▶ **DO** Click VS Code's **Minimise** button (the "–" at the top right; on the Mac, the yellow button at the top left).
@@ -237,22 +237,22 @@
 
 ---
 
-### Scene 5 · The existing pipeline (11:00–12:30), VS Code
+### Scene 5 · My pipeline (11:00–12:30), VS Code
 
 ▶ **DO** Click **VS Code** in the taskbar (Mac: the Dock) to bring it back → maximise. In the Explorer panel on the left, click **Deliverables** to expand it, then **1_Input**, **2_Code**, **3_Intermediate** and **4_Output** in turn.
 
 🎙 **SAY**
-> "Back in VS Code, where the project is open. Input holds the four files I've just looked at. Code holds the team's pipeline. Intermediate already has my pivot workbook, and Output is empty."
+> "Back in VS Code, where the project is open. Input holds the four files I've just looked at. Code holds the pipeline I've built for this request. Intermediate already has my pivot workbook, and Output is empty."
 
 ▶ **DO** Click **2_Code → pipeline_config.py**. Scroll slowly from top to bottom.
 
 🎙 **SAY**
-> "The pipeline has one shared configuration file and four notebooks that run in order: preprocessing, training, testing, and back-test with packaging.
+> "I've structured it as one shared configuration file and four notebooks that run in order: preprocessing, training, testing, and back-test with packaging.
 > At the top are the paths, and the four-notebook flow is described in the header.
 > Then the business rules from the brief: four thousand contacts, four dollars per contact, a hundred and fifty dollars margin, and a maximum of one complaint.
-> Then the columns: the target, the ID columns, gender as a protected column, and a list of leaky columns, which currently only contains `cross_sell_product_type`. I'll keep an eye on that, given what the pivot showed.
+> Then the columns: the target, the ID columns, gender as a protected column, and a list of leaky columns, where I've so far put only `cross_sell_product_type`. I'll keep an eye on that, given what the pivot showed.
 > A small helper for parsing dates, and at the bottom the two models: a logistic-regression baseline and histogram gradient boosting.
-> This was written for the earlier snapshot. Let's see how it handles the new one."
+> This is the first time it runs on the complete snapshot, so let's run it and check every result."
 
 ---
 
@@ -269,7 +269,7 @@
 `ValueError: time data "30/08/2023" doesn't match format "%Y-%m-%d", at position 13`
 
 🎙 **SAY**
-> "It stopped in the dates section. The error says the value thirty, slash, zero eight, slash, twenty twenty-three doesn't match the year-month-day format. That's a day-first date, so the new extract mixes two date formats. I won't let pandas guess, because a date like five, slash, three is ambiguous. The shared config already has a `parse_dates` helper that reads both formats explicitly and fails if anything is left over. This notebook just isn't using it."
+> "It stopped in the dates section. The error says the value thirty, slash, zero eight, slash, twenty twenty-three doesn't match the year-month-day format. That's a day-first date, so the extract mixes two date formats. I won't let pandas guess, because a date like five, slash, three is ambiguous. I wrote a `parse_dates` helper in the config for exactly this: it reads both formats explicitly and fails if anything is left over. But in this cell I only parsed ISO, so I'll switch it to the helper."
 
 ▶ **DO** Click the **pipeline_config.py** tab (or open it from the Explorer panel) → hover over the `parse_dates` function → go back to the notebook.
 
@@ -292,7 +292,7 @@ df["customer_since"] = cfg.parse_dates(df["customer_since"])
 `AssertionError: unexpected regions: [' South', 'Central', 'East', 'East ', 'North', 'North ', 'South', 'West']`
 
 🎙 **SAY**
-> "The dates are fixed: the helper reports nineteen thousand six hundred ISO dates and four hundred day-first dates. Now the label check fails: it expected five regions and found eight. There's 'North' and 'North' with a space at the end, and 'South' with a space at the front. That's exactly what I saw in the pivot. Looking at the code, the product line strips spaces, but the region line doesn't."
+> "The dates are fixed: the helper reports nineteen thousand six hundred ISO dates and four hundred day-first dates. Now the label check fails: it expected five regions and found eight. There's 'North' and 'North' with a space at the end, and 'South' with a space at the front. That's exactly what I saw in the pivot. Looking at my code, the product line strips spaces, but I left it out of the region line."
 
 🔧 **FIX P2** In section 4, change this line:
 ```python
@@ -344,7 +344,7 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 ▶ **DO** Click **pipeline_config.py** (tab or Explorer panel) → scroll to `build_baseline`.
 
 🎙 **SAY**
-> "Here's the baseline: a standard scaler on the numeric columns, but no imputer. And at the top of the file `SimpleImputer` is imported but never used, so it was simply forgotten. I'll put a median imputer in front of the scaler inside the pipeline, so it's learned only from the training folds."
+> "Here's the baseline: a standard scaler on the numeric columns, but no imputer. I imported `SimpleImputer` at the top of the file but never added it here; I'd only tried the boosting model, which doesn't need it. I'll put a median imputer in front of the scaler inside the pipeline, so it's learned only from the training folds."
 
 🔧 **FIX T1** In `build_baseline`, change:
 ```python
@@ -371,7 +371,7 @@ df.groupby("welcome_pack_sent")[cfg.TARGET].mean()
 ✔ **CHECK** `0  0.007` · `1  0.855`
 
 🎙 **SAY**
-> "Eighty-five percent with a welcome pack, under one percent without: the same as the pivot. It's a new column in this extract, and the leaky-column list in the config was written before it existed."
+> "Eighty-five percent with a welcome pack, under one percent without: the same as the pivot. So it goes on the leaky-column list in my config, next to the product type."
 
 🔧 **FIX T2** In `pipeline_config.py`, change:
 ```python
@@ -411,7 +411,7 @@ LEAKY_COLUMNS = ["cross_sell_product_type", "welcome_pack_sent"]   # populated o
 ▶ **DO** Scroll up to section 1 and hover over `model.predict(X_test)`.
 
 🎙 **SAY**
-> "Here it is: the scores come from `predict`, which returns zero-or-one labels at a fifty-percent threshold. ROC-AUC, PR-AUC and the Brier score all need probabilities. And because the lift table and calibration chart reuse these same scores, one fix corrects everything below it."
+> "Here it is: I took the scores from `predict`, which returns zero-or-one labels at a fifty-percent threshold. ROC-AUC, PR-AUC and the Brier score all need probabilities. And because the lift table and calibration chart reuse these same scores, one fix corrects everything below it."
 
 🔧 **FIX E1** In section 1, change:
 ```python
@@ -552,8 +552,8 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 ▶ **DO** In File Explorer, open `Deliverables` and hover over each folder and its files.
 
 🎙 **SAY**
-> "To wrap up. Input holds the four files I received, plus the original pipeline code, which is delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds my pivot analysis, the cleaned data and quality log, the train-test split, the trained models, the model comparison, the charts, and the back-test list. Output holds the validated target list with ROI, the summary deck, and the packaged model with its README.
-> I fixed five issues along the way: two caused by changes in the new extract, the date format and the region labels; a missing imputer in the baseline; a new column that leaked the outcome and inflated accuracy to 0.98; and an evaluation that scored labels instead of probabilities.
+> "To wrap up. Input holds the four files I received, plus my pipeline code as it was before this run, delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds my pivot analysis, the cleaned data and quality log, the train-test split, the trained models, the model comparison, the charts, and the back-test list. Output holds the validated target list with ROI, the summary deck, and the packaged model with its README.
+> I fixed five issues along the way: two data-quality issues in the extract, the date format and the region labels; a missing imputer in the baseline; a column that leaked the outcome and inflated accuracy to 0.98; and an evaluation that scored labels instead of probabilities.
 > Every acceptance criterion is met, and the model is ready to score the September snapshot for the Q4 campaign. Thank you."
 
 ▶ **DO** Stay silent for **3 seconds**.
