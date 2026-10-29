@@ -12,7 +12,7 @@ from pathlib import Path
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE
-from pptx.enum.text import PP_ALIGN
+from pptx.enum.text import MSO_AUTO_SIZE, PP_ALIGN
 from pptx.util import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,10 +27,11 @@ FILL = RGBColor(0xC2, 0x5B, 0x12)      # placeholder colour: anything orange sti
 PANEL = RGBColor(0xF1, 0xF4, 0xF8)
 
 
-def text_box(slide, x, y, w, h, runs, size=16, align=PP_ALIGN.LEFT, space_after=6):
+def text_box(slide, x, y, w, h, runs, size=16, align=PP_ALIGN.LEFT, space_after=6, wrap=True):
     """runs: list of paragraphs; each paragraph is a list of (text, bold, colour)."""
     tf = slide.shapes.add_textbox(x, y, w, h).text_frame
-    tf.word_wrap = True
+    tf.word_wrap = wrap
+    tf.auto_size = MSO_AUTO_SIZE.NONE
     for i, para in enumerate(runs):
         p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
         p.alignment = align
@@ -55,13 +56,14 @@ def header(slide, title, number, footer):
              size=10, align=PP_ALIGN.RIGHT)
 
 
-def kpi(slide, x, y, label, value_runs, note, size=24):
-    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, y, Inches(3.8), Inches(1.55))
+def kpi(slide, x, y, label, value_runs, note, size=22):
+    # the value line never wraps, so typing the numbers can't push the text down
+    box = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, x, y, Inches(4.1), Inches(1.55))
     box.fill.solid(); box.fill.fore_color.rgb = PANEL; box.line.fill.background()
     box.adjustments[0] = 0.08
-    text_box(slide, x + Inches(0.2), y + Inches(0.12), Inches(3.4), Inches(0.4), [[(label, False, MUTED)]], size=13)
-    text_box(slide, x + Inches(0.2), y + Inches(0.45), Inches(3.4), Inches(0.6), [value_runs], size=size)
-    text_box(slide, x + Inches(0.2), y + Inches(1.08), Inches(3.4), Inches(0.4), [[(note, False, MUTED)]], size=12)
+    text_box(slide, x + Inches(0.2), y + Inches(0.12), Inches(3.7), Inches(0.4), [[(label, False, MUTED)]], size=13)
+    text_box(slide, x + Inches(0.2), y + Inches(0.47), Inches(3.7), Inches(0.55), [value_runs], size=size, wrap=False)
+    text_box(slide, x + Inches(0.2), y + Inches(1.08), Inches(3.7), Inches(0.4), [[(note, False, MUTED)]], size=12)
 
 
 def bullets(slide, x, y, w, h, items, size=17):
@@ -131,22 +133,24 @@ def build_uc1():
     s = prs.slides.add_slide(blank)
     header(s, "Model results (hold-out set)", 3, footer)
     kpi(s, Inches(0.6), Inches(1.4), "ROC-AUC", [F()], "target ≥ 0.78")
-    kpi(s, Inches(0.6), Inches(3.15), "PR-AUC", [F(), T("  vs "), F(), T(" baseline")], "random = 0.116")
-    kpi(s, Inches(0.6), Inches(4.9), "Top-20% lift", [F("[   ]×")], "target ≥ 2.5×")
-    image_placeholder(s, Inches(4.8), Inches(1.4), Inches(7.9), Inches(5.05),
+    kpi(s, Inches(0.6), Inches(3.15), "PR-AUC: model vs baseline", [F(), T("  vs  "), F()], "random = 0.116")
+    kpi(s, Inches(0.6), Inches(4.9), "Top-20% lift", [F(), T(" ×")], "target ≥ 2.5×")
+    image_placeholder(s, Inches(5.0), Inches(1.4), Inches(7.7), Inches(5.05),
                       "Insert chart: 3_Intermediate / artifact 7 - charts / 05_lift_by_decile.png")
 
     s = prs.slides.add_slide(blank)
     header(s, "Back-test and Q4 recommendation", 4, footer)
-    kpi(s, Inches(0.6), Inches(1.4), "Conversions (4,000 contacted)", [F(), T("  vs "), F(), T(" random")], "actual Jul–Sep outcomes")
-    kpi(s, Inches(0.6), Inches(3.15), "Profit", [F("$[   ]k"), T(" vs "), F("$[   ]k")], "conversions × $150 − $16k")
-    kpi(s, Inches(0.6), Inches(4.9), "Conversion rate", [F("[   ]%"), T(" vs "), F("[   ]%")], "target list vs eligible average")
-    text_box(s, Inches(4.8), Inches(1.35), Inches(7.9), Inches(0.5), [[("What drives purchase", True, NAVY)]], size=18)
-    bullets(s, Inches(4.8), Inches(1.85), Inches(7.9), Inches(2.4), [
-        [F("[Driver 1 from SHAP]")], [F("[Driver 2 from SHAP]")], [F("[Driver 3 from SHAP]")],
+    kpi(s, Inches(0.6), Inches(1.4), "Conversions: model vs random", [F(), T("  vs  "), F()], "4,000 contacted, actual Jul–Sep outcomes")
+    kpi(s, Inches(0.6), Inches(3.15), "Profit ($k): model vs random", [F(), T("  vs  "), F()], "conversions × $150 − $16k")
+    kpi(s, Inches(0.6), Inches(4.9), "Conversion rate (%)", [F(), T("  vs  "), F()], "target list vs eligible average")
+    text_box(s, Inches(5.0), Inches(1.35), Inches(7.7), Inches(0.5), [[("What drives purchase (SHAP)", True, NAVY)]], size=18)
+    bullets(s, Inches(5.0), Inches(1.85), Inches(7.7), Inches(2.4), [
+        "Engaged customers: high email open rate and frequent app logins",
+        "Established relationship: 2–3 products, 1–5 years tenure, late-30s peak",
+        "Timing and care: no product opened in the last 6 months, few complaints",
     ], size=16)
-    text_box(s, Inches(4.8), Inches(4.2), Inches(7.9), Inches(0.5), [[("Recommendation", True, NAVY)]], size=18)
-    bullets(s, Inches(4.8), Inches(4.7), Inches(7.9), Inches(2.2), [
+    text_box(s, Inches(5.0), Inches(4.2), Inches(7.7), Inches(0.5), [[("Recommendation", True, NAVY)]], size=18)
+    bullets(s, Inches(5.0), Inches(4.7), Inches(7.7), Inches(2.2), [
         "Select the Q4 list with the packaged model on the 30-Sep snapshot (opted-in, < 2 complaints)",
         "Tailor messaging to the drivers above; keep a 10% random control group to measure uplift",
         "Re-validate each quarter: compare expected vs actual conversions",
@@ -174,23 +178,25 @@ def build_uc2():
     s = prs.slides.add_slide(blank)
     header(s, "Model results (June, out of time)", 3, footer)
     kpi(s, Inches(0.6), Inches(1.4), "ROC-AUC", [F()], "target ≥ 0.78")
-    kpi(s, Inches(0.6), Inches(3.15), "PR-AUC", [F(), T("  vs "), F(), T(" baseline")], "logistic regression")
-    kpi(s, Inches(0.6), Inches(4.9), "Predicted vs actual pay rate", [F("[   ]%"), T(" → "), F("[   ]%"), T(" vs "), F("[   ]%")],
-        "raw → calibrated vs actual", size=20)
-    image_placeholder(s, Inches(4.8), Inches(1.4), Inches(7.9), Inches(5.05),
+    kpi(s, Inches(0.6), Inches(3.15), "PR-AUC: model vs baseline", [F(), T("  vs  "), F()], "logistic regression baseline")
+    kpi(s, Inches(0.6), Inches(4.9), "Pay rate (%): raw → calibrated vs actual", [F(), T(" → "), F(), T("  vs  "), F()],
+        "June predictions vs actual", size=20)
+    image_placeholder(s, Inches(5.0), Inches(1.4), Inches(7.7), Inches(5.05),
                       "Insert chart: 3_Intermediate / artifact 7 - charts / 07_calibration.png")
 
     s = prs.slides.add_slide(blank)
     header(s, "June agent work list and recommendation", 4, footer)
-    kpi(s, Inches(0.6), Inches(1.4), "Unpaid amount covered", [F("[   ]%"), T(" vs "), F("[   ]%")], "model list vs highest-DPD-first")
-    kpi(s, Inches(0.6), Inches(3.15), "Accounts for agents", [F(), T(" of "), F()], "37% capacity, June cohort")
-    kpi(s, Inches(0.6), Inches(4.9), "Specialist team", [F(), T(" accounts")], "open dispute or hardship")
-    text_box(s, Inches(4.8), Inches(1.35), Inches(7.9), Inches(0.5), [[("What drives payment", True, NAVY)]], size=18)
-    bullets(s, Inches(4.8), Inches(1.85), Inches(7.9), Inches(2.4), [
-        [F("[Driver 1 from SHAP]")], [F("[Driver 2 from SHAP]")], [F("[Driver 3 from SHAP]")],
+    kpi(s, Inches(0.6), Inches(1.4), "Unpaid covered (%): model vs DPD rule", [F(), T("  vs  "), F()], "model list vs highest-DPD-first")
+    kpi(s, Inches(0.6), Inches(3.15), "Accounts for agents", [F(), T("  of  "), F()], "37% capacity, June cohort")
+    kpi(s, Inches(0.6), Inches(4.9), "Specialist team (accounts)", [F()], "open dispute or hardship")
+    text_box(s, Inches(5.0), Inches(1.35), Inches(7.7), Inches(0.5), [[("What drives payment (SHAP)", True, NAVY)]], size=18)
+    bullets(s, Inches(5.0), Inches(1.85), Inches(7.7), Inches(2.4), [
+        "Payment history: on-time ratio and prior delinquencies",
+        "Days past due: cure rates collapse after 30 days",
+        "First-week contact: reaching the customer and a promise to pay (worth less after broken promises)",
     ], size=16)
-    text_box(s, Inches(4.8), Inches(4.2), Inches(7.9), Inches(0.5), [[("Recommendation", True, NAVY)]], size=18)
-    bullets(s, Inches(4.8), Inches(4.7), Inches(7.9), Inches(2.2), [
+    text_box(s, Inches(5.0), Inches(4.2), Inches(7.7), Inches(0.5), [[("Recommendation", True, NAVY)]], size=18)
+    bullets(s, Inches(5.0), Inches(4.7), Inches(7.7), Inches(2.2), [
         "Give agents the top 37% by expected unpaid amount; nudge the rest by SMS / app",
         "Re-calibrate monthly (pay rates keep falling, BNPL fastest); retrain quarterly",
         "Track covered unpaid amount vs the old rule each month",

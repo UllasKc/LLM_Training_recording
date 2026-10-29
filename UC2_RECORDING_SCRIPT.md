@@ -377,18 +377,16 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 🎙 **SAY** "I'll save my copy to Output first so the template stays clean, then fill in the orange brackets."
 
-▶ **DO** For each orange `[ ]`: double-click into the text → select the brackets → type the value → select it → **Properties** sidebar → **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects**).
+▶ **DO** For each orange `[   ]`: double-click into the text → select the **whole** `[   ]`, brackets included → type just the number (units are in the labels) → select it → **Properties** sidebar → **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects**).
 
 **Slide 2:** `[ ]` accounts removed → **420**
 🎙 "Four hundred and twenty accounts removed: duplicates and business-rule violations."
 
-**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate → **45.7%** → **40.0%** vs **36.9%** · click the **border of the dashed box** → **Delete** → **Insert → Image…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → **Open** → fit it on the right.
+**Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate (%) → **45.7** → **40.0** vs **36.9** · click the **border of the dashed box** → **Delete** → **Insert → Image…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → **Open** → fit it on the right.
 🎙 "Out of time, 0.825 ROC-AUC. And the calibration chart shows why recalibration matters: raw predictions overstate payment."
 
-**Slide 4:** Unpaid covered → **81%** vs **47%** · Accounts → **1,351** of **3,652** · Specialist → **388**
-- Driver 1 → **Payment history: on-time ratio and prior delinquencies**
-- Driver 2 → **Days past due: cure rates collapse after 30 days**
-- Driver 3 → **First-week contact: reaching the customer and a promise to pay (worth less after broken promises)**
+**Slide 4:** Unpaid covered (%) → **81** vs **47** · Accounts → **1,351** of **3,652** · Specialist → **388**
+- The three drivers on the right are already written in the template (from the SHAP results): just hover over each one as you mention it
 
 🎙 **SAY**
 > "The model's list covers eighty-one percent of the unpaid money against forty-seven with the old rule, with the same thirteen hundred and fifty-one agent slots. Three hundred and eighty-eight accounts go straight to the specialist team.

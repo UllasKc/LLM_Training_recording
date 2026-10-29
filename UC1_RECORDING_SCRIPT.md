@@ -517,7 +517,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 🎙 **SAY**
 > "This is the team's summary template. I'll save my own copy into the Output folder first, so the template stays clean. The orange brackets are what I need to fill in."
 
-▶ **DO** For every orange `[ ]`: double-click into the text → select the brackets → type the value → select the value → in the **Properties** sidebar on the right, **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects → Font color: Automatic**).
+▶ **DO** For every orange `[   ]`: double-click into the text → select the **whole** `[   ]`, brackets included → type just the number (units such as %, $k and × are already in the labels) → select the number → in the **Properties** sidebar on the right, **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects → Font color: Automatic**).
 
 **Slide 2: Problem and approach**
 - `[ ]` duplicate rows → **260**
@@ -526,19 +526,17 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 
 **Slide 3: Model results**
 - ROC-AUC → **0.81**
-- PR-AUC → **0.42** vs **0.37** baseline
-- Top-20% lift → **2.83**×
+- PR-AUC → **0.42** vs **0.37**
+- Top-20% lift → **2.83**
 - Click the **border of the dashed box** → press **Delete** → **Insert → Image…** → `Deliverables\3_Intermediate\artifact 7 - charts\05_lift_by_decile.png` → **Open** → drag it to fill the right-hand side
 
 🎙 **SAY** "ROC-AUC 0.81 against a target of 0.78, PR-AUC 0.42 against 0.37 for the baseline, and 2.83 times lift in the top twenty percent. The chart shows how sharply conversion falls from the top decile down."
 
 **Slide 4: Back-test and Q4 recommendation**
-- Conversions → **1,312** vs **546** random
-- Profit → **$180.8k** vs **$65.8k**
-- Conversion rate → **32.8%** vs **13.6%**
-- Driver 1 → **Engaged customers: high email open rate and frequent app logins**
-- Driver 2 → **Established relationship: 2–3 products, 1–5 years tenure, late-30s peak**
-- Driver 3 → **Timing and care: no product opened in the last 6 months, few complaints**
+- Conversions → **1,312** vs **546**
+- Profit ($k) → **180.8** vs **65.8**
+- Conversion rate (%) → **32.8** vs **13.6**
+- The three drivers on the right are already written in the template (from the SHAP results): just hover over each one as you mention it
 
 🎙 **SAY**
 > "In the back-test, the four thousand customers the model chose produced thirteen hundred and twelve sales against five hundred and forty-six at random: a hundred and eighty thousand dollars of profit instead of sixty-six thousand.
