@@ -499,7 +499,9 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 ✔ **CHECK** 4000 · 1297.6 · 1312 · 0.328 · 0.1364 · 545.6 · 180,800 · 65,840 · 114,960 · 1 · 1
 
 🎙 **SAY** (as each result appears)
-> "Exactly four thousand customers. Expected conversions about thirteen hundred, actual thirteen hundred and twelve: a 32.8 percent conversion rate, against 13.6 percent for eligible customers, so 2.4 times, above the target of two.
+> "Exactly four thousand customers.
+> Each propensity is a probability, so adding them up gives the number of buyers the model expects: about thirteen hundred. The actual number was thirteen hundred and twelve. Expected and actual match closely, which tells me the probabilities are well calibrated: when the model says thirty percent, about thirty percent really buy. Marketing can trust them for forecasting, not just for ranking.
+> Thirteen hundred and twelve buyers is a 32.8 percent conversion rate, against 13.6 percent for eligible customers, so 2.4 times, above the target of two.
 > Random selection would give about five hundred and forty-six.
 > Profit is a hundred and eighty thousand eight hundred dollars against about sixty-six thousand: an uplift of roughly a hundred and fifteen thousand dollars for the same budget.
 > And the compliance checks: the minimum opt-in is one, so everyone has opted in, and the maximum complaints is one, so nobody with two or more complaints is on the list."
