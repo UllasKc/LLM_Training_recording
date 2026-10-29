@@ -1,5 +1,7 @@
 # Recording Checklist (Project Frost)
 
+The step-by-step Mac commands are in the **🍎 MAC FINAL TAKE** section of `UC1_RECORDING_SCRIPT.md` / `UC2_RECORDING_SCRIPT.md`; this list is the quick tick-box version.
+
 Print this or keep it on your phone, **not** on the Mac screen.
 
 ## A. One-time Mac setup (dedicated recording user)

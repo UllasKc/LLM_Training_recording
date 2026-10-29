@@ -38,7 +38,89 @@
 
 ---
 
-## PART 1: The day before (setup and rehearsal)
+## 🍎 MAC FINAL TAKE: use this instead of Parts 1, 2, 3 and 5
+
+Parts 1, 2, 3 and 5 below are written for the Windows practice with Teams. On the Mercor Mac, do the steps in this section instead. **Part 4 (the scenes) is the same on both**; the table at the end of this section lists the few clicks that differ on the Mac.
+
+### Mac Part 1: the day before (off camera)
+
+1. Open **Terminal** (Finder → Applications → Utilities → Terminal) and run:
+   ```bash
+   cd ~
+   git clone https://github.com/UllasKc/LLM_Training_recording.git     # first time only
+   cd ~/LLM_Training_recording
+   git pull
+   bash setup_mac.sh
+   .venv/bin/python prep/selftest_uc1.py
+   ```
+   ✔ setup ends with **READY**; the self-test ends with **SELF-TEST PASSED**. Python 3.12 must be installed first from python.org (see README section 2).
+2. **VS Code:** only the **Python** and **Jupyter** extensions (Microsoft). No Copilot or AI extensions. **Code → Settings → Settings** → search "disable AI features" → tick it.
+3. **Open Firefox, LibreOffice Calc and LibreOffice Impress once each**, click **Open** if macOS asks about an app downloaded from the internet, and dismiss every first-run pop-up (LibreOffice: close "Tip of the Day" and untick "Show tips on startup"). Then quit them (app menu → **Quit**).
+4. **Default apps** so "Open With" is predictable. In Finder, for one file of each type in `~/LLM_Training_recording/recording_workspace/UC1_Cross_Sell/Deliverables/1_Input`: select it → **File → Get Info** → **Open with:** choose the app → **Change All…** → **Continue**.
+   - `.pdf` → **Firefox**
+   - `.csv` and `.xlsx` → **LibreOffice** (Calc)
+   - `.pptx` → **LibreOffice** (Impress)
+5. **Mercor setup:** complete section A of `use_cases/Recording_Checklist.md`: TaskRecorder installed and signed in with the **Mercor OTA** account, permissions green, Accessibility Inspector minimised in the Dock, Insightful running, clock with seconds.
+6. **Rehearse the whole of PART 4 once, out loud, with a stopwatch** (not recorded). Then reset with `bash prep/stage_recording.sh UC1`.
+
+### Mac Part 2: 30 minutes before the take
+
+▶ **DO**
+- [ ] Terminal:
+  ```bash
+  cd ~/LLM_Training_recording
+  bash prep/stage_recording.sh UC1
+  ```
+  → a fresh, new `~/Mercor_UC1/UC1_Cross_Sell_vN` folder (the full path is printed). Always use the **newest** one. Then **Terminal → Quit Terminal**
+- [ ] **Finder sidebar** (once): Finder → **Go → Home** → drag the `Mercor_UC1` folder into the sidebar under **Favorites**, so it is one click on camera
+- [ ] **Quit** every app not in the take: Mail, Messages, Slack, Music and so on (app menu → **Quit**)
+- [ ] **Control Centre → Focus → Do Not Disturb** on. Charger plugged in
+- [ ] **System Settings → Appearance → Light** · Dock at the bottom
+- [ ] **≥ 50 GB free disk** (Apple menu → About This Mac → More Info → Storage)
+- [ ] **Finder** window open at `Mercor_UC1/UC1_Cross_Sell_vN` (newest) → **Window → Fill** (or double-click the title bar). Don't use the green full-screen button: full screen moves the app to its own Space
+- [ ] **VS Code → File → Open Folder…** → **Mercor_UC1** (sidebar) → **UC1_Cross_Sell_vN** → **Open** → trust it if asked → off camera, open `Deliverables/2_Code/01_data_preprocessing.ipynb` and check the top-right kernel shows **Python 3.12 (ds-venv)**, then close the notebook → in the Explorer panel click **Task Notes.md** (formatted preview) → **Window → Fill**
+- [ ] Firefox, LibreOffice Calc and Impress **closed** · headset on · this script open on the second laptop
+
+### Mac Part 3: start TaskRecorder
+
+▶ **DO**
+1. Open **TaskRecorder** → check you're signed in with the **Mercor OTA** account and Accessibility, Screen Recording and Microphone are green
+2. Start the recording for this task as described in the Mercor TaskRecorder guide
+3. Click VS Code so the task notes are in front. **Wait 3 seconds in silence.** Start Scene 1
+
+### Mac Part 5: stop, package, upload
+
+▶ **DO**
+1. Stop TaskRecorder. Note where it saved **video.mp4** and **recording_TIMESTAMP.zip**. Don't open, rename or change the zip
+2. Watch the video and check the screenshot count (as in the Mercor guide)
+3. Open Terminal again (off camera):
+   ```bash
+   cd ~/LLM_Training_recording
+   bash prep/package_deliverables.sh UC1
+   ```
+   ✔ ends with **READY TO UPLOAD** and creates `Deliverables.zip` inside the newest `~/Mercor_UC1/UC1_Cross_Sell_vN` folder. If it says **NOT READY**, fix what it lists and run it again
+4. **Metadata.rtf** is in the same `UC1_Cross_Sell_vN` folder (hidden in VS Code on purpose). Check that its App Topology matches what you actually did
+5. Mercor Studio: upload **video.mp4**, the unmodified **recording_TIMESTAMP.zip**, **Deliverables.zip** and **Metadata.rtf** → run **both** AutoQC checks → fix or dispute every flag → submit
+
+### Mac differences inside Part 4
+
+| Script says | On the Mac |
+|---|---|
+| File Explorer | **Finder** (`Mercor_UC1` in the sidebar → `UC1_Cross_Sell_vN`) |
+| right-click → Open with | **Control-click** (or two-finger click) → **Open With** |
+| taskbar | **Dock** |
+| maximise | **Window → Fill** (or double-click the title bar), not the green full-screen button |
+| Minimise | yellow button (top left) or **Window → Minimise** |
+| Close an app (X) | app menu → **Quit** (for example **Firefox → Quit Firefox**) |
+| `Cnx\Mercor_UC1\UC1_Cross_Sell_vN\...` | `~/Mercor_UC1/UC1_Cross_Sell_vN/...`. In a LibreOffice **Save As** dialog, click `Mercor_UC1` in the sidebar (click the **⌄** arrow next to the file name first if the dialog is compact) |
+| status bar right-click (CountA) | **Control-click** the status bar |
+| Ctrl+C / Ctrl+V | Cmd+C / Cmd+V |
+
+LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of the screen on the Mac, not inside the window. Everything else (VS Code Run All, Restart, File → Save, Calc pivot dialogs, Impress Insert → Image…) is identical.
+
+---
+
+## PART 1 (Windows practice): The day before (setup and rehearsal)
 
 1. On the recording laptop, in PowerShell:
    ```powershell
@@ -60,7 +142,7 @@
 
 ---
 
-## PART 2: 30 minutes before the take
+## PART 2 (Windows practice): 30 minutes before the take
 
 ▶ **DO**
 - [ ] `prep\stage_recording.cmd UC1` → a fresh, new `Cnx\Mercor_UC1\UC1_Cross_Sell_vN` folder (v1 the first time, then v2, v3…; the full path is printed at the end). Always use the **newest** one
@@ -76,7 +158,7 @@
 
 ---
 
-## PART 3: Start the Teams recording
+## PART 3 (Windows practice): Start the Teams recording
 
 ▶ **DO**
 1. Teams → **Calendar** → **Meet now** → name it `UC1 practice` → **Start meeting**
@@ -88,7 +170,7 @@
 
 ---
 
-## PART 4: The script (~38 minutes)
+## PART 4 (Windows and Mac): The script (~38 minutes)
 
 **Rules for every scene:** name what you click *before* clicking it · hover, click, pause about 1 second · one action at a time · use menus and the mouse, not keyboard shortcuts (Ctrl+C / Ctrl+V are fine) · move the cursor under text as you read it · never say "this" or "here" without naming the thing.
 
@@ -560,7 +642,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 
 ---
 
-## PART 5: Stop and save
+## PART 5 (Windows practice): Stop and save
 
 ▶ **DO**
 1. Sharing toolbar → **More (…)** → **Stop recording** → **Stop sharing** → **Leave**

@@ -15,7 +15,7 @@ Builds  <workspace>/Deliverables.zip  with the Mercor layout:
   1_Input/        inputs 1-4  +  "input 5 - pipeline code before the run"  (the original code, from this repo)
   3_Intermediate/ artifacts
   4_Output/       final outputs 1-3  +  "final output 4 - corrected pipeline code"  (your fixed 2_Code)
-Junk (__pycache__, .ipynb_checkpoints, .vscode, .DS_Store, desktop.ini, Office lock files) is left out.
+Junk (__pycache__, .ipynb_checkpoints, .vscode, .DS_Store, desktop.ini, Office and LibreOffice lock files, macOS ._ files) is left out.
 """
 import argparse
 import json
@@ -85,7 +85,7 @@ def latest_workspace(uc, name):
 
 def is_junk(path):
     return (any(part in JUNK_DIRS for part in path.parts) or path.name in JUNK_FILES
-            or path.name.startswith("~$"))
+            or path.name.startswith(("~$", ".~lock.", "._")))   # Office / LibreOffice locks, macOS AppleDouble
 
 
 def squash(text):
