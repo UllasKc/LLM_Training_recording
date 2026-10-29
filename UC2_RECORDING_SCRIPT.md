@@ -49,7 +49,7 @@ Parts 1, 2, 3 and 5 below are written for the Windows practice with Teams. On th
    bash setup_mac.sh
    .venv/bin/python prep/selftest_uc2.py
    ```
-   ✔ setup ends with **READY**; the self-test ends with **SELF-TEST PASSED**. Python 3.12 must be installed first from python.org (see README section 2).
+   ✔ setup ends with **READY**; the self-test ends with **SELF-TEST PASSED**. Python 3.12 must be installed first from python.org (see README section 2). You have admin access, so expect a password prompt for the Python installer, and a one-time "install the command line developer tools" prompt the first time you run `git` (click **Install**, then re-run the command).
 2. **VS Code:** only the **Python** and **Jupyter** extensions (Microsoft). No Copilot or AI extensions. **Code → Settings → Settings** → search "disable AI features" → tick it.
 3. **Open Firefox, LibreOffice Calc and LibreOffice Impress once each**, click **Open** if macOS asks about an app downloaded from the internet, and dismiss every first-run pop-up (LibreOffice: close "Tip of the Day" and untick "Show tips on startup"). Then quit them (app menu → **Quit**).
 4. **Default apps** so "Open With" is predictable. In Finder, for one file of each type in `~/LLM_Training_recording/recording_workspace/UC2_Propensity_To_Pay/Deliverables/1_Input`: select it → **File → Get Info** → **Open with:** choose the app → **Change All…** → **Continue**.
