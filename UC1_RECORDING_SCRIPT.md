@@ -480,7 +480,7 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 🎙 **SAY**
 > "Before this goes to Marketing, I'll validate the list independently in a spreadsheet."
 
-▶ **DO** Click cell **M1** and type the labels in column **M**, then the formulas in column **N**:
+▶ **DO** Columns **M** and **N** are empty: you build a small summary table there. Column **M** is text labels you type yourself (they are *not* data columns); column **N** is formulas on the data columns (C = `propensity`, K = `actual_converted`, I = `marketing_opt_in`, J = `complaints_12m`). Every row in this file is one contacted customer, so counting column C counts the customers. Click cell **M1**, type the label, click **N1**, type the formula, and so on down:
 
 | Cell | Type in M | Type in N |
 |---|---|---|
