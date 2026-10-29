@@ -95,6 +95,10 @@ $Physical = (Get-CimInstance Win32_Processor | Measure-Object -Property NumberOf
 if (-not $Physical -or $Physical -ge $Logical) { $Physical = [Math]::Max(1, $Logical - 1) }
 [Environment]::SetEnvironmentVariable("LOKY_MAX_CPU_COUNT", "$Physical", "User")
 $env:LOKY_MAX_CPU_COUNT = "$Physical"
+# set it inside the venv too: a .pth file runs at every Python start, whatever launched the kernel
+$SitePackages = Join-Path $RepoDir ".venv\Lib\site-packages"
+[IO.File]::WriteAllText((Join-Path $SitePackages "loky_cpu_count.pth"),
+    "import os; os.environ.setdefault('LOKY_MAX_CPU_COUNT', '$Physical')`n", (New-Object Text.UTF8Encoding $false))
 # also store it in the kernel itself: an already-running VS Code doesn't see new user variables
 $KernelJson = Join-Path $env:APPDATA "jupyter\kernels\$KernelName\kernel.json"
 if (Test-Path $KernelJson) {
