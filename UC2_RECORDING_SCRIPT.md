@@ -345,7 +345,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 🎙 **SAY** "Before handing this to the team leads, I'll validate it independently."
 
-▶ **DO** Type labels in column **M** and formulas in column **N**:
+▶ **DO** Columns **M** and **N** are empty: you build a small summary table there. Column **M** is text labels you type yourself (they are *not* data columns); column **N** is formulas on the data columns. Every row in this file is one account on the agent list. Click **M1**, type the label, click **N1**, type the formula, and so on down:
 
 | Row | M | N |
 |---|---|---|
