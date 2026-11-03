@@ -66,6 +66,12 @@ $Settings = @"
 $Loky = [Environment]::GetEnvironmentVariable("LOKY_MAX_CPU_COUNT", "User")
 if (-not $Loky) { $Loky = [Math]::Max(1, [int]$env:NUMBER_OF_PROCESSORS - 1) }
 [IO.File]::WriteAllText((Join-Path $VscodeDir "kernel.env"), "LOKY_MAX_CPU_COUNT=$Loky`n", (New-Object Text.UTF8Encoding $false))
+# the Jupyter kernel ignores kernel.env, so also set it inside the venv (a .pth file runs at every Python start)
+$SitePackages = Join-Path $RepoDir ".venv\Lib\site-packages"
+if (Test-Path $SitePackages) {
+    [IO.File]::WriteAllText((Join-Path $SitePackages "loky_cpu_count.pth"),
+        "import os; os.environ.setdefault('LOKY_MAX_CPU_COUNT', '$Loky')`n", (New-Object Text.UTF8Encoding $false))
+}
 (Get-Item $VscodeDir).Attributes = (Get-Item $VscodeDir).Attributes -bor [IO.FileAttributes]::Hidden
 
 Write-Host "Staged clean workspace: $Dest"
