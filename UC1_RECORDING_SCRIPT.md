@@ -330,21 +330,27 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ▶ **DO** Click **2_Code → pipeline_config.py**. Go down the file one block at a time. Each block starts with a `# ----` line.
 
 #### Top of the file
+
 🎙 "The pipeline is one config file and four notebooks. They run in order: preprocessing, training, testing, then back-test and packaging."
 
 #### `# ---- paths`
+
 🎙 "First the paths. Every file the pipeline reads or writes is named here."
 
 #### `# ---- business rules`
+
 🎙 "Then the business rules from the brief. Contact four thousand customers. Four dollars per contact. A hundred and fifty dollars margin per sale. At most one complaint."
 
 #### `# ---- columns`
+
 🎙 "Then the columns. The target, the ID columns, and gender. Gender is protected, so the model never uses it. And the leaky columns. For now only `cross_sell_product_type` is there. I'll keep an eye on this list, because of what the pivot showed."
 
 #### `# ---- helpers`
+
 🎙 "A small helper to read dates."
 
 #### `# ---- models`
+
 🎙 "And the two models: a logistic regression as the baseline, and gradient boosting. This is the first run on the full snapshot. So let's run it and check every result."
 
 ---
@@ -366,27 +372,39 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 > "Notebook one cleans the raw data. Load, duplicates, dates, labels, impossible values, missing values, and save. I'll run it one cell at a time."
 
 #### [1] `import matplotlib.pyplot as plt` → ▶
+
 ✔ No output.
+
 🎙 "The imports and the shared config. The `log` function writes down every cleaning step."
 
 #### [2] Section 1 · `raw = pd.read_csv(cfg.RAW_FILE)` → ▶
+
 ✔ `20,260 rows x 26 columns | unique customers: 20,000` · `Target rate: 11.6%`
+
 🎙 "Twenty thousand two hundred and sixty rows. But only twenty thousand unique customers, so some customers appear twice. 11.6 percent bought a new product."
 
 #### [3] `missing = raw.isna()…` → ▶
+
 ✔ Bar chart: **Missing values in the raw extract**
+
 🎙 "Missing values. `cross_sell_product_type` is empty for eighty-eight percent. It's only filled for buyers. That's why it's already on my leaky list. Email open rate is missing for twenty-four percent. Days since last contact for sixteen. Income for eight."
 
 #### [4] `raw.describe()…` → ▶
+
 ✔ age min **0** max **999** · avg_monthly_balance min **-99999** · tenure_months min **-1**
+
 🎙 "Some values are impossible. Age zero, and age nine hundred and ninety-nine. A balance of minus ninety-nine thousand nine hundred and ninety-nine. A tenure of minus one. These are system defaults, not real values."
 
 #### [5] Section 2 · `df = raw.copy()` → ▶
+
 ✔ `exact duplicates 200` · `conflicting customer rows 60` · `20,000 customers`
+
 🎙 "Two hundred rows are exact copies from the CRM merge. Sixty customers have two different rows. There's no update time, so I keep the first one. I do this before the train-test split. Otherwise the same customer could be in both."
 
 #### [6] Section 3 · `df["customer_since"] = pd.to_datetime(…)` → ▶ ✖ **P1**
+
 ✔ Red error: `ValueError: time data "30/08/2023" doesn't match format "%Y-%m-%d", at position 13`
+
 🎙 "It stopped. The date thirty, slash, zero eight, slash, twenty twenty-three doesn't match the year-month-day format. That date is day first. So the file mixes two date formats. I won't let pandas guess. A date like five, slash, three could be May or March. My config has a `parse_dates` helper for this. It reads both formats, and fails if anything is left. But in this cell I only used one format. So I'll use the helper."
 
 ▶ **DO** Click the **pipeline_config.py** tab → hover over the `parse_dates` function → go back to the notebook.
@@ -402,17 +420,23 @@ df["customer_since"] = cfg.parse_dates(df["customer_since"])
 *(Select from `pd.to_datetime` to the end of the line with the mouse, then type the replacement.)*
 
 ▶ **DO** Click **Restart** → confirm **Restart** if asked → click **Run All**.
+
 🎙 "I restart and run from the top, so nothing is left over from the failed run."
 
 ✔ Cell [6] now shows `customer_since: 19,600 ISO dates + 400 day-first dates`. The run stops at cell [8] (next bug).
+
 🎙 "The dates are fixed. Nineteen thousand six hundred normal dates and four hundred day-first dates."
 
 #### [7] `snapshot = pd.Timestamp(…)` (already run: click it, hover)
+
 ✔ `negative tenure 40 rows -> recomputed from customer_since`
+
 🎙 "Forty customers had a negative tenure. It's recalculated from the start date."
 
 #### [8] Section 4 · `REGION_FIXES = …` ✖ **P2**
+
 ✔ Red error: `AssertionError: unexpected regions: [' South', 'Central', 'East', 'East ', 'North', 'North ', 'South', 'West']`
+
 🎙 "Now the label check fails. It expected five regions and found eight. There's 'North', and 'North' with a space at the end. And 'South' with a space at the front. I saw this in the pivot. The product line removes spaces with `strip`. I forgot it in the region line."
 
 🔧 **FIX P2** In cell [8], change this line:
@@ -427,31 +451,43 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 ▶ **DO** **Restart → Run All**.
 
 ✔ It runs to the end. Cell [8] shows `region labels 800 rows` · `product labels 600 rows`.
+
 🎙 "Now it runs to the end. Eight hundred region labels and six hundred product labels are cleaned."
 
 **All cells have run now. For each cell below: click it, hover over the output, say the line.**
 
 #### [9] Section 5 · `bad_age = …`
+
 ✔ `age outside 18-100 60 rows` · `balance = -99999 60 rows`
+
 🎙 "Sixty impossible ages and sixty fake balances are set to missing."
 
 #### [10] Section 6 · `income_gap = …` (chart)
+
 ✔ Bar chart, **Mass** in orange at **10.0%**, others about 4%
+
 🎙 "Income is missing for ten percent of the Mass segment, in orange. The other segments are about four percent. Same pattern as the pivot. So it's not random."
 
 #### [11] `# not missing at random …`
+
 ✔ `monthly_income missing 1,677 rows` · cross-table: opted out (0) → **4808** blank, opted in (1) → **0** blank
+
 🎙 "So the pipeline adds an income-missing flag, and fills income with the segment median. This table checks the email open rate. It's blank for exactly the four thousand eight hundred and eight customers who opted out. And for nobody else. Blank means 'not emailed'. So zero is the right value."
 
 #### [12] Section 7 · `df.to_csv(cfg.CLEAN_FILE …)`
+
 ✔ `Saved 20,000 rows -> artifact 2 - cleaned customers.csv` · `Saved 10 log entries -> artifact 3 …`
+
 🎙 "The clean data is saved as artifact two. Age, balance and credit score still have some missing values. The model pipelines handle those."
 
 #### [13] `steps = …` (chart)
+
 ✔ Bar chart: **Data-quality fixes applied (artifact 3)**
+
 🎙 "This last chart shows every cleaning step, and how many rows it touched."
 
 ▶ **DO** In the Explorer panel, click **3_Intermediate → artifact 3 - data quality log.csv**.
+
 🎙 "Every cleaning step is also in a log, artifact three. So anyone can check it."
 
 ---
@@ -464,18 +500,25 @@ df["region"] = df["region"].str.strip().str.lower().replace(REGION_FIXES).str.ti
 > "Notebook two splits the data. It compares the two models with five-fold cross-validation, on the training set only. Then it trains and saves them. The test set stays untouched until notebook three. Again, one cell at a time."
 
 #### [1] `import joblib` → ▶
+
 ✔ `20,000 customers | 22 features` · `Excluded: [...]`
+
 🎙 "Twenty thousand customers. The Excluded line shows what the model can't use: the IDs, dates, gender, the leaky product type, and the target."
 
 #### [2] Section 1 · `train_df, test_df = train_test_split(…)` → ▶
+
 ✔ `train 16,000 (11.6% positive) | test 4,000 (11.6% positive)`
+
 🎙 "The split is stratified. Sixteen thousand customers for training, four thousand for testing. Both have 11.6 percent buyers."
 
 #### [3] Section 2 · `cv = StratifiedKFold(…)` → ▶ ✖ **T1**
+
 ✔ Red error: `ValueError: Input X contains NaN. LogisticRegression does not accept missing values encoded as NaN natively.` The traceback mentions `pipeline_config.py`.
+
 🎙 "The baseline fails. Logistic regression can't handle missing values. Age, balance and credit score still have some, on purpose. Gradient boosting handles them by itself, but the baseline needs an imputer. The error points to the baseline in the config file."
 
 ▶ **DO** Click **pipeline_config.py** (tab or Explorer panel) → scroll to `build_baseline`.
+
 🎙 "Here's the baseline. A scaler on the numeric columns, but no imputer. I imported `SimpleImputer` at the top, but never used it here. I'd only tried the boosting model, and it doesn't need one. I'll add a median imputer before the scaler, inside the pipeline. That way it only learns from the training folds."
 
 🔧 **FIX T1** In `build_baseline`, change:
@@ -491,6 +534,7 @@ to:
 ▶ **DO** **File → Save**. Click the **02_model_training.ipynb** tab → **Restart → Run All**.
 
 ✔ It runs, but cell [3] shows ROC-AUC **≈ 0.98** for both models.
+
 🎙 "It runs now. But look: a ROC-AUC of 0.98 for both models. For a marketing model that's not good news. It's a red flag. Nobody predicts buying that well. This is the welcome pack I saw in the pivot. Let me prove it."
 
 ▶ **DO** Hover over the output of cell [3] → click **+ Code** below it → type:
@@ -500,6 +544,7 @@ df.groupby("welcome_pack_sent")[cfg.TARGET].mean()
 → click this new cell's **▶ Run** button. (It is now cell [4], so the cells after it move down by one.)
 
 ✔ `0  0.007` · `1  0.855`
+
 🎙 "Eighty-five percent with a welcome pack. Under one percent without. Same as the pivot. The welcome pack is sent after the purchase. So it goes on the leaky list in my config, next to the product type."
 
 🔧 **FIX T2** In `pipeline_config.py`, change:
@@ -516,19 +561,27 @@ LEAKY_COLUMNS = ["cross_sell_product_type", "welcome_pack_sent"]   # populated o
 **All cells have run now. Scroll back to the top. For each cell: click it, hover over the output, say the line.**
 
 #### [1] `import joblib`
+
 ✔ `21 features` · `Excluded:` now has `welcome_pack_sent`
+
 🎙 "The Excluded line now shows both leaky columns, and gender."
 
 #### [3] Section 2 · cross-validation table
+
 ✔ baseline_logreg **0.773 / 0.317** · gradient_boosting **0.798 / 0.369**
+
 🎙 "Now the numbers are realistic. The baseline gets a ROC-AUC of 0.77. Gradient boosting gets 0.80. Only 11.6 percent of customers buy. So PR-AUC is the more honest measure. A random model would get 0.116. Boosting gets 0.37, the baseline 0.32. So boosting is worth it."
 
 #### [5] `ax = cv_table…plot.bar(…)` (chart)
+
 ✔ Bar chart with a grey dashed line
+
 🎙 "The chart shows the same thing. The dashed line is a random model."
 
 #### [6] Section 3 · `cfg.MODEL_DIR.mkdir(…)`
+
 ✔ `saved baseline_logreg.joblib` · `saved gradient_boosting.joblib` · `boosting iterations after early stopping: 164`
+
 🎙 "Early stopping chose a hundred and sixty-four rounds. Both models are saved as artifact five."
 
 ---
@@ -541,14 +594,19 @@ LEAKY_COLUMNS = ["cross_sell_product_type", "welcome_pack_sent"]   # populated o
 > "Notebook three tests both models on the hold-out set. They have never seen it. Then lift, calibration and the drivers. And the acceptance checks."
 
 #### [1] `import joblib` → ▶
+
 ✔ `test set: 4,000 customers, 11.6% positive | models: ['baseline_logreg', 'gradient_boosting']`
+
 🎙 "It loads the four thousand test customers and the two saved models."
 
 #### [2] Section 1 · `scores = {name: model.predict(X_test) …}` → ▶ ✖ **E1** (no error, wrong numbers)
+
 ✔ The table shows gradient_boosting ROC-AUC **≈ 0.58**
+
 🎙 "The hold-out ROC-AUC is 0.58. In cross-validation it was 0.80. A drop that big on a random test set means the evaluation is wrong, not the model."
 
 ▶ **DO** Hover over `model.predict(X_test)` in cell [2].
+
 🎙 "Here it is. I used `predict`. It returns zero or one, with a fifty percent cut-off. ROC-AUC, PR-AUC and the Brier score need probabilities. The cells below use these same scores. So one fix corrects all of them."
 
 🔧 **FIX E1** In cell [2], change:
@@ -565,40 +623,53 @@ scores = {name: model.predict_proba(X_test)[:, 1] for name, model in models.item
 **All cells have run now. For each cell: click it, hover over the output, say the line.**
 
 #### [2] Section 1 · hold-out table
+
 ✔ gradient_boosting **0.810 / 0.421 / 0.084** · baseline **0.774 / 0.367** · random PR-AUC **0.116**
+
 🎙 "Gradient boosting gets a ROC-AUC of 0.81. The target is 0.78. Its PR-AUC is 0.42. The baseline gets 0.37, and random 0.116."
 
 #### [3] Section 2 · lift table
+
 ✔ decile 1 lift **3.966** · `Top-20% lift: 2.83x`
+
 🎙 "The top ten percent of customers by score buy at four times the average rate. The bottom groups almost never buy. The top twenty percent give a lift of 2.83. The target is 2.5."
 
 #### [4] Lift chart
+
 🎙 "The bar chart shows the same thing."
 
 #### [5] Section 3 · calibration
+
 ✔ Curve close to the diagonal · `mean predicted 0.116 vs actual 0.116`
+
 🎙 "The calibration curve is close to the diagonal. The model predicts 11.6 percent on average, and 11.6 percent really bought. So when the model says thirty percent, about thirty percent really buy. That matters, because Marketing will budget on these numbers."
 
 #### [6] Section 4 · SHAP summary chart
+
 ▶ **DO** Hover over each row of the chart as you name it.
-🎙 "This SHAP chart shows what drives the predictions.
-Email open rate is at the top. Customers who read our emails are the most open to an offer. So email is the right channel for them.
-Age: it peaks in the late thirties.
-Tenure: one to five years is the sweet spot. Very new customers aren't ready yet.
-App logins: digitally active customers buy more.
-Number of products: two or three is best, as the pivot showed.
-Months since the last product was opened: someone who just bought is less likely to buy again straight away.
+
+🎙 "This SHAP chart shows what drives the predictions.  
+Email open rate is at the top. Customers who read our emails are the most open to an offer. So email is the right channel for them.  
+Age: it peaks in the late thirties.  
+Tenure: one to five years is the sweet spot. Very new customers aren't ready yet.  
+App logins: digitally active customers buy more.  
+Number of products: two or three is best, as the pivot showed.  
+Months since the last product was opened: someone who just bought is less likely to buy again straight away.  
 And complaints strongly reduce the chance. That supports the complaints rule."
 
 #### [7] SHAP dependence charts (three panels)
+
 ▶ **DO** Hover over each panel.
-🎙 "These charts show the *shape* of each effect. Above the grey line means more likely to buy.
-Tenure: a big jump after the first year, positive up to about five years, then negative.
-Number of products: one is negative, two and three are clearly positive, and four drops back. The same as the pivot.
+
+🎙 "These charts show the *shape* of each effect. Above the grey line means more likely to buy.  
+Tenure: a big jump after the first year, positive up to about five years, then negative.  
+Number of products: one is negative, two and three are clearly positive, and four drops back. The same as the pivot.  
 Email open rate: flat up to about twenty-five percent, then rising fast. So Marketing should target customers who read our emails, not just anyone on the list."
 
 #### [8] Section 5 · acceptance table
+
 ✔ **True / True / True**
+
 🎙 "All three acceptance checks are True. The comparison table and all the charts are saved as artifacts six and seven."
 
 ---
@@ -611,32 +682,46 @@ Email open rate: flat up to about twenty-five percent, then rising fast. So Mark
 > "Notebook four answers the real question in the brief. One cell at a time."
 
 #### [1] `import json` → ▶
+
 ✔ No output.
+
 🎙 "It loads the clean data and the features."
 
 #### [2] Section 1 · out-of-fold scores → ▶ (takes a few seconds)
+
 ✔ `count 20000` · mean **0.113** · max **0.860**
+
 🎙 "Every customer gets an out-of-fold score. The data is split into five parts. Each customer is scored by a model trained on the other four. So no customer is scored by a model that has seen them. The back-test can't flatter us."
 
 #### [3] Section 2 · eligible customers and the list → ▶
+
 ✔ `eligible: 14,855 of 20,000 customers | eligible conversion rate 13.64%` · `saved 4,000 customers -> artifact 8 …`
+
 🎙 "Now the compliance rules: opted in, and fewer than two complaints. That leaves fourteen thousand eight hundred and fifty-five customers. They buy at 13.6 percent. The top four thousand by score are saved as artifact eight."
 
 #### [4] Section 3 · back-test result → ▶
+
 ✔ expected **1298** · actual **1312** · random **546** · profit **180800** vs **65831** · `passes_backtest_lift True`
-🎙 "The result. The model expected about thirteen hundred sales. Thirteen hundred and twelve really happened. That's very close, so the probabilities can be trusted. Random selection would give about five hundred and forty-six.
+
+🎙 "The result. The model expected about thirteen hundred sales. Thirteen hundred and twelve really happened. That's very close, so the probabilities can be trusted. Random selection would give about five hundred and forty-six.  
 In money: a hundred and eighty thousand dollars profit, against sixty-six thousand at random. Same budget of sixteen thousand dollars."
 
 #### [5] Back-test chart → ▶
+
 🎙 "The chart shows both side by side."
 
 #### [6] Section 4 · package → ▶
+
 ✔ `saved model.joblib and metrics.json`
+
 🎙 "The final model is trained again on all twenty thousand customers, and saved with its metrics."
 
 #### [7] README → ▶
+
 ✔ The README is printed.
+
 ▶ **DO** Scroll slowly through the printed README.
+
 🎙 "And a README. This is final output three. It's ready to score the thirtieth of September snapshot for Q4."
 
 ---

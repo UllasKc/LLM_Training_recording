@@ -264,15 +264,19 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ▶ **DO** Click **VS Code** in the taskbar (Mac: Dock) → maximise. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py**. Go down the file one block at a time. Each block starts with a `# ----` line.
 
 #### Top of the file
+
 🎙 "Back in VS Code. This is the pipeline I built. One config file and four notebooks: preprocessing, training, testing, and the work list with packaging."
 
 #### `# ---- business rules`
+
 🎙 "The business rules from the brief. We score on day seven. The agents can work thirty-seven percent of the accounts. And the time windows: train on months one to four, calibrate on month five, test on month six."
 
 #### `# ---- columns`
+
 🎙 "The leaky columns. I've put the account status and the recovered amount here. I noted a third suspect in the dictionary, so I'll watch for it. Dispute and hardship stay as model inputs. But those accounts go to the specialist team."
 
 #### `# ---- helpers` and `# ---- models`
+
 🎙 "A small helper to read dates. And the two models: a logistic regression baseline, and gradient boosting. This is the first run on the full extract. So let's run it and check every result."
 
 ---
@@ -293,27 +297,39 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 🎙 **SAY** "Notebook one cleans the raw extract. I'll run it one cell at a time."
 
 #### [1] `import matplotlib.pyplot as plt` → ▶
+
 ✔ No output.
+
 🎙 "The imports and the shared config. Every cleaning step is written to a log."
 
 #### [2] Section 1 · `raw = pd.read_csv(cfg.RAW_FILE)` → ▶
+
 ✔ `20,240 rows x 30 columns | unique accounts: 20,000` · `Paid within 30 days: 43.4%`
+
 🎙 "Twenty thousand two hundred and forty rows, but twenty thousand accounts. Forty-three percent paid within thirty days."
 
 #### [3] `missing = raw.isna()…` → ▶
+
 ✔ Bar chart: missing values
+
 🎙 "Missing values. Utilisation is blank for thirty percent. Those are personal loans. They have no credit limit, so this is expected, not an error. Income is missing for ten percent, employment for four."
 
 #### [4] `raw[[…]].describe()…` → ▶
+
 ✔ days_past_due min **-5** max **999** · utilization_ratio max **9.99** · monthly_income min **0**
+
 🎙 "Some values are impossible. Days past due of minus five, and nine hundred and ninety-nine. A utilisation of 9.99. And a monthly income of zero."
 
 #### [5] Section 2 · `df = raw.copy()` → ▶
+
 ✔ `exact duplicates 240 rows` · `20,000 accounts`
+
 🎙 "Two hundred and forty exact duplicates are removed."
 
 #### [6] Section 3 · `df["delinquency_date"] = pd.to_datetime(…, format="mixed")` → ▶ ✖ **P1**
+
 ✔ Month counts that include 7–12, then `AssertionError: cohort months outside Jan-Jun: [7, 8, 9, 10, 11, 12]`
+
 🎙 "The extract only covers January to June. But the dates include July to December. I used format 'mixed' here, and it guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three becomes the third of May. That's inside the range, so nothing would flag it. The account would land in the wrong month of my time split. My config has a `parse_dates` helper. It reads both formats clearly. I'll use it instead of guessing."
 
 ▶ **DO** Click the **pipeline_config.py** tab → hover over the `parse_dates` function → back to the notebook.
@@ -330,21 +346,29 @@ df["delinquency_date"] = cfg.parse_dates(df["delinquency_date"])
 ▶ **DO** **Restart → Run All**.
 
 ✔ Cell [6] shows `delinquency_date: 19,600 ISO dates + 400 day-first dates` and months 1–6 only. The run stops at cell [10] (next bug).
+
 🎙 "The dates are fixed. Nineteen thousand six hundred normal dates and four hundred day-first dates."
 
 #### [7] `by_month = …` (chart, already run: click it, hover)
+
 🎙 "Every account is now in January to June. And more accounts come in as the year goes on."
 
 #### [8] Section 4 · `PRODUCT_FIXES = …`
+
 ✔ `product labels 700 rows` · `employment placeholders 1,200 rows`
+
 🎙 "Seven hundred product labels are mapped to three products. Twelve hundred employment placeholders are merged into 'Unknown'."
 
 #### [9] Section 5 · `bad_dpd = …`
+
 ✔ `80 rows -> removed` · `100 rows -> removed` · `42 rows -> set to missing` · `19,820 accounts remain`
+
 🎙 "The business rules from the dictionary. Eighty accounts have days past due outside one to ninety. A hundred have an amount due bigger than the balance. Both are removed. Forty-two fake utilisations are set to missing. That leaves nineteen thousand eight hundred and twenty accounts."
 
 #### [10] Section 6 · income and affordability ✖ **P2**
+
 ✔ Red error: `AssertionError: infinite payment_burden for 100 accounts`
+
 🎙 "Payment burden is the amount due divided by income. It's infinite for a hundred accounts. The profile showed an income of zero. Here zero means 'not provided', not a real income of nothing. So zeros must become missing before we divide."
 
 🔧 **FIX P2** In cell [10], add this as the **first line** of the cell:
@@ -359,17 +383,23 @@ df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 **All cells have run now. For each cell below: click it, hover over the output, say the line.**
 
 #### [10] Section 6 (fixed)
+
 ✔ `monthly_income missing 2,068 rows -> flag; burden left missing` · median (50%) **0.059**
+
 🎙 "Now it works. The typical payment burden is about six percent of monthly income."
 
 #### [11] `bands = pd.cut(…)` (affordability chart)
+
 🎙 "This chart is striking. Up to twenty percent of income, around forty-five percent of accounts pay. Above thirty-five percent, in orange, almost nobody pays. It's a cliff, not a slope. A tree model handles that. A straight line doesn't."
 
 #### [12] Section 7 · save
+
 ✔ `Saved 19,820 rows -> artifact 2 …` · `Saved 7 log entries -> artifact 3 …`
+
 🎙 "The clean data is saved as artifact two."
 
 #### [13] `steps = …` (chart)
+
 🎙 "The last chart shows every cleaning step and how many rows it touched. Everything is logged in artifact three."
 
 ---
@@ -381,15 +411,21 @@ df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 🎙 **SAY** "Notebook two sets up the time split. It trains both models, checks them on May, and shows what drives the model. One cell at a time."
 
 #### [1] `import joblib` → ▶
+
 ✔ `19,820 accounts | 26 features` · `Excluded: [...]`
+
 🎙 "Nineteen thousand eight hundred and twenty accounts. The Excluded line shows the IDs, dates, the two leaky columns and the target."
 
 #### [2] Section 1 · `by_month = …` → ▶
+
 ✔ Table and bar chart: pay rate **0.495** in month 1 down to **0.369** in month 6
+
 🎙 "The pay rate falls every month. About fifty percent in January, thirty-seven in June. That's why a random split would mislead us. And why calibration matters."
 
 #### [3] Section 2 · `train_df = df[df["cohort_month"] <= cfg.CALIBRATION_MONTH]` → ▶ ✖ **T1**
+
 ✔ Red error: `AssertionError: train and calibration windows overlap`
+
 🎙 "The split fails. Training and calibration overlap. My filter says 'month less than or equal to the calibration month'. So May is in both. It's an off-by-one. The config already lists the training months, so I'll use them."
 
 🔧 **FIX T1** In cell [3], change:
@@ -404,14 +440,19 @@ train_df = df[df["cohort_month"].isin(cfg.TRAIN_MONTHS)]
 ▶ **DO** **Restart → Run All**.
 
 ✔ Cell [3]: train `[1, 2, 3, 4]` 12,491 (46.0%) · calibrate `[5]` 3,677 (40.5%) · test `[6]` 3,652 (36.9%)
+
 🎙 "The windows are clean now. Months one to four for training, May for calibration, June for the test."
 
 #### [4] Section 3 · train and validate on May (already run: click it, hover)
+
 ✔ May ROC-AUC **≈ 0.91** ✖ **T2** (too good)
+
 🎙 "But the May ROC-AUC is 0.91. That's very high for collections."
 
 #### [5] and [6] Section 4 · importance table and chart
+
 ✔ Top feature **total_contact_attempts_30d ≈ 0.177**, three times the next one (orange bar)
+
 🎙 "The importance chart explains it. The orange bar, `total_contact_attempts_30d`, costs 0.18 of AUC when shuffled. That's three times anything else. It's the third suspect from the dictionary. It counts calls over the whole thirty days. Customers who pay stop being called. So few calls *means* they paid. On day seven we can't know that."
 
 🔧 **FIX T2** Open **pipeline_config.py** and change:
@@ -428,19 +469,27 @@ LEAKY_COLUMNS = ["account_status_at_extract", "amount_recovered_30d", "total_con
 **All cells have run now. Scroll back to the top. For each cell: click it, hover over the output, say the line.**
 
 #### [1] `import joblib`
+
 ✔ `25 features` · `Excluded:` now has `total_contact_attempts_30d`
+
 🎙 "Now all three leaky columns are excluded."
 
 #### [4] Section 3 · May results
+
 ✔ baseline **0.821 / 0.752** · gradient_boosting **0.844 / 0.784**
+
 🎙 "Now it's realistic. On May, gradient boosting gets 0.84. Logistic regression gets 0.82. Boosting also has the better PR-AUC."
 
 #### [5] and [6] Section 4 · importance
+
 ✔ Top: on_time_payment_ratio_12m, promise_to_pay_7d, days_past_due, payment_burden, right_party_contact_7d
+
 🎙 "The importance is now spread across sensible drivers. On-time payment history. A promise to pay in the first week. Days past due. Payment burden. And whether an agent actually reached the customer."
 
 #### [7] Section 5 · save
+
 ✔ `saved baseline_logreg.joblib` · `saved gradient_boosting.joblib`
+
 🎙 "Both models are saved as artifact five."
 
 ---
@@ -452,22 +501,31 @@ LEAKY_COLUMNS = ["account_status_at_extract", "amount_recovered_30d", "total_con
 🎙 **SAY** "Notebook three tests on June. No model has seen June. One cell at a time."
 
 #### [1] `import joblib` → ▶
+
 ✔ `June test cohort: 3,652 accounts, pay rate 36.9%`
+
 🎙 "Three thousand six hundred and fifty-two June accounts. Only thirty-seven percent paid."
 
 #### [2] Section 1 · June metrics → ▶
+
 ✔ gradient_boosting **0.825 / 0.732 / 0.173** · baseline **0.818 / 0.724**
+
 🎙 "Gradient boosting gets a ROC-AUC of 0.825. The target is 0.78. It also beats the baseline on PR-AUC."
 
 #### [3] Section 2 · calibration → ▶
+
 ✔ raw **0.4566** · calibrated **0.3998** · actual **0.3694** · Brier **0.1727 → 0.1649** · calibration chart
+
 🎙 "Calibration is the big one. The raw model predicts a 45.7 percent pay rate. Only 36.9 percent actually paid. It learned from better months. It would over-promise collections by nearly a quarter. Calibrating on May brings it down to forty percent. The Brier score improves. The rest of the gap is because June is worse than May. That's why the README says to re-calibrate every month. In the chart, the calibrated curve is much closer to the diagonal."
 
 #### [4] Section 3 · agent prioritisation → ▶ ✖ **E1** (no error, wrong result)
+
 ✔ `capacity 1,351 of 3,652 June accounts | eligible 3,264` · today's rule **47.1%** · model **45.4%**
+
 🎙 "The model's list covers *less* unpaid money than today's rule. But its AUC is good. That doesn't add up. So the problem is in how the list is ranked."
 
 ▶ **DO** Hover over the `expected_unpaid` line in cell [4].
+
 🎙 "Here. Expected unpaid is the chance of paying, times the amount due. That puts the accounts most *likely to pay* at the top. The opposite of what we want. Expected unpaid is *one minus* the chance of paying, times the amount. Notebook four already uses one minus p. I got it backwards here."
 
 🔧 **FIX E1** In cell [4], change:
@@ -484,22 +542,30 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 **All cells have run now. For each cell below: click it, hover over the output, say the line.**
 
 #### [4] Section 3 · agent prioritisation (fixed)
+
 ✔ today's rule **47.1%** · model **81.4%**
+
 🎙 "The agents can work thirteen hundred and fifty-one of the three thousand six hundred and fifty-two June accounts. Today's rule, most overdue first, covers forty-seven percent of the unpaid money. The model's list covers eighty-one percent. Same agents, same number of calls."
 
 #### [5] Section 4 · SHAP summary chart
+
 ▶ **DO** Hover over each row as you name it.
+
 🎙 "What drives payment. On-time payment history is at the top. Then days past due. Cure rates collapse after thirty days. Then whether an agent reached the customer, and whether they promised to pay in the first week. A promise is worth much less from someone who broke promises before. And payment burden."
 
 #### [6] SHAP dependence charts (three panels)
+
 ▶ **DO** Hover over each panel.
-🎙 "These show the shape of each effect. Above the grey line means more likely to pay.
-Days past due: flat for the first month, then falling fast after about thirty-five days. Every day counts once an account passes a month.
-Payment burden: fine up to about a third of income, then a cliff.
+
+🎙 "These show the shape of each effect. Above the grey line means more likely to pay.  
+Days past due: flat for the first month, then falling fast after about thirty-five days. Every day counts once an account passes a month.  
+Payment burden: fine up to about a third of income, then a cliff.  
 On-time payment ratio: below about fifty percent, customers rarely pay. Above it, the chance rises steadily."
 
 #### [7] Section 5 · acceptance table
+
 ✔ All four checks **True**
+
 🎙 "All four acceptance checks pass. Artifacts six and seven are saved."
 
 ---
@@ -511,26 +577,37 @@ On-time payment ratio: below about fifty percent, customers rarely pay. Above it
 🎙 **SAY** "Notebook four builds the real June list. One cell at a time."
 
 #### [1] `import json` → ▶
+
 ✔ `June cohort: 3,652 accounts`
+
 🎙 "It loads the three thousand six hundred and fifty-two June accounts, the model and the calibrator."
 
 #### [2] Section 1 · score and rank → ▶
+
 ✔ `agent capacity 1,351 | routed to specialist team (dispute / hardship): 388` · `saved 1,351 accounts -> artifact 8 …`
+
 🎙 "Every account is scored with the calibrated model. Three hundred and eighty-eight accounts have a dispute or hardship flag. They go to the specialist team. The rest are ranked by expected unpaid amount: one minus the chance of paying, times the amount due. The list is cut at thirteen hundred and fifty-one. That's artifact eight."
 
 #### [3] Section 2 · what the list achieves → ▶
+
 ✔ coverage_model **0.814** · coverage_dpd_rule **0.471**
+
 🎙 "We know June's results, so I can check it. The list covers eighty-one percent of the unpaid money. The old rule covers forty-seven percent."
 
 #### [4] Histogram → ▶
+
 🎙 "This chart shows why. The old rule, in grey, only calls accounts more than twenty days past due. The model, in blue, also calls high-risk accounts in their first three weeks, while there's still time. And it skips overdue accounts that will probably pay anyway."
 
 #### [5] Section 3 · package → ▶
+
 ✔ `saved model.joblib, calibrator.joblib and metrics.json`
+
 🎙 "The model and the calibrator are saved with their metrics."
 
 #### [6] README → ▶
+
 ▶ **DO** Scroll through the printed README.
+
 🎙 "And a README. This is final output three."
 
 ---
@@ -578,9 +655,11 @@ On-time payment ratio: below about fifty percent, customers rarely pay. Above it
 ▶ **DO** For each orange `[   ]`: double-click into the text → select the **whole** `[   ]`, brackets included → type just the number (units are in the labels) → select it → **Properties** sidebar → **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects**).
 
 **Slide 2:** `[ ]` accounts removed → **420**
+
 🎙 "Four hundred and twenty accounts removed: duplicates and business-rule violations."
 
 **Slide 3:** ROC-AUC → **0.825** · PR-AUC → **0.732** vs **0.724** · pay rate (%) → **45.7** → **40.0** vs **36.9** · click the **border of the dashed box** → **Delete** → **Insert → Image…** → `3_Intermediate\artifact 7 - charts\07_calibration.png` → **Open** → fit it on the right.
+
 🎙 "Out of time, 0.825 ROC-AUC. And the calibration chart shows why recalibration matters: raw predictions overstate payment."
 
 **Slide 4:** Unpaid covered (%) → **81** vs **47** · Accounts → **1,351** of **3,652** · Specialist → **388**
