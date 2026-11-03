@@ -427,7 +427,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 🎙 **SAY** "Before handing this to the team leads, I'll validate it independently."
 
-▶ **DO** Columns **M** and **N** are empty: you build a small summary table there. Column **M** is text labels you type yourself (they are *not* data columns); column **N** is formulas on the data columns. Every row in this file is one account on the agent list. Click **M1**, type the label, click **N1**, type the formula, and so on down:
+▶ **DO** Columns **M** and **N** are empty: you build a small summary table there. Column **M** is text labels you type yourself (they are *not* data columns); column **N** is formulas on the data columns (A = `priority`, E = `amount_due`, F = `p_pay`, G = `expected_unpaid`, I = `has_open_dispute`, J = `hardship_flag`, K = `actual_paid`). Every row in this file is one account on the agent list, so counting column A counts the accounts. Click **M1**, type the label, click **N1**, type the formula, and so on down:
 
 | Row | M | N |
 |---|---|---|
@@ -445,7 +445,9 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 ✔ **CHECK** 1351 · 532,227 · 377,939 · 354 · 393,144 · 483,197 · 0.814 · 0.471 · 0 · 0
 
 🎙 **SAY**
-> "Thirteen hundred and fifty-one accounts: exactly the capacity. The model expected about three hundred and seventy-eight thousand dollars to stay unpaid, and three hundred and ninety-three thousand actually did, so the calibrated estimate is close. Only three hundred and fifty-four of these accounts paid on their own, so the agents are working the right people.
+> "Thirteen hundred and fifty-one accounts: exactly the capacity. Five hundred and thirty-two thousand dollars due in total.
+> Each account's expected unpaid amount is the chance it doesn't pay times the amount due, so adding them up gives the money the model expects to stay unpaid: about three hundred and seventy-eight thousand dollars. Three hundred and ninety-three thousand actually stayed unpaid. Expected and actual match closely, within about four percent, which tells me the calibration works: when the model says a forty percent chance of paying, about forty percent really pay. Finance can use these numbers for forecasting cash, not just for ranking accounts.
+> Only three hundred and fifty-four of these accounts paid on their own, so the agents are working the right people.
 > That's eighty-one percent of all the eligible unpaid money in June, against forty-seven percent with the old rule.
 > And no dispute or hardship account is on the list."
 
