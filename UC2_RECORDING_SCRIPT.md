@@ -161,6 +161,7 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 
 🎙 **SAY** (cursor under each line)
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of Collections Strategy.
+> In plain words: which late payers should our agents call? Many customers pay on their own anyway, so we want the calls to go where the most money is at risk of staying unpaid.
 > Every month about three and a half thousand accounts fall into early collections: credit cards, personal loans and buy-now-pay-later. Our twenty-five agents can work about thirty-seven percent of them in depth, and today they simply call the most overdue accounts first.
 > Cure rates have been falling all year and we're missing target. So they want a propensity-to-pay model, and a June work list that puts the agents where the unpaid money really is.
 > I've built a propensity-to-pay pipeline for this request: a configuration file and four notebooks. Today I'll walk you through it and run it end to end on the full extract for the first time.

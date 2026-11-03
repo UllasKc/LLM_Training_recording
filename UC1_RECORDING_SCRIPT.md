@@ -182,6 +182,7 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 
 🎙 **SAY**
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of CRM and Cross-Sell.
+> In plain words: who should we offer a new product to? We have twenty thousand customers, but the budget only covers contacting four thousand, so we want the four thousand most likely to buy.
 > Marketing contacts four thousand customers in every cross-sell campaign. Right now those customers are picked at random, and about one in nine buys another product.
 > Before they sign off the Q4 budget, they want proof that a model would do better.
 > We have a customer snapshot from the thirtieth of June, and we now know who bought an additional product between July and September.

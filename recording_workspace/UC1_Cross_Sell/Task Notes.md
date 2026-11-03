@@ -1,5 +1,11 @@
 # Task: Cross-sell targeting model + back-test
 
+## In plain words
+- **Who should we offer a new product to?** The bank has 20,000 existing customers, but the campaign budget only covers contacting **4,000** of them.
+- Picked at random, only about **1 in 9** buys. Every contact costs money, so a badly chosen list wastes most of the budget.
+- **My job:** learn from past results which kinds of customers tend to buy, give every customer a score (their chance of buying), and contact the 4,000 with the highest scores, only customers who agreed to marketing and nobody with repeated complaints.
+- **Proof:** check it on a past campaign where we already know who bought. How many more sales, and how much more profit, than picking at random?
+
 **Request (Head of CRM & Cross-Sell):** Marketing contacts 4,000 customers per campaign and converts ~1 in 9 at random. Before the Q4 budget is signed off, prove a model does better: which 4,000 customers would it have picked on 30 June, and how many actually converted vs random?
 
 ## Starting point
