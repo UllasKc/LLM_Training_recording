@@ -162,10 +162,10 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 🎙 **SAY** (cursor under each line)
 > "Hi, I'm a senior data scientist. Today's request comes from our Head of Collections Strategy.
 > In plain words: which late payers should our agents call? Many customers pay on their own anyway, so we want the calls to go where the most money is at risk of staying unpaid.
-> Every month about three and a half thousand accounts fall into early collections: credit cards, personal loans and buy-now-pay-later. Our twenty-five agents can work about thirty-seven percent of them in depth, and today they simply call the most overdue accounts first.
-> Cure rates have been falling all year and we're missing target. So they want a propensity-to-pay model, and a June work list that puts the agents where the unpaid money really is.
-> I've built a propensity-to-pay pipeline for this request: a configuration file and four notebooks. Today I'll walk you through it and run it end to end on the full extract for the first time.
-> My plan: read the brief and the dictionary, explore the data in LibreOffice Calc, walk through and run my pipeline, fixing anything the first full run exposes, validate out of time, and build the June list. I'm done when the criteria at the bottom are met."
+> Every month about three and a half thousand accounts fall behind: credit cards, personal loans and buy-now-pay-later. Our twenty-five agents can work about thirty-seven percent of them. Today they just call the most overdue accounts first.
+> Fewer accounts pay every month, and we're missing target. So they want a propensity-to-pay model. And a June work list that sends the agents to where the unpaid money really is.
+> I've built a pipeline for this: one config file and four notebooks. Today I'll walk you through it. And I'll run it end to end on the full extract for the first time.
+> My plan. Read the brief and the dictionary. Explore the data in LibreOffice Calc. Run my pipeline, and fix anything the first run shows. Test it on a later month. Then build the June list. I'm done when the criteria at the bottom are met."
 
 ▶ **DO** Minimise VS Code.
 
@@ -178,12 +178,12 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ▶ **DO** **Deliverables → 1_Input →** right-click **input 3 - collections strategy brief.pdf → Open with → Firefox** (Mac: **Open With → Firefox**) → maximise. Scroll down slowly with the mouse wheel as you talk.
 
 🎙 **SAY** (hover over each item)
-> "Twenty-five agents can work about thirteen hundred accounts a month, roughly thirty-seven percent of intake. The rest get an SMS or app nudge.
-> The most important constraint: accounts are re-prioritised on **day seven** after entering collections. Anything captured in the first seven days, like contact attempts or a promise to pay, can be used. Anything captured later can't. That's my leakage rule.
-> The model will run on future months, so it must be validated on later months than it was trained on: train January to April, validate on May and June.
-> The probabilities feed an expected-loss calculation, so they must be calibrated, not just well ranked.
-> Accounts with an open dispute or a hardship flag always go to a specialist team, so they're excluded from the agent list.
-> Acceptance: out-of-time ROC-AUC of at least 0.78; beat the current rule, highest-days-past-due first, on unpaid amount covered within capacity; beat a logistic baseline on PR-AUC; calibration checked and corrected."
+> "Twenty-five agents can work about thirteen hundred accounts a month. That's about thirty-seven percent. The rest get an SMS or an app reminder.
+> The most important rule: accounts are ranked on **day seven** after they fall behind. Anything from the first seven days, like calls or a promise to pay, can be used. Anything later can't. That's my leakage rule.
+> The model will run on future months. So it must be tested on later months than it trained on. Train on January to April. Test on May and June.
+> The probabilities are used to estimate money lost. So they must be calibrated, not just in the right order.
+> Accounts with an open dispute or a hardship flag always go to a specialist team. So they're not on the agent list.
+> The acceptance criteria. ROC-AUC of at least 0.78 on a later month. Cover more unpaid money than today's rule, most overdue first, with the same capacity. Beat a logistic baseline on PR-AUC. And check and correct the calibration."
 
 ▶ **DO** Close Firefox (Mac: **Firefox → Quit Firefox**).
 
@@ -194,10 +194,10 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ▶ **DO** Double-click **input 2 - data dictionary.xlsx**. It opens in **LibreOffice Calc**; if another app opens it, right-click → **Open with → LibreOffice Calc**. Maximise.
 
 🎙 **SAY** (trace the **Notes** column, then stop on each row named)
-> "The key column is Notes. Three fields say 'Refreshed at extract': `account_status_at_extract`, `amount_recovered_30d`, and `total_contact_attempts_30d`. Extract means the fifteenth of August, long after day seven, so all three are leakage suspects.
-> The status and recovered amount are obvious: they *are* the outcome. Total contact attempts is subtler: it's described as 'for this episode', so it covers the whole thirty days, not just the first seven.
-> By contrast, `contact_attempts_7d`, `right_party_contact_7d` and `promise_to_pay_7d` are explicitly first-seven-days, so they're legal.
-> And the dictionary gives business rules I'll enforce: days past due must be between 1 and 90, and the amount due must not exceed the outstanding balance."
+> "The key column is Notes. Three fields say 'Refreshed at extract': `account_status_at_extract`, `amount_recovered_30d` and `total_contact_attempts_30d`. The extract is from the fifteenth of August. That's long after day seven. So all three could leak.
+> The status and the recovered amount are obvious. They *are* the outcome. Total contact attempts is harder to spot. It says 'for this episode'. So it covers all thirty days, not just the first seven.
+> But `contact_attempts_7d`, `right_party_contact_7d` and `promise_to_pay_7d` only cover the first seven days. So they're allowed.
+> The dictionary also gives two business rules. Days past due must be between 1 and 90. And the amount due can't be more than the balance."
 
 ▶ **DO** **File → Close** → **Don't Save**.
 
@@ -209,7 +209,7 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 
 ✔ **CHECK** status bar **CountA: 20241**
 
-🎙 **SAY** "Twenty thousand two hundred and forty rows plus the header, but the brief says twenty thousand accounts, so there are duplicates. Let me profile the data with pivot tables."
+🎙 **SAY** "Twenty thousand two hundred and forty rows plus the header. But the brief says twenty thousand accounts. So there are duplicates. Let me look at the data with pivot tables."
 
 **How to build each pivot in Calc:** click **A1** on the data sheet → **Insert → Pivot Table… → Current selection → OK** → in the layout dialog drag fields into **Row Fields** and **Data Fields** → double-click a data field to choose **Count** or **Average** → **OK**. Format averages via right-click → **Format Cells… → Numbers → Percent**, 1 decimal. Rename a sheet via right-click on its tab → **Rename Sheet…**.
 
@@ -220,8 +220,8 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ✔ **CHECK** Items like **BNPL**, **Buy Now Pay Later**, **CC**, **credit_card**, **Credit Card**, **Personal Loan**, **Personal-Loan**, **PL** (and possibly case variants such as **CREDIT CARD**). BNPL about 34% paid; cards and loans about 46%.
 
 🎙 **SAY**
-> "Three products, but many spellings: 'CC', 'credit underscore card', 'PL', 'Buy Now Pay Later'. The pipeline must map all of these to three products.
-> And buy-now-pay-later customers pay noticeably less often: about thirty-four percent against forty-six for cards and loans."
+> "Three products, but many spellings: 'CC', 'credit underscore card', 'PL', 'Buy Now Pay Later'. The pipeline must map them all to three products.
+> And buy-now-pay-later customers pay less often. About thirty-four percent, against forty-six for cards and loans."
 
 **Pivot 2: employment**
 
@@ -230,8 +230,8 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ✔ **CHECK** `(empty)`, `N/A` and `Unknown` rows · Unemployed ≈ 19.6% · Salaried ≈ 48.3% · Student ≈ 31.2%
 
 🎙 **SAY**
-> "Three different placeholders mean the same thing: empty, N/A and Unknown, about twelve hundred accounts in total. They should be one category.
-> And employment matters a lot: unemployed customers pay under twenty percent of the time, salaried customers about forty-eight."
+> "Three different placeholders mean the same thing: empty, N/A and Unknown. About twelve hundred accounts in total. They should be one group.
+> And employment matters a lot. Unemployed customers pay less than twenty percent of the time. Salaried customers about forty-eight."
 
 **Pivot 3: leakage check**
 
@@ -240,7 +240,7 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ✔ **CHECK** Current 100% · Settled 100% · Delinquent / Charged-Off / Payment Plan 0%
 
 🎙 **SAY**
-> "Exactly a hundred percent or zero percent. This isn't a predictor, it's the outcome recorded later. It must never reach the model."
+> "Exactly a hundred percent or zero percent. This doesn't predict the outcome. It *is* the outcome, recorded later. The model must never see it."
 
 **Pivot 4: payment history**
 
@@ -249,7 +249,7 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 ✔ **CHECK** 0 → 53.5% · 1 → 41.9% · 2 → 30.6% · 3 → 20.7%
 
 🎙 **SAY**
-> "A clean gradient: no previous delinquencies, fifty-three percent pay; three or more, about twenty percent. Payment history will be a strong driver."
+> "A clear pattern. With no earlier late payments, fifty-three percent pay. With three or more, about twenty percent. Payment history will be a strong driver."
 
 *(Optional: **promise_to_pay_7d** → 67.3% vs 38.1%. "A promise in the first week is legitimate information at day seven, and a strong one.")*
 
@@ -261,30 +261,64 @@ LibreOffice menus (Insert, Format, File, Data) are in the **top menu bar** of th
 
 ### Scene 5 · My pipeline (10:30–12:00), VS Code
 
-▶ **DO** Click **VS Code** in the taskbar (Mac: Dock) → maximise. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py** and scroll slowly.
+▶ **DO** Click **VS Code** in the taskbar (Mac: Dock) → maximise. Expand **Deliverables** and its four folders. Open **2_Code → pipeline_config.py**. Go down the file one block at a time. Each block starts with a `# ----` line.
 
-🎙 **SAY**
-> "Back in VS Code. This is the pipeline I've built: one configuration file and four notebooks: preprocessing, training, testing, and the work list with packaging.
-> The business rules from the brief are here: scoring on day seven, thirty-seven percent agent capacity, and the time windows: train on months one to four, calibrate on month five, test on month six.
-> In the leaky-column list I've put the account status and the recovered amount. I noted a third suspect in the dictionary, so I'll watch for it.
-> Dispute and hardship are kept as model inputs, but those accounts are routed to the specialist team. There's also a small date-parsing helper.
-> This is its first run on the complete extract, so let's run it and check every result."
+#### Top of the file
+🎙 "Back in VS Code. This is the pipeline I built. One config file and four notebooks: preprocessing, training, testing, and the work list with packaging."
+
+#### `# ---- business rules`
+🎙 "The business rules from the brief. We score on day seven. The agents can work thirty-seven percent of the accounts. And the time windows: train on months one to four, calibrate on month five, test on month six."
+
+#### `# ---- columns`
+🎙 "The leaky columns. I've put the account status and the recovered amount here. I noted a third suspect in the dictionary, so I'll watch for it. Dispute and hardship stay as model inputs. But those accounts go to the specialist team."
+
+#### `# ---- helpers` and `# ---- models`
+🎙 "A small helper to read dates. And the two models: a logistic regression baseline, and gradient boosting. This is the first run on the full extract. So let's run it and check every result."
+
+---
+
+### How to run a notebook, cell by cell (Scenes 6–9)
+
+- Code cells are numbered **[1], [2], [3]…** here, from the top. Headings don't count. After **Restart → Run All**, VS Code shows the same number to the left of each cell.
+- To run one cell, click the **▶ Run** button on the left of that cell. Wait for the output. Then say the line.
+- ✖ means you should see an error or a wrong number in that cell. That's a planted bug: follow the 🔧 **FIX** under it.
+- After every fix: **Restart → Run All** (notebook toolbar). Run All runs every cell from the top, so the cells after the fix already have their output. For those, just click the cell, hover over its output and say the line.
 
 ---
 
 ### Scene 6 · Notebook 01, preprocessing (12:00–17:00): fix P1 and P2
 
-▶ **DO** Open **01_data_preprocessing.ipynb** → confirm the kernel **Python 3.12 (ds-venv)** at the top right → **Run All**.
+▶ **DO** Open **01_data_preprocessing.ipynb** → confirm the kernel **Python 3.12 (ds-venv)** at the top right.
 
-✔ **CHECK** It stops in **section 3** with month counts that include 7–12, then:
-`AssertionError: cohort months outside Jan-Jun: [7, 8, 9, 10, 11, 12]`
+🎙 **SAY** "Notebook one cleans the raw extract. I'll run it one cell at a time."
 
-🎙 **SAY**
-> "The extract only covers January to June, but the parsed dates include July to December. I used format 'mixed' here, which guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three silently becomes the third of May. That's inside the range, so nothing would ever flag it, and the account lands in the wrong month of my out-of-time split. I wrote a `parse_dates` helper in the config that reads ISO and day-first dates explicitly, so I'll use it instead of guessing."
+#### [1] `import matplotlib.pyplot as plt` → ▶
+✔ No output.
+🎙 "The imports and the shared config. Every cleaning step is written to a log."
+
+#### [2] Section 1 · `raw = pd.read_csv(cfg.RAW_FILE)` → ▶
+✔ `20,240 rows x 30 columns | unique accounts: 20,000` · `Paid within 30 days: 43.4%`
+🎙 "Twenty thousand two hundred and forty rows, but twenty thousand accounts. Forty-three percent paid within thirty days."
+
+#### [3] `missing = raw.isna()…` → ▶
+✔ Bar chart: missing values
+🎙 "Missing values. Utilisation is blank for thirty percent. Those are personal loans. They have no credit limit, so this is expected, not an error. Income is missing for ten percent, employment for four."
+
+#### [4] `raw[[…]].describe()…` → ▶
+✔ days_past_due min **-5** max **999** · utilization_ratio max **9.99** · monthly_income min **0**
+🎙 "Some values are impossible. Days past due of minus five, and nine hundred and ninety-nine. A utilisation of 9.99. And a monthly income of zero."
+
+#### [5] Section 2 · `df = raw.copy()` → ▶
+✔ `exact duplicates 240 rows` · `20,000 accounts`
+🎙 "Two hundred and forty exact duplicates are removed."
+
+#### [6] Section 3 · `df["delinquency_date"] = pd.to_datetime(…, format="mixed")` → ▶ ✖ **P1**
+✔ Month counts that include 7–12, then `AssertionError: cohort months outside Jan-Jun: [7, 8, 9, 10, 11, 12]`
+🎙 "The extract only covers January to June. But the dates include July to December. I used format 'mixed' here, and it guesses each date. A day-first date like nine, slash, three becomes the third of September. Worse, five, slash, three becomes the third of May. That's inside the range, so nothing would flag it. The account would land in the wrong month of my time split. My config has a `parse_dates` helper. It reads both formats clearly. I'll use it instead of guessing."
 
 ▶ **DO** Click the **pipeline_config.py** tab → hover over the `parse_dates` function → back to the notebook.
 
-🔧 **FIX P1** In section 3, change the **right-hand side** of this one line:
+🔧 **FIX P1** In cell [6], change the **right-hand side** of this one line:
 ```python
 df["delinquency_date"] = pd.to_datetime(df["delinquency_date"], format="mixed")
 ```
@@ -295,28 +329,48 @@ df["delinquency_date"] = cfg.parse_dates(df["delinquency_date"])
 
 ▶ **DO** **Restart → Run All**.
 
-✔ **CHECK** Months now 1–6 only. It stops in **section 6**: `AssertionError: infinite payment_burden for 100 accounts`
+✔ Cell [6] shows `delinquency_date: 19,600 ISO dates + 400 day-first dates` and months 1–6 only. The run stops at cell [10] (next bug).
+🎙 "The dates are fixed. Nineteen thousand six hundred normal dates and four hundred day-first dates."
 
-🎙 **SAY**
-> "Dates fixed: the helper reports nineteen thousand six hundred ISO and four hundred day-first dates, and the chart now shows every account in January to June, with intake rising each month. Next: the payment burden, amount due divided by income, is infinite for a hundred accounts. The profile showed a minimum income of zero. A zero here means 'not provided', not a real income of nothing. So zeros must be treated as missing before dividing."
+#### [7] `by_month = …` (chart, already run: click it, hover)
+🎙 "Every account is now in January to June. And more accounts come in as the year goes on."
 
-🔧 **FIX P2** In section 6, add this as the **first line** of the cell:
+#### [8] Section 4 · `PRODUCT_FIXES = …`
+✔ `product labels 700 rows` · `employment placeholders 1,200 rows`
+🎙 "Seven hundred product labels are mapped to three products. Twelve hundred employment placeholders are merged into 'Unknown'."
+
+#### [9] Section 5 · `bad_dpd = …`
+✔ `80 rows -> removed` · `100 rows -> removed` · `42 rows -> set to missing` · `19,820 accounts remain`
+🎙 "The business rules from the dictionary. Eighty accounts have days past due outside one to ninety. A hundred have an amount due bigger than the balance. Both are removed. Forty-two fake utilisations are set to missing. That leaves nineteen thousand eight hundred and twenty accounts."
+
+#### [10] Section 6 · income and affordability ✖ **P2**
+✔ Red error: `AssertionError: infinite payment_burden for 100 accounts`
+🎙 "Payment burden is the amount due divided by income. It's infinite for a hundred accounts. The profile showed an income of zero. Here zero means 'not provided', not a real income of nothing. So zeros must become missing before we divide."
+
+🔧 **FIX P2** In cell [10], add this as the **first line** of the cell:
 ```python
 df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 ```
 
 ▶ **DO** **Restart → Run All**.
 
-✔ **CHECK** It completes: `Saved 19,820 rows -> artifact 2 - cleaned accounts.csv`
+✔ It runs to the end: `Saved 19,820 rows -> artifact 2 - cleaned accounts.csv`
 
-🎙 **SAY** (scroll up, hovering over each output)
-> "It runs end to end. The load shows twenty thousand two hundred and forty rows, forty-three percent paid.
-> The missing-values chart: utilisation is blank for thirty percent. That's personal loans, which have no credit limit, so it's structural, not an error. Income ten percent, employment four.
-> The profile shows days past due of minus five and nine hundred and ninety-nine, and a utilisation of 9.99: impossible values.
-> Two hundred and forty exact duplicates removed. Seven hundred product labels mapped to three products. Twelve hundred employment placeholders merged into 'Unknown'.
-> Business rules from the dictionary: eighty accounts with days past due outside one to ninety and a hundred with an amount due larger than the balance are removed, and forty-two sentinel utilisations set to missing. That leaves nineteen thousand eight hundred and twenty accounts.
-> The payment burden now has a median of about six percent of monthly income. And the affordability chart is striking: up to twenty percent of income, around forty-five percent of accounts pay; above thirty-five percent of income, in orange, almost nobody does. That's a cliff, not a slope, which a tree model handles and a straight line doesn't.
-> The last chart sums up every cleaning step and how many rows it touched. Everything is logged in artifact three."
+**All cells have run now. For each cell below: click it, hover over the output, say the line.**
+
+#### [10] Section 6 (fixed)
+✔ `monthly_income missing 2,068 rows -> flag; burden left missing` · median (50%) **0.059**
+🎙 "Now it works. The typical payment burden is about six percent of monthly income."
+
+#### [11] `bands = pd.cut(…)` (affordability chart)
+🎙 "This chart is striking. Up to twenty percent of income, around forty-five percent of accounts pay. Above thirty-five percent, in orange, almost nobody pays. It's a cliff, not a slope. A tree model handles that. A straight line doesn't."
+
+#### [12] Section 7 · save
+✔ `Saved 19,820 rows -> artifact 2 …` · `Saved 7 log entries -> artifact 3 …`
+🎙 "The clean data is saved as artifact two."
+
+#### [13] `steps = …` (chart)
+🎙 "The last chart shows every cleaning step and how many rows it touched. Everything is logged in artifact three."
 
 ---
 
@@ -324,17 +378,21 @@ df["monthly_income"] = df["monthly_income"].replace(0, np.nan)
 
 ▶ **DO** Open **02_model_training.ipynb**.
 
-🎙 **SAY** "Notebook two sets up the out-of-time design, trains both models, validates on May and checks what drives the model."
+🎙 **SAY** "Notebook two sets up the time split. It trains both models, checks them on May, and shows what drives the model. One cell at a time."
 
-▶ **DO** **Run All**.
+#### [1] `import joblib` → ▶
+✔ `19,820 accounts | 26 features` · `Excluded: [...]`
+🎙 "Nineteen thousand eight hundred and twenty accounts. The Excluded line shows the IDs, dates, the two leaky columns and the target."
 
-✔ **CHECK** The pay-rate chart appears (Jan 49.5% → Jun 36.9%), then **section 2** fails: `AssertionError: train and calibration windows overlap`
+#### [2] Section 1 · `by_month = …` → ▶
+✔ Table and bar chart: pay rate **0.495** in month 1 down to **0.369** in month 6
+🎙 "The pay rate falls every month. About fifty percent in January, thirty-seven in June. That's why a random split would mislead us. And why calibration matters."
 
-🎙 **SAY**
-> "First the bar chart: the pay rate falls every month, from about fifty percent in January to thirty-seven in June. That's exactly why a random split would be misleading, and why calibration matters.
-> Then the split fails: training and calibration overlap. My training filter says 'cohort month less than or equal to the calibration month', so May is in both. It's an off-by-one in my time window. The config already defines the training months, so I'll use them."
+#### [3] Section 2 · `train_df = df[df["cohort_month"] <= cfg.CALIBRATION_MONTH]` → ▶ ✖ **T1**
+✔ Red error: `AssertionError: train and calibration windows overlap`
+🎙 "The split fails. Training and calibration overlap. My filter says 'month less than or equal to the calibration month'. So May is in both. It's an off-by-one. The config already lists the training months, so I'll use them."
 
-🔧 **FIX T1** In section 2, change:
+🔧 **FIX T1** In cell [3], change:
 ```python
 train_df = df[df["cohort_month"] <= cfg.CALIBRATION_MONTH]
 ```
@@ -345,10 +403,16 @@ train_df = df[df["cohort_month"].isin(cfg.TRAIN_MONTHS)]
 
 ▶ **DO** **Restart → Run All**.
 
-✔ **CHECK** train `[1, 2, 3, 4]` 12,491 (46.0%) · calibrate `[5]` 3,677 (40.5%) · test `[6]` 3,652 (36.9%). May ROC-AUC **≈ 0.91**. In section 4 the top feature is **total_contact_attempts_30d ≈ 0.177**, three times the next one.
+✔ Cell [3]: train `[1, 2, 3, 4]` 12,491 (46.0%) · calibrate `[5]` 3,677 (40.5%) · test `[6]` 3,652 (36.9%)
+🎙 "The windows are clean now. Months one to four for training, May for calibration, June for the test."
 
-🎙 **SAY**
-> "The windows are clean now. But May ROC-AUC is 0.91, which is very high for collections, and the importance chart explains it: the orange bar, `total_contact_attempts_30d`, costs 0.18 of AUC when shuffled, three times anything else. That's the third suspect from the dictionary. It counts contacts over the whole thirty days, and customers who pay stop being called. So low contacts *means* they paid. At day seven we can't know it."
+#### [4] Section 3 · train and validate on May (already run: click it, hover)
+✔ May ROC-AUC **≈ 0.91** ✖ **T2** (too good)
+🎙 "But the May ROC-AUC is 0.91. That's very high for collections."
+
+#### [5] and [6] Section 4 · importance table and chart
+✔ Top feature **total_contact_attempts_30d ≈ 0.177**, three times the next one (orange bar)
+🎙 "The importance chart explains it. The orange bar, `total_contact_attempts_30d`, costs 0.18 of AUC when shuffled. That's three times anything else. It's the third suspect from the dictionary. It counts calls over the whole thirty days. Customers who pay stop being called. So few calls *means* they paid. On day seven we can't know that."
 
 🔧 **FIX T2** Open **pipeline_config.py** and change:
 ```python
@@ -361,28 +425,52 @@ LEAKY_COLUMNS = ["account_status_at_extract", "amount_recovered_30d", "total_con
 
 ▶ **DO** **File → Save** → **02_model_training.ipynb** tab → **Restart → Run All**.
 
-✔ **CHECK** 25 features · May: baseline **0.821 / 0.752**, boosting **0.844 / 0.784** · top importance: on_time_payment_ratio_12m, promise_to_pay_7d, days_past_due, payment_burden, right_party_contact_7d
+**All cells have run now. Scroll back to the top. For each cell: click it, hover over the output, say the line.**
 
-🎙 **SAY**
-> "Now realistic. On May, gradient boosting reaches 0.84 against 0.82 for logistic regression, and a better PR-AUC. The importance chart is now spread across sensible drivers: on-time payment history, a promise to pay in the first week, days past due, payment burden, and whether an agent actually reached the customer. Both models are saved as artifact five."
+#### [1] `import joblib`
+✔ `25 features` · `Excluded:` now has `total_contact_attempts_30d`
+🎙 "Now all three leaky columns are excluded."
+
+#### [4] Section 3 · May results
+✔ baseline **0.821 / 0.752** · gradient_boosting **0.844 / 0.784**
+🎙 "Now it's realistic. On May, gradient boosting gets 0.84. Logistic regression gets 0.82. Boosting also has the better PR-AUC."
+
+#### [5] and [6] Section 4 · importance
+✔ Top: on_time_payment_ratio_12m, promise_to_pay_7d, days_past_due, payment_burden, right_party_contact_7d
+🎙 "The importance is now spread across sensible drivers. On-time payment history. A promise to pay in the first week. Days past due. Payment burden. And whether an agent actually reached the customer."
+
+#### [7] Section 5 · save
+✔ `saved baseline_logreg.joblib` · `saved gradient_boosting.joblib`
+🎙 "Both models are saved as artifact five."
 
 ---
 
 ### Scene 8 · Notebook 03, testing on June (22:30–27:30): fix E1
 
-▶ **DO** Open **03_model_testing.ipynb** → **Run All**.
+▶ **DO** Open **03_model_testing.ipynb**.
 
-✔ **CHECK** It completes, but the prioritisation shows **today's rule 47.1%** vs **model 45.4%**, and the acceptance check "model list covers more unpaid than today's rule" is **False**.
+🎙 **SAY** "Notebook three tests on June. No model has seen June. One cell at a time."
 
-🎙 **SAY**
-> "It ran, but the model's agent list covers less unpaid money than today's rule, even though its AUC is good. That's contradictory, so the problem is in how the list is ranked."
+#### [1] `import joblib` → ▶
+✔ `June test cohort: 3,652 accounts, pay rate 36.9%`
+🎙 "Three thousand six hundred and fifty-two June accounts. Only thirty-seven percent paid."
 
-▶ **DO** Scroll to section 3 and hover over the `expected_unpaid` line.
+#### [2] Section 1 · June metrics → ▶
+✔ gradient_boosting **0.825 / 0.732 / 0.173** · baseline **0.818 / 0.724**
+🎙 "Gradient boosting gets a ROC-AUC of 0.825. The target is 0.78. It also beats the baseline on PR-AUC."
 
-🎙 **SAY**
-> "Here: expected unpaid is calculated as the probability of paying times the amount due. That ranks the accounts most *likely to pay* at the top: the opposite of what we want. Expected unpaid is one minus the probability of paying, times the amount. Notebook four already uses one minus p; I got it backwards in this evaluation."
+#### [3] Section 2 · calibration → ▶
+✔ raw **0.4566** · calibrated **0.3998** · actual **0.3694** · Brier **0.1727 → 0.1649** · calibration chart
+🎙 "Calibration is the big one. The raw model predicts a 45.7 percent pay rate. Only 36.9 percent actually paid. It learned from better months. It would over-promise collections by nearly a quarter. Calibrating on May brings it down to forty percent. The Brier score improves. The rest of the gap is because June is worse than May. That's why the README says to re-calibrate every month. In the chart, the calibrated curve is much closer to the diagonal."
 
-🔧 **FIX E1** In section 3, change:
+#### [4] Section 3 · agent prioritisation → ▶ ✖ **E1** (no error, wrong result)
+✔ `capacity 1,351 of 3,652 June accounts | eligible 3,264` · today's rule **47.1%** · model **45.4%**
+🎙 "The model's list covers *less* unpaid money than today's rule. But its AUC is good. That doesn't add up. So the problem is in how the list is ranked."
+
+▶ **DO** Hover over the `expected_unpaid` line in cell [4].
+🎙 "Here. Expected unpaid is the chance of paying, times the amount due. That puts the accounts most *likely to pay* at the top. The opposite of what we want. Expected unpaid is *one minus* the chance of paying, times the amount. Notebook four already uses one minus p. I got it backwards here."
+
+🔧 **FIX E1** In cell [4], change:
 ```python
 test_df["expected_unpaid"] = test_df["p_pay"] * test_df["amount_due"]
 ```
@@ -393,32 +481,57 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 ▶ **DO** **Restart → Run All**.
 
-✔ **CHECK** boosting **0.825 / 0.732 / 0.173** · baseline **0.818 / 0.724** · calibration: raw **0.4566**, calibrated **0.3998**, actual **0.3694**; Brier **0.1727 → 0.1649** · `capacity 1,351 of 3,652 June accounts | eligible 3,264` · today's rule **47.1%**, model **81.4%** · all four checks **True**
+**All cells have run now. For each cell below: click it, hover over the output, say the line.**
 
-🎙 **SAY** (hover over each output)
-> "June is a month no model has seen. Gradient boosting reaches a ROC-AUC of 0.825, above the 0.78 target, and beats the baseline on PR-AUC.
-> Calibration is the big one. The raw model predicts a 45.7 percent pay rate, but only 36.9 percent actually paid. It learned from better months and would over-promise collections by nearly a quarter. Recalibrating on May brings the prediction to forty percent and improves the Brier score. The remaining gap is because June is worse than May again, which is why the README says to re-calibrate monthly. The calibration chart shows the calibrated curve much closer to the diagonal.
-> Prioritisation: the agents can work thirteen hundred and fifty-one of the three thousand six hundred and fifty-two June accounts. Today's rule, most overdue first, would cover forty-seven percent of the unpaid money. The model's list covers eighty-one percent: same agents, same capacity.
-> The SHAP chart: on-time payment history at the top, then days past due, with cure rates collapsing after thirty days, then whether an agent reached the customer and whether they promised to pay in the first week. A promise is worth much less from someone with broken promises. And payment burden.
-> The dependence charts below show the shape of each effect; above the grey line means more likely to pay. Days past due: flat for the first month, then falling steeply after about thirty-five days. Every day counts once an account passes a month. Payment burden: fine up to about a third of income, then a cliff. On-time payment ratio: below about fifty percent, customers rarely pay; above it, the chance rises steadily.
-> All four acceptance checks pass. Artifacts six and seven are saved."
+#### [4] Section 3 · agent prioritisation (fixed)
+✔ today's rule **47.1%** · model **81.4%**
+🎙 "The agents can work thirteen hundred and fifty-one of the three thousand six hundred and fifty-two June accounts. Today's rule, most overdue first, covers forty-seven percent of the unpaid money. The model's list covers eighty-one percent. Same agents, same number of calls."
+
+#### [5] Section 4 · SHAP summary chart
+▶ **DO** Hover over each row as you name it.
+🎙 "What drives payment. On-time payment history is at the top. Then days past due. Cure rates collapse after thirty days. Then whether an agent reached the customer, and whether they promised to pay in the first week. A promise is worth much less from someone who broke promises before. And payment burden."
+
+#### [6] SHAP dependence charts (three panels)
+▶ **DO** Hover over each panel.
+🎙 "These show the shape of each effect. Above the grey line means more likely to pay.
+Days past due: flat for the first month, then falling fast after about thirty-five days. Every day counts once an account passes a month.
+Payment burden: fine up to about a third of income, then a cliff.
+On-time payment ratio: below about fifty percent, customers rarely pay. Above it, the chance rises steadily."
+
+#### [7] Section 5 · acceptance table
+✔ All four checks **True**
+🎙 "All four acceptance checks pass. Artifacts six and seven are saved."
 
 ---
 
 ### Scene 9 · Notebook 04, work list and package (27:30–29:30)
 
-▶ **DO** Open **04_worklist_and_package.ipynb** → **Run All**.
+▶ **DO** Open **04_worklist_and_package.ipynb**.
 
-✔ **CHECK** `agent capacity 1,351 | routed to specialist team (dispute / hardship): 388` · `saved 1,351 accounts` · coverage_model **0.814**, coverage_dpd_rule **0.471**
+🎙 **SAY** "Notebook four builds the real June list. One cell at a time."
 
-🎙 **SAY**
-> "Notebook four builds the actual June list. Every account is scored with the calibrated model, and the three hundred and eighty-eight accounts with a dispute or hardship flag go to the specialist team.
-> The rest are ranked by expected unpaid amount, one minus the probability, times the amount due, and cut at thirteen hundred and fifty-one: artifact eight.
-> Because we know June's outcomes, I can check it: the list covers eighty-one percent of the unpaid money, against forty-seven percent for the old rule.
-> The histogram shows *why*: the old rule, in grey, only ever calls accounts beyond twenty days past due. The model, in blue, also calls high-risk accounts in their first three weeks, while there's still time to cure them, and skips overdue accounts that are likely to pay anyway."
-> Finally the model and calibrator are packaged with metrics and a README as final output three."
+#### [1] `import json` → ▶
+✔ `June cohort: 3,652 accounts`
+🎙 "It loads the three thousand six hundred and fifty-two June accounts, the model and the calibrator."
 
+#### [2] Section 1 · score and rank → ▶
+✔ `agent capacity 1,351 | routed to specialist team (dispute / hardship): 388` · `saved 1,351 accounts -> artifact 8 …`
+🎙 "Every account is scored with the calibrated model. Three hundred and eighty-eight accounts have a dispute or hardship flag. They go to the specialist team. The rest are ranked by expected unpaid amount: one minus the chance of paying, times the amount due. The list is cut at thirteen hundred and fifty-one. That's artifact eight."
+
+#### [3] Section 2 · what the list achieves → ▶
+✔ coverage_model **0.814** · coverage_dpd_rule **0.471**
+🎙 "We know June's results, so I can check it. The list covers eighty-one percent of the unpaid money. The old rule covers forty-seven percent."
+
+#### [4] Histogram → ▶
+🎙 "This chart shows why. The old rule, in grey, only calls accounts more than twenty days past due. The model, in blue, also calls high-risk accounts in their first three weeks, while there's still time. And it skips overdue accounts that will probably pay anyway."
+
+#### [5] Section 3 · package → ▶
+✔ `saved model.joblib, calibrator.joblib and metrics.json`
+🎙 "The model and the calibrator are saved with their metrics."
+
+#### [6] README → ▶
 ▶ **DO** Scroll through the printed README.
+🎙 "And a README. This is final output three."
 
 ---
 
@@ -446,10 +559,10 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 ✔ **CHECK** 1351 · 532,227 · 377,939 · 354 · 393,144 · 483,197 · 0.814 · 0.471 · 0 · 0
 
 🎙 **SAY**
-> "Thirteen hundred and fifty-one accounts: exactly the capacity. Five hundred and thirty-two thousand dollars due in total.
-> Each account's expected unpaid amount is the chance it doesn't pay times the amount due, so adding them up gives the money the model expects to stay unpaid: about three hundred and seventy-eight thousand dollars. Three hundred and ninety-three thousand actually stayed unpaid. Expected and actual match closely, within about four percent, which tells me the calibration works: when the model says a forty percent chance of paying, about forty percent really pay. Finance can use these numbers for forecasting cash, not just for ranking accounts.
-> Only three hundred and fifty-four of these accounts paid on their own, so the agents are working the right people.
-> That's eighty-one percent of all the eligible unpaid money in June, against forty-seven percent with the old rule.
+> "Thirteen hundred and fifty-one accounts. Exactly the capacity. Five hundred and thirty-two thousand dollars due in total.
+> Each account's expected unpaid amount is the chance it won't pay, times the amount due. Adding them up gives the money the model expects to stay unpaid: about three hundred and seventy-eight thousand dollars. Three hundred and ninety-three thousand really stayed unpaid. That's within about four percent. So the calibration works: when the model says a forty percent chance of paying, about forty percent really pay. Finance can use these numbers to forecast cash, not just to rank accounts.
+> Only three hundred and fifty-four of these accounts paid on their own. So the agents are calling the right people.
+> The list covers eighty-one percent of the unpaid money in June. The old rule covers forty-seven percent.
 > And no dispute or hardship account is on the list."
 
 ▶ **DO** **File → Save As…** → `Deliverables\4_Output` → **File type: Excel 2007-365 (.xlsx)** → `final output 1 - june agent work list` → **Save** → **Use Excel 2007-365!** → **File → Close**.
@@ -460,7 +573,7 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 
 ▶ **DO** `1_Input` → right-click **input 4 - summary deck template.pptx** → **Open with → LibreOffice Impress** → **File → Save As…** → `4_Output` → **File type: PowerPoint 2007-365 (.pptx)** → `final output 2 - collections summary` → **Save** → **Use PowerPoint 2007-365!**.
 
-🎙 **SAY** "I'll save my copy to Output first so the template stays clean, then fill in the orange brackets."
+🎙 **SAY** "First I save my own copy to Output, so the template stays clean. Then I fill in the orange brackets."
 
 ▶ **DO** For each orange `[   ]`: double-click into the text → select the **whole** `[   ]`, brackets included → type just the number (units are in the labels) → select it → **Properties** sidebar → **Character → Font Color** arrow → **Automatic** (or **Format → Character… → Font Effects**).
 
@@ -474,8 +587,8 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 - The three drivers on the right are already written in the template (from the SHAP results): just hover over each one as you mention it
 
 🎙 **SAY**
-> "The model's list covers eighty-one percent of the unpaid money against forty-seven with the old rule, with the same thirteen hundred and fifty-one agent slots. Three hundred and eighty-eight accounts go straight to the specialist team.
-> Recommendation: give agents the top thirty-seven percent by expected unpaid amount, nudge the rest digitally, re-calibrate monthly because pay rates keep falling, and track coverage against the old rule every month."
+> "The model's list covers eighty-one percent of the unpaid money. The old rule covers forty-seven. Same thirteen hundred and fifty-one agent slots. Three hundred and eighty-eight accounts go straight to the specialist team.
+> My recommendation. Give agents the top thirty-seven percent by expected unpaid amount. Send the rest an SMS or app reminder. Re-calibrate every month, because pay rates keep falling. And compare against the old rule every month."
 
 ▶ **DO** **File → Save** → **Use PowerPoint 2007-365!** → **File → Close**.
 
@@ -486,9 +599,9 @@ test_df["expected_unpaid"] = (1 - test_df["p_pay"]) * test_df["amount_due"]
 ▶ **DO** Open `Deliverables` and hover over each folder and file.
 
 🎙 **SAY**
-> "To wrap up: Input holds the four files I received, plus my pipeline code as it was before this run, delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate holds the pivot analysis, cleaned accounts, quality log, time split, models and calibrator, the model comparison, charts and the June work list. Output holds the validated work list, the summary deck and the packaged model.
-> Five issues fixed: a date parser that silently put accounts in the wrong month, zero incomes that broke the affordability ratio, a training window that overlapped the calibration month, a contact count that leaked the outcome, and a ranking that prioritised the customers most likely to pay.
-> Every acceptance criterion is met, and the June list is ready for the team leads. Thank you."
+> "To wrap up. Input has the four files I received. Plus my pipeline code as it was before this run, delivered as input five. Code is now the corrected pipeline, delivered as final output four. Intermediate has the pivot analysis, clean accounts, quality log, time split, models and calibrator, the model comparison, charts and the June work list. Output has the checked work list, the summary deck and the packaged model.
+> I fixed five issues. A date parser that quietly put accounts in the wrong month. Zero incomes that broke the payment burden. A training window that overlapped the calibration month. A call count that leaked the answer. And a ranking that put the customers most likely to pay at the top.
+> Every acceptance criterion is met. The June list is ready for the team leads. Thank you."
 
 ▶ **DO** Stay silent for 3 seconds.
 
